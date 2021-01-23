@@ -5,7 +5,7 @@ using System.Text;
 namespace GymManager
 {
 
-    class MenuOptionsRepository
+    class MenuRepository
     {
         private static Dictionary<int, string> _startMenu = new Dictionary<int, string>()
             {

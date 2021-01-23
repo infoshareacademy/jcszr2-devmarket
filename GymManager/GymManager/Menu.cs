@@ -11,7 +11,7 @@ namespace GymManager
             PrintMenu(MenuRepository.StartMenu);
             GetOptionNr(MenuRepository.StartMenu);
         }
-
+        
 
         private static void GetOptionNr(Dictionary<int,string> currentMenu)
         {
