@@ -4,20 +4,7 @@ using System.Text;
 
 namespace GymManager
 {
-    class Database
+    class Client
     {
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
