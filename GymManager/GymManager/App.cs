@@ -4,20 +4,12 @@ using System.Text;
 
 namespace GymManager
 {
-    class Database
+    class App
     {
+        public void RunApp()
+        {
+            new MenuManager().Run();
 
-
-
-
-
-
-
-
-
-
-
-
-
+        }
     }
 }

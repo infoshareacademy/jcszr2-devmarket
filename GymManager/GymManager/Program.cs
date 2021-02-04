@@ -6,7 +6,7 @@ namespace GymManager
     {
         static void Main(string[] args)
         {
-            Menu.PrintWelcomeMenu();
+            new App().RunApp();
         }
     }
 }
