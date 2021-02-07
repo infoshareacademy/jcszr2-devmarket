@@ -1,0 +1,33 @@
+{
+  "exercises": [
+    {
+      "exercise_name": "Trening si³owy",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening sprawnoœciowy",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening wytrzyma³oœciowy",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening si³owy",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening funkcjonalny",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening cardio",
+      "date_time": "5/3/2021/8/30/31"
+    },
+    {
+      "exercise_name": "Trening fitness",
+      "date_time": "5/3/2021/8/30/31"
+    }
+
+  ]
+}

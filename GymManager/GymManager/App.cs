@@ -6,7 +6,7 @@ namespace GymManager
 {
     class App
     {
-        public void RunApp()
+        public void Start()
         {
             new MenuManager().Run();
 
