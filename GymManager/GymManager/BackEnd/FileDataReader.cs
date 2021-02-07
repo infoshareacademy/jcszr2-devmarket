@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using GymManager.BackEnd.Activities;
 using Newtonsoft.Json;
 
 namespace GymManager.BackEnd
