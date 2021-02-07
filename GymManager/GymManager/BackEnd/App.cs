@@ -10,7 +10,7 @@ namespace GymManager.BackEnd
         {
             Console.WriteLine("App is running");
             var fileDataReader = new FileDataReader("\\BackEnd\\Activities\\listOfExercises.json");
-            fileDataReader.ReadJsonData();
+            var listOfAvailableExercises = fileDataReader.ReadJsonData();
 
         }
     }
