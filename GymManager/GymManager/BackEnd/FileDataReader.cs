@@ -17,7 +17,6 @@ namespace GymManager.BackEnd
         {
             string actualPath = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
             var FinalPath = actualPath + "\\Debug\\netcoreapp3.1\\" + path;
-            Console.WriteLine(@path);
             try
             {
                 _reader = new StreamReader(FinalPath);
