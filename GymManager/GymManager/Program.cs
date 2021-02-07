@@ -1,4 +1,5 @@
 ﻿using System;
+using GymManager.BackEnd;
 
 namespace GymManager
 {
@@ -6,7 +7,7 @@ namespace GymManager
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            new App().Start();
         }
     }
 }
