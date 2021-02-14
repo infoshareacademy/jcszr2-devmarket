@@ -5,14 +5,14 @@ namespace GymManager
 {
     public abstract class MenuCommonLibrary
     {
-        protected Dictionary<int, string> _positions = new Dictionary<int, string>();
+        protected Dictionary<string, int> _positions = new Dictionary<string, int>();
+        public Dictionary<string, int> Positions { get { return _positions; } }
 
-        public Dictionary<int, string> Positions { get { return _positions; } }
         public void Print()
         {
-            foreach (KeyValuePair<int, string> position in _positions)
+            foreach (KeyValuePair<string, int> position in _positions)
             {
-                Console.WriteLine($"{position.Key}. {position.Value}");
+                Console.WriteLine($"{position.Value}. {position.Key}");
             }
         }
     }

@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using GymManager.BackEnd;
 
 namespace GymManager
 {
     public class MenuManager
     {
-        private MenuExercises menuExercises = new MenuExercises();
+        private List<Exercise> _menuAvailableExercies = new List<Exercise>();
         private MenuTickets menuTickets = new MenuTickets();
         private MenuStart menuStart = new MenuStart();
-
-        public void Run()
+        
+        public void Run(List<Exercise> availableExercises)
         {
+            _menuAvailableExercies = availableExercises;
             PrintGreet();
             ChangeMenu(menuStart);
         }
@@ -35,7 +38,7 @@ namespace GymManager
                 {
                     case 1:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuExercises);
+                        ChangeMenu(_menuAvailableExercies);
                         break;
                     case 2:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
@@ -59,7 +62,7 @@ namespace GymManager
                         break;
                 }
             }
-            else if (currentMenu == menuExercises)
+            else if (currentMenu == _menuAvailableExercies)
             {
                 Console.Clear();
                 switch (userChoice)
@@ -145,7 +148,8 @@ namespace GymManager
         }
         private void PrintUserChoiceConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
         {
-            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}: {currentMenu.Positions[chosenNr]}");
+
+            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}:" ); //{currentMenu.Positions[]}
         }
 
     }

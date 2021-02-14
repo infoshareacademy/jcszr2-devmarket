@@ -1,16 +1,35 @@
-﻿namespace GymManager
+﻿using GymManager.BackEnd;
+using System.Collections.Generic;
+
+namespace GymManager
 {
     public class MenuExercises : MenuCommonLibrary
     {
-        public MenuExercises()
+        private List<Exercise> _availableExercises = new List<Exercise>();
+        public MenuExercises(List<Exercise> availableExercises)
         {
-            _positions.Add(1,"Cardio");
-            _positions.Add(2,"Sztuki walki");
-            _positions.Add(3,"Crossfit" );
-            _positions.Add(4,"Ćwiczenia siłowe" );
-            _positions.Add(5,"Choreograficzne" );
-            _positions.Add(6,"Wróć do poprzedniego menu" );
-            _positions.Add(7,"Wyjście z programu" );
+            int counter = 0;
+            for(int i=0; i<=availableExercises.Count;i++)
+            {
+                try 
+                { 
+                    _positions.Add(availableExercises[i].GetExercise(), counter);
+                    counter++;
+                }
+                catch
+                {
+                }
+            }
+
+            counter++;
+            _positions.Add("Wróć do poprzedniego menu", counter);
+            counter++;
+            _positions.Add("Wyjście z programu", counter);
+        }
+
+        public List<Exercise> GetExercisesList()
+        {
+            return _availableExercises;
         }
     }
 

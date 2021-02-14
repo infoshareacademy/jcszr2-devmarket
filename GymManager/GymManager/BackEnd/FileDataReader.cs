@@ -45,7 +45,7 @@ namespace GymManager.BackEnd
                     Int32.Parse(date[0]),   // day
                     Int32.Parse(date[3]),   // hour
                     Int32.Parse(date[4]),   // minute
-                    Int32.Parse(date[5])    //  seconds
+                    Int32.Parse(date[5])    // seconds
                     )
                     );
                 listOfExercises.Add(newExercise);
