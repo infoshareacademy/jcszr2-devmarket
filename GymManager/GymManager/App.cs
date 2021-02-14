@@ -13,8 +13,8 @@ namespace GymManager
             Console.WriteLine("App is running");
             var fileDataReader = new FileDataReader("\\BackEnd\\Activities\\listOfExercises.json");
             var listOfAvailableExercises = fileDataReader.ReadJsonData(); //przekazac do  menumanager
-            var listOfAvailableExercisesMenu= new MenuExercises(listOfAvailableExercises).GetExercisesList();
-            new MenuManager().Run(listOfAvailableExercisesMenu);
+            var listMenuOfAvailableExercises = new MenuExercises(listOfAvailableExercises);
+            new MenuManager().Run(listMenuOfAvailableExercises);
 
         }
     }

@@ -6,13 +6,13 @@ namespace GymManager
 {
     public class MenuManager
     {
-        private List<Exercise> _menuAvailableExercies = new List<Exercise>();
+        private MenuExercises menuExercises;
         private MenuTickets menuTickets = new MenuTickets();
         private MenuStart menuStart = new MenuStart();
         
-        public void Run(List<Exercise> availableExercises)
+        public void Run(MenuExercises availableExercises)
         {
-            _menuAvailableExercies = availableExercises;
+            menuExercises = availableExercises;
             PrintGreet();
             ChangeMenu(menuStart);
         }
@@ -38,7 +38,7 @@ namespace GymManager
                 {
                     case 1:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(_menuAvailableExercies);
+                        ChangeMenu(menuExercises);
                         break;
                     case 2:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
@@ -62,7 +62,7 @@ namespace GymManager
                         break;
                 }
             }
-            else if (currentMenu == _menuAvailableExercies)
+            else if (currentMenu == menuExercises)
             {
                 Console.Clear();
                 switch (userChoice)

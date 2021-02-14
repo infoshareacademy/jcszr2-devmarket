@@ -7,11 +7,11 @@ namespace GymManager
     {
         public MenuStart()
         {
-            _positions.Add("Dostępne zajęcia na silowni",1);
-            _positions.Add("Kup karnet", 2);
-            _positions.Add("Logowanie", 3);
-            _positions.Add("Rejestracja",4);
-            _positions.Add("Wyjście z programu",5);
+            _positions.Add("Dostępne zajęcia na silowni");
+            _positions.Add("Kup karnet");
+            _positions.Add("Logowanie");
+            _positions.Add("Rejestracja");
+            _positions.Add("Wyjście z programu");
         }
     }
 
