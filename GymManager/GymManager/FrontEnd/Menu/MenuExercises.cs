@@ -5,7 +5,6 @@ namespace GymManager
 {
     public class MenuExercises : MenuCommonLibrary
     {
-
         public MenuExercises(List<Exercise> availableExercises)
         {
             for (int i = 0; i <= availableExercises.Count; i++)
