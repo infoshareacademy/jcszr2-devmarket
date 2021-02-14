@@ -9,10 +9,11 @@ namespace GymManager
         public MenuStart()
         {
             _positions.Add(1, "Dostępne zajęcia na silowni");
-            _positions.Add(2, "Kup karnet");
-            _positions.Add(3, "Logowanie");
-            _positions.Add(4, "Rejestracja");
-            _positions.Add(5, "Wyjście z programu");
+            _positions.Add(2, "Wyświetl zajęcia filtrowane wg kryteriów");
+            _positions.Add(3, "Kup karnet");
+            _positions.Add(4, "Logowanie");
+            _positions.Add(5, "Rejestracja");
+            _positions.Add(6, "Wyjście z programu");
         }
     }
 

@@ -15,6 +15,17 @@ namespace GymManager
                 Console.WriteLine($"{position.Key}. {position.Value}");
             }
         }
+
+        public void PrintAndClear()
+        {
+            ClearConsole();
+            Print();
+        }
+
+        private void ClearConsole()
+        {
+            Console.Clear();
+        }
     }
 
 }

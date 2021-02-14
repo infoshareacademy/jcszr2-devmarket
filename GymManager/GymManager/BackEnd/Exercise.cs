@@ -6,8 +6,8 @@ namespace GymManager.BackEnd
 {
     public class Exercise
     {
-        private string exerciseName;
-        private DateTime exerciseDate;
+        public string exerciseName;
+        public DateTime exerciseDate;
 
         public Exercise(string excercise, DateTime date)
         {
