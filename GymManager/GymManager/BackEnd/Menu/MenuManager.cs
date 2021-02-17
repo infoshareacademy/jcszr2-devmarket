@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
+using GymManager.BackEnd.Users;
 
 namespace GymManager
 {
@@ -46,11 +47,12 @@ namespace GymManager
                         break;
                     case 3:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Login
+                        new SignInLogIn().LogIn();
                         break;
                     case 4:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Register
+                        new SignInLogIn().SignIn();
+                        ChangeMenu(menuStart);
                         break;
                     case 5:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
@@ -65,15 +67,18 @@ namespace GymManager
             else if (currentMenu == menuExercises)
             {
                 Console.Clear();
-                if (userChoice < menuExercises.Positions.Count-3 && userChoice > 0)
+                var goBackPosition = currentMenu.Positions.Count - 1;
+                var exitPosition = currentMenu.Positions.Count ;
+
+                if (userChoice < currentMenu.Positions.Count -3 && userChoice > 0)
                 {
                     //ChangeMenu();
                 }
-                else if(userChoice == menuExercises.Positions.Count-3)
+                else if(userChoice == goBackPosition )
                 {
                     ChangeMenu(menuStart);
                 }
-                else if (userChoice == menuExercises.Positions.Count-2)
+                else if (userChoice == exitPosition)
                 {
                     System.Environment.Exit(0);
                 }

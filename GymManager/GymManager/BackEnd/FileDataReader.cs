@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using GymManager.BackEnd.Users;
 using Newtonsoft.Json;
 
 namespace GymManager.BackEnd
@@ -11,6 +12,11 @@ namespace GymManager.BackEnd
     public class FileDataReader
     {
         private StreamReader _reader;
+
+        public StreamReader  Reader
+        {
+            get { return _reader; }
+        }
 
         public FileDataReader(string path)
         {
@@ -52,6 +58,7 @@ namespace GymManager.BackEnd
             }
             return listOfExercises;
         }
+
 
     }
 }
