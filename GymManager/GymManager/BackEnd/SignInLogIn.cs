@@ -8,6 +8,29 @@ namespace GymManager.BackEnd.Users
     {
         public void LogIn()
         {
+            var usersList = new JsonReader().readJsonUsersFile();
+
+            Console.WriteLine("Podaj login");
+            var enteredEmail = Console.ReadLine();
+
+            Console.WriteLine("Podaj hasło");
+            SecureString encryptedPassword = WriteTextInHideMode();
+            string enteredPassword = new System.Net.NetworkCredential(string.Empty, encryptedPassword).Password;
+
+            bool userFound = usersList.Any(user => user.Email == enteredEmail && user.Password == enteredPassword);
+
+            if (userFound)
+            {
+                var loggedUser = usersList.Single(user => user.Email == enteredEmail && user.Password == enteredPassword);
+                Console.WriteLine($"zalogowano pomyślnie jako {enteredEmail}");
+            }
+            else
+            {
+                Console.WriteLine("Podałeś nieprawidłowe dane, spróbuj jeszcze raz");
+                Console.ReadLine();
+                Console.Clear();
+                LogIn();
+            }
 
         }
 
