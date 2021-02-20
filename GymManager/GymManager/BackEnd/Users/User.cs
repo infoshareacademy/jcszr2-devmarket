@@ -12,6 +12,8 @@ namespace GymManager.BackEnd.Users
     {
         private string _email;
         private string _password;
+        private bool _isAdmin = false;
+        public static User currentUser = null;
 
         public string Email
         {
@@ -24,5 +26,12 @@ namespace GymManager.BackEnd.Users
             get { return _password; }
             set { _password = value; }
         }
+
+        public bool IsAdmin
+        {
+            get { return _isAdmin; }
+            set { _isAdmin = value; }
+        }
+
     }
 }

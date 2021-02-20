@@ -8,7 +8,7 @@ namespace GymManager.BackEnd.Users
     {
         public void LogIn()
         {
-            var usersList = new JsonReader().readJsonUsersFile();
+            var usersList = new JsonReader().readUsers();
 
             Console.WriteLine("Podaj login");
             var enteredEmail = Console.ReadLine();
@@ -22,6 +22,8 @@ namespace GymManager.BackEnd.Users
             if (userFound)
             {
                 var loggedUser = usersList.Single(user => user.Email == enteredEmail && user.Password == enteredPassword);
+                User.currentUser = loggedUser;
+                Console.Clear();
                 Console.WriteLine($"zalogowano pomyślnie jako {enteredEmail}");
             }
             else
@@ -31,18 +33,25 @@ namespace GymManager.BackEnd.Users
                 Console.Clear();
                 LogIn();
             }
-
         }
-
-        public void SignIn()
+        public void LogOut()
+        {
+            User.currentUser = null;
+        }
+        public User SignIn()
         {
             var user = new User();
-            SetEmail(user);
-            SetPassword(user);
-            new JsonReader().addUserToJsonUsersFile(user);
+            user.Email = SetEmail(user);
+            user.Password = SetPassword(user);
+            if (user.Email == null || user.Password == null)
+            {
+                Console.WriteLine("Użytkownik nie został zarejestrowany\n");
+            }
+            new JsonReader().addUser(user);
             PrintOperationSuccess();
+            return user;
         }
-        private void SetEmail(User user)
+        private string SetEmail(User user)
         {
             Console.WriteLine("Podaj swój email:\n");
             var enteredEmail = Console.ReadLine();
@@ -51,14 +60,15 @@ namespace GymManager.BackEnd.Users
             if (IsEmailValid(normalizedEmail))
             {
                 Console.Clear();
-                user.Email= normalizedEmail;
+                return normalizedEmail;
             }
+            Console.Clear();
             Console.WriteLine("Wprowadzony email jest nieprawidłowy lub jest już zarejestrowany, spróbój ponownie");
             Console.Read();
-            Console.Clear();
             SetEmail(user);
+            return null;
         }
-        private void SetPassword(User user)
+        private string SetPassword(User user)
         {
             Console.WriteLine("Podaj hasło." +
                               "\nKryteria\n" +
@@ -68,21 +78,23 @@ namespace GymManager.BackEnd.Users
                               "\n*Zabronione znaki: przecinek,spacja,<,>,',;, \n\n");
 
             SecureString passwordToSecure1 = WriteTextInHideMode();
-            string _password1 = new System.Net.NetworkCredential(string.Empty, passwordToSecure1).Password;
+            string password1 = new System.Net.NetworkCredential(string.Empty, passwordToSecure1).Password;
 
             Console.Clear();
             Console.WriteLine("Powtórz wprowadzone hasło");
             SecureString passwordToSecure2 = WriteTextInHideMode();
-            string _password2 = new System.Net.NetworkCredential(string.Empty, passwordToSecure1).Password;
+            string password2 = new System.Net.NetworkCredential(string.Empty, passwordToSecure1).Password;
 
-            if (IsPasswordValid(_password1,_password2))
+            if (IsPasswordValid(password1,password2))
             {
-                user.Password= _password1;
+                Console.WriteLine($"Pomyślnie zarejestrowano użytkownika {user.Email}\n");
+                return password2;
             }
-            Console.WriteLine("Wprowadzone hasło nie spełnia kryteriów lub nie wprowadzono 2 takich samych haseł, wciśnij enter i spróbój ponownie");
-            Console.Read();
             Console.Clear();
+            Console.WriteLine("Wprowadzone hasło nie spełnia kryteriów lub nie wprowadzono 2 takich samych haseł, wciśnij enter i spróbój ponownie");
+            Console.ReadLine();
             SetPassword(user);
+            return null;
         }
         private bool IsPasswordValid(string password1,string password2)
         {
@@ -101,7 +113,7 @@ namespace GymManager.BackEnd.Users
         }
         private bool IsEmailValid(string userEmail)
         {
-            var usersList = new JsonReader().readJsonUsersFile();
+            var usersList = new JsonReader().readUsers();
             bool isAlreadyRegistered = usersList.Any(user => user.Email == userEmail);
 
             if (userEmail != null && !isAlreadyRegistered)
@@ -149,6 +161,5 @@ namespace GymManager.BackEnd.Users
             Console.ReadLine();
             Console.Clear();
         }
-        
     }
 }

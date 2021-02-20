@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GymManager.BackEnd.Users;
 
 namespace GymManager.FrontEnd.Menu
 {

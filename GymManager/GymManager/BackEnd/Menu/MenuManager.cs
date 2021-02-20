@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
+using GymManager.BackEnd.Menu.MenuLevels.AdminUserMenu;
 using GymManager.BackEnd.Users;
 
 namespace GymManager
@@ -10,16 +11,12 @@ namespace GymManager
         private MenuExercises menuExercises;
         private MenuTickets menuTickets = new MenuTickets();
         private MenuStart menuStart = new MenuStart();
-        
+        private MenuEditUser menuEditUser = new MenuEditUser();
         public void Run(MenuExercises availableExercises)
         {
-            menuExercises = availableExercises;
-            PrintGreet();
-            ChangeMenu(menuStart);
-        }
-        private void PrintGreet()
-        {
             Console.WriteLine("Witamy na naszej stronie !\nZapoznaj sie z dostepnymi opcjami :)\n");
+            menuExercises = availableExercises;
+            ChangeMenu(menuStart);
         }
         private Int16 GetMenuNrFromUser()
         {
@@ -32,36 +29,92 @@ namespace GymManager
             currentMenu.Print();
             var userChoice = GetMenuNrFromUser();
 
-            if(currentMenu == menuStart)
+            if (currentMenu == menuStart)
             {
                 Console.Clear();
-                switch (userChoice)
+                if (User.currentUser == null)
                 {
-                    case 1:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuExercises);
-                        break;
-                    case 2:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuTickets);
-                        break;
-                    case 3:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        new SignInLogIn().LogIn();
-                        break;
-                    case 4:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        new SignInLogIn().SignIn();
-                        ChangeMenu(menuStart);
-                        break;
-                    case 5:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        PrintInvalidTypeDataError();
-                        ChangeMenu(currentMenu);
-                        break;
+                    switch (userChoice)
+                    {
+                        case 1:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChangeMenu(menuExercises);
+                            break;
+                        case 2:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChangeMenu(menuTickets);
+                            break;
+                        case 3:
+                            PrintConfirmation(currentMenu, userChoice);
+                            new SignInLogIn().LogIn();
+                            var loggedMenuMode = new MenuStart();
+                            ChangeMenu(loggedMenuMode);
+                            break;
+                        case 4:
+                            PrintConfirmation(currentMenu, userChoice);
+                            new SignInLogIn().SignIn();
+                            ChangeMenu(menuStart);
+                            break;
+                        case 5:
+                            PrintConfirmation(currentMenu, userChoice);
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            PrintInvalidTypeDataError();
+                            ChangeMenu(currentMenu);
+                            break;
+                    }
+                }
+                else
+                {
+                    if (User.currentUser.IsAdmin)
+                    {
+                        AdminUser adminUser = new AdminUser();
+                        switch (userChoice)
+                        {
+                            case 1:  //Dodaj użytkownika
+                                adminUser.CreateUser();
+                                break;
+                            case 2: //Usuń użytkownika
+                                //adminUser.DeleteUser();
+                                break;
+                            case 3:  //Edytuj użytkownika
+                                adminUser.UpdateUser();
+                                break;
+                            case 4: //Wyświetl wszystkich użytkowników
+                                adminUser.ReadAllUsers();
+                                break;
+                            case 5: //"Cofnij"
+                                ChangeMenu(menuStart);
+                                break;
+                            case 6: //"Wyjdź z programu"
+                                System.Environment.Exit(0);
+                                break;
+                            default:
+                                PrintInvalidTypeDataError();
+                                ChangeMenu(currentMenu);
+                                break;
+                        }
+                    }
+
+                    if (!User.currentUser.IsAdmin)
+                    {
+                        switch (userChoice)
+                        {
+                            case 1:  //Dodaj użytkownika
+                                break;
+                            case 2: //Usuń użytkownika
+                                break;
+                            case 3:  //Edytuj użytkownika
+                                break;
+                            case 4: //Wyświetl wszystkich użytkowników
+                                break;
+                            case 5: //_positions.Add("Cofnij");
+                                break;
+                            case 6: //_positions.Add("Wyjdź z programu");
+                                break;
+                        }
+                    }
                 }
             }
             else if (currentMenu == menuExercises)
@@ -93,27 +146,27 @@ namespace GymManager
                 switch (userChoice)
                 {
                     case 0:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         ChangeMenu(menuTickets);
                         break;
                     case 1:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         //"Karnet jednorazowy"
                         break;
                     case 2:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         //"Karnet tygodniowy"
                         break;
                     case 3:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         //Karnet miesięczny")
                         break;
                     case 4:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         //Karnet 3-miesięczny"
                         break;
                     case 5:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        PrintConfirmation(currentMenu, userChoice);
                         ChangeMenu(menuStart);
                         break;
                     case 6:
@@ -129,13 +182,10 @@ namespace GymManager
         private void PrintInvalidTypeDataError()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("Błąd, wprowadzono błędne dane z poza zakresu, lub podany format jest nieprawidłowy. Spróbuj ponownie\n\n");
-            Console.ForegroundColor = ConsoleColor.White;
         }
-        private void PrintUserChoiceConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
+        private void PrintConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
         {
-
             Console.WriteLine($"Wybrałeś opcję nr {chosenNr}:" ); //{currentMenu.Positions[]}
         }
 

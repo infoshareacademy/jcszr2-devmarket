@@ -9,7 +9,7 @@ namespace GymManager.BackEnd
 {
     class JsonReader
     {
-        public string getJsonFileUsersPath()
+        public string getUsersFilePath()
         {
             string jsonPathInsideTheProject = "\\BackEnd\\Users\\listOfUsers.json";
             string pathToProject = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
@@ -17,17 +17,17 @@ namespace GymManager.BackEnd
             return fullPath;
         }
 
-        public void addUserToJsonUsersFile(User user)
+        public void addUser(User user)
         {
-            var filePath = getJsonFileUsersPath();
+            var filePath = getUsersFilePath();
             var listOfUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath));
             listOfUsers.Add(user);
             var updatedJson = JsonConvert.SerializeObject(listOfUsers, Formatting.Indented);
             File.WriteAllText(filePath, updatedJson);
         }
-        public List<User> readJsonUsersFile()
+        public List<User> readUsers()
         {
-            var filePath = getJsonFileUsersPath();
+            var filePath = getUsersFilePath();
             var listOfUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath));
             return listOfUsers;
         }

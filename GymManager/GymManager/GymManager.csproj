@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="FrontEnd\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
@@ -17,6 +13,14 @@
     <None Update="BackEnd\Activities\listOfExercises.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BackEnd\Databases\" />
+    <Folder Include="BackEnd\Menu\MenuLevels\CommonMenu\" />
+    <Folder Include="BackEnd\Menu\MenuLevels\UnloggedMenu\" />
+    <Folder Include="BackEnd\Menu\MenuLevels\StandardUserMenu\" />
+    <Folder Include="FrontEnd\" />
   </ItemGroup>
 
 </Project>
