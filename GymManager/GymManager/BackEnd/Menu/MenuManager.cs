@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
+using System.Linq;
+using System.Threading;
 
 namespace GymManager
 {
@@ -153,13 +155,13 @@ namespace GymManager
             }
             else if (currentMenu == menuExercisesWithFiltering)
             {
-                handleMenuExerciseWithFiltering(userChoice, currentMenu); // here need to handle the menu EXERCISES WITH FILTERING
+                handleMenuExerciseWithFiltering(userChoice, currentMenu);
             }
         }
 
         public void handleMenuExerciseWithFiltering(int userChoice, MenuCommonLibrary currentMenu)
         {
-            PrintUserChoiceConfirmation(currentMenu, userChoice);
+           // PrintUserChoiceConfirmation(currentMenu, userChoice);
             switch (userChoice)
             {
                 case 1:
@@ -170,8 +172,9 @@ namespace GymManager
                     break;
                 case 2:
                     PrintUserChoiceConfirmation(currentMenu, userChoice);
-                    // here we need to filter by exercise type
-                    //"Karnet tygodniowy"
+                    PrintAvailableExercises();
+
+                    ChangeMenu(menuStart);
                     break;
                 case 3:
                     PrintUserChoiceConfirmation(currentMenu, userChoice);
@@ -187,6 +190,32 @@ namespace GymManager
                     break;
             }
         }
+
+        private void PrintAvailableExercises()
+        {
+            var filteredExercises = _exerices.GroupBy(x => x.exerciseName).Select(y => y.First()).ToList();
+            for (var i = 0; i < filteredExercises.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercises.ElementAt(i).exerciseName}");
+            }
+            Console.WriteLine("Proszę podaj numer zadania dla którego chciałbyś zobaczyć dostępne daty");
+            var exerciseNumberByText = Console.ReadLine();
+            var exerciseNameChooseByUser = filteredExercises.ElementAt(Int32.Parse(exerciseNumberByText) - 1).exerciseName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.exerciseName == exerciseNameChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+
+        }
+
 
         private void HandleFilteringByDate()
         {
@@ -220,8 +249,6 @@ namespace GymManager
                 {
                     filteredList.Add(exercise);
                 }
-
-
             }
 
             Console.WriteLine("Lista zajęć która znajduje się w zakresie dat:");
@@ -234,7 +261,6 @@ namespace GymManager
             Console.WriteLine("");
             Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
             Console.ReadKey();
-
         }
 
         private void PrintInvalidTypeDataError()
