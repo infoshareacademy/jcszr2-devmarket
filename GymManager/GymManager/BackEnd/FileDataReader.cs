@@ -36,7 +36,10 @@ namespace GymManager.BackEnd
             foreach (DataRow row in dataTable.Rows)
             {
                 string exerciseName = row["exercise_name"].ToString();
-                string[] date = Regex.Split(row["date_time"].ToString(), "/");
+                string coach = row["coach"].ToString();
+                Console.WriteLine(coach);
+
+                string[] date = getDateConvertedToArray(row["date_time"].ToString());
 
                 var newExercise = new Exercise(exerciseName,
                     new DateTime(
@@ -45,12 +48,16 @@ namespace GymManager.BackEnd
                     Int32.Parse(date[0]),   // day
                     Int32.Parse(date[3]),   // hour
                     Int32.Parse(date[4]),   // minute
-                    Int32.Parse(date[5])    // seconds
-                    )
-                    );
+                    Int32.Parse(date[5])    //  seconds
+                    ), coach);
                 listOfExercises.Add(newExercise);
             }
             return listOfExercises;
+        }
+
+        public static string[] getDateConvertedToArray(string date)
+        {
+            return Regex.Split(date, "/");
         }
 
     }

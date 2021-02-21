@@ -1,6 +1,10 @@
-﻿using System;
+using GymManager.FrontEnd.Menu;
+using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
+using System.Linq;
+using System.Threading;
+
 
 namespace GymManager
 {
@@ -9,7 +13,16 @@ namespace GymManager
         private MenuExercises menuExercises;
         private MenuTickets menuTickets = new MenuTickets();
         private MenuStart menuStart = new MenuStart();
-        
+        private MenuExercisesWithFiltering menuExercisesWithFiltering = new MenuExercisesWithFiltering();
+
+        private List<Exercise> _exerices;
+
+
+        public MenuManager(List<Exercise> exercises)
+        {
+            _exerices = exercises;
+        }
+
         public void Run(MenuExercises availableExercises)
         {
             menuExercises = availableExercises;
@@ -28,12 +41,12 @@ namespace GymManager
         }
         private void ChangeMenu(MenuCommonLibrary currentMenu)
         {
+            Console.Clear();
             currentMenu.Print();
             var userChoice = GetMenuNrFromUser();
 
-            if(currentMenu == menuStart)
+            if (currentMenu == menuStart)
             {
-                Console.Clear();
                 switch (userChoice)
                 {
                     case 1:
@@ -42,17 +55,21 @@ namespace GymManager
                         break;
                     case 2:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuTickets);
+                        ChangeMenu(menuExercisesWithFiltering);
                         break;
                     case 3:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Login
+                        ChangeMenu(menuTickets);
                         break;
                     case 4:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Register
+                        //Login
                         break;
                     case 5:
+                        PrintUserChoiceConfirmation(currentMenu, userChoice);
+                        //Register
+                        break;
+                    case 6:
                         PrintUserChoiceConfirmation(currentMenu, userChoice);
                         Environment.Exit(0);
                         break;
@@ -83,7 +100,7 @@ namespace GymManager
                     ChangeMenu(currentMenu);
                 }
             }
-            else if(currentMenu == menuTickets)
+            else if (currentMenu == menuTickets)
             {
                 switch (userChoice)
                 {
@@ -120,7 +137,141 @@ namespace GymManager
                         break;
                 }
             }
+            else if (currentMenu == menuExercisesWithFiltering)
+            {
+                handleMenuExerciseWithFiltering(userChoice, currentMenu);
+            }
         }
+
+        public void handleMenuExerciseWithFiltering(int userChoice, MenuCommonLibrary currentMenu)
+        {
+           // PrintUserChoiceConfirmation(currentMenu, userChoice);
+            switch (userChoice)
+            {
+                case 1:
+                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    HandleFilteringByDate();
+
+                    ChangeMenu(menuStart);
+                    break;
+                case 2:
+                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    HandleFilteringByExerciseType();
+
+                    ChangeMenu(menuStart);
+                    break;
+                case 3:
+                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    HandleFilteringByCoach();
+
+                    ChangeMenu(menuStart);
+
+                    break;
+                default:
+                    Console.WriteLine("Opcja z poza zakresu, powrót do menu głównego");
+                    ChangeMenu(menuStart);
+                    break;
+            }
+        }
+
+        private void HandleFilteringByCoach()
+        {
+            var filteredExercisesByCoaches = _exerices.GroupBy(x => x.coachName).Select(y => y.First()).ToList();
+            Console.WriteLine(filteredExercisesByCoaches.Count);
+            for (var i = 0; i < filteredExercisesByCoaches.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByCoaches.ElementAt(i).coachName}");
+            }
+            Console.WriteLine("Proszę podaj numer trenera dla którego chciałbyś zobaczyć zajęcia");
+            var exerciseNumberByText = Console.ReadLine();
+
+            var exerciseCouchChooseByUser = filteredExercisesByCoaches.ElementAt(Int32.Parse(exerciseNumberByText) - 1).coachName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.coachName == exerciseCouchChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+        }
+
+        private void HandleFilteringByExerciseType()
+        {
+            var filteredExercises = _exerices.GroupBy(x => x.exerciseName).Select(y => y.First()).ToList();
+            for (var i = 0; i < filteredExercises.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercises.ElementAt(i).exerciseName}");
+            }
+            Console.WriteLine("Proszę podaj numer zadania dla którego chciałbyś zobaczyć dostępne daty");
+            var exerciseNumberByText = Console.ReadLine();
+            var exerciseNameChooseByUser = filteredExercises.ElementAt(Int32.Parse(exerciseNumberByText) - 1).exerciseName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.exerciseName == exerciseNameChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+
+        }
+
+
+        private void HandleFilteringByDate()
+        {
+            Console.WriteLine("Handle filtering by Date");
+            Console.WriteLine("Podaj datę początkową w formacie DD/MM/YYYY");
+            var beginningDate = Console.ReadLine();
+            Console.WriteLine("Podaj datę końcową w formacie DD/MM/YYYY");
+            var endDate = Console.ReadLine();
+            string[] beginingDateRange = BackEnd.FileDataReader.getDateConvertedToArray(beginningDate);
+            string[] endDateRange = BackEnd.FileDataReader.getDateConvertedToArray(endDate);
+            var beginningDateToCompare = new DateTime(
+                Int32.Parse(beginingDateRange[2]), // year
+                Int32.Parse(beginingDateRange[1]), // month
+                Int32.Parse(beginingDateRange[0]) // day
+            );
+            var endDateToCompare = new DateTime(
+                Int32.Parse(endDateRange[2]), // year
+                Int32.Parse(endDateRange[1]), // month
+                Int32.Parse(endDateRange[0]) // day
+            );
+
+            List<Exercise> filteredList = new List<Exercise>();
+
+            foreach (var exercise in _exerices)
+            {
+                int isAfterBeginingDate = DateTime.Compare(beginningDateToCompare, exercise.exerciseDate);
+                int isBeforeEndDate = DateTime.Compare(exercise.exerciseDate, endDateToCompare);
+                Console.WriteLine($"isAfterBeginingDate:{isAfterBeginingDate}");
+                Console.WriteLine($"isBeforeEndDate:{isBeforeEndDate}");
+                if (isAfterBeginingDate < 0 && isBeforeEndDate < 0)
+                {
+                    filteredList.Add(exercise);
+                }
+            }
+
+            Console.WriteLine("Lista zajęć która znajduje się w zakresie dat:");
+            Console.WriteLine($"OD: {beginningDate}");
+            Console.WriteLine($"DO: {endDate}");
+            foreach (var filteredExercise in filteredList)
+            {
+                Console.WriteLine($"Nazwa zajęcia{filteredExercise.exerciseName}, data: {filteredExercise.exerciseDate.ToLongDateString()}");
+            }
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+        }
+
         private void PrintInvalidTypeDataError()
         {
             Console.Clear();
