@@ -1,9 +1,12 @@
-﻿using System;
+using GymManager.FrontEnd.Menu;
+using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
 using GymManager.BackEnd.Menu.MenuLevels;
 using GymManager.BackEnd.Menu.MenuLevels.AdminUserMenu;
 using GymManager.BackEnd.Users;
+using System.Linq;
+using System.Threading;
 
 namespace GymManager
 {
@@ -18,12 +21,37 @@ namespace GymManager
         private MenuStartAdmin menuStartAdmin = new MenuStartAdmin();
         private MenuStartStandardUser menuStartStandardUser = new MenuStartStandardUser();
 
+        private MenuExercisesWithFiltering menuExercisesWithFiltering = new MenuExercisesWithFiltering();
+
+        private List<Exercise> _exerices;
+
+
+        public MenuManager(List<Exercise> exercises)
+        {
+            _exerices = exercises;
+        }
+
+        public void Run(MenuExercises availableExercises)
+        {
+            menuExercises = availableExercises;
+            PrintGreet();
+            ChooseMenu(menuStart);
+        }
+        private void PrintGreet()
+        {
+            Console.WriteLine("Witamy na naszej stronie !\nZapoznaj sie z dostepnymi opcjami :)\n");
+        }
+        private Int16 GetMenuNrFromUser()
+        {
+            Console.WriteLine("\nWpisz nr z menu i wciśnij enter aby przejść dalej\n\n");
+            Int16.TryParse(Console.ReadLine(), out Int16 chosenNr);
+            return chosenNr;
+        }
         private void ChooseMenu(MenuCommonLibrary currentMenu)
         {
-           
+            Console.Clear();
             currentMenu.Print();
             var userChoice = GetMenuNrFromUser();
-            Console.Clear();
 
             if (User.currentUser == null)
             {
@@ -39,9 +67,13 @@ namespace GymManager
                             break;
                         case 2:
                             PrintConfirmation(currentMenu, userChoice);
-                            ChooseMenu(menuTickets);
+                            ChooseMenu(menuExercisesWithFiltering);
                             break;
                         case 3:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuTickets);
+                            break;
+                        case 4:
                             PrintConfirmation(currentMenu, userChoice);
                             new SignInLogIn().LogIn();
                             if (User.currentUser.IsAdmin)
@@ -53,12 +85,12 @@ namespace GymManager
                                 ChooseMenu(menuStartStandardUser);
                             }
                             break;
-                        case 4:
+                        case 5:
                             PrintConfirmation(currentMenu, userChoice);
                             new SignInLogIn().SignIn(false);
                             ChooseMenu(menuStart);
                             break;
-                        case 5:
+                        case 6:
                             PrintConfirmation(currentMenu, userChoice);
                             Environment.Exit(0);
                             break;
@@ -128,6 +160,11 @@ namespace GymManager
                             ChooseMenu(currentMenu);
                             break;
                     }
+                }
+                else if (currentMenu == menuExercisesWithFiltering)
+                {
+                    Console.WriteLine("filtering");
+                    handleMenuExerciseWithFiltering(userChoice, currentMenu);
                 }
             }
             else if(User.currentUser.IsAdmin)
@@ -229,11 +266,133 @@ namespace GymManager
                 Console.WriteLine($"Zalogowany jako użytkownik standardowy {User.currentUser.Email}");
             }
         }
-        public void Run(MenuExercises availableExercises)
+
+        public void handleMenuExerciseWithFiltering(int userChoice, MenuCommonLibrary currentMenu)
         {
-            Console.WriteLine("Witamy na naszej stronie !\nZapoznaj sie z dostepnymi opcjami :)\n");
-            menuExercises = availableExercises;
-            ChooseMenu(menuStart);
+           // PrintUserChoiceConfirmation(currentMenu, userChoice);
+            switch (userChoice)
+            {
+                case 1:
+                    PrintConfirmation(currentMenu, userChoice);
+                    HandleFilteringByDate();
+
+                    ChooseMenu(menuStart);
+                    break;
+                case 2:
+                    PrintConfirmation(currentMenu, userChoice);
+                    HandleFilteringByExerciseType();
+
+                    ChooseMenu(menuStart);
+                    break;
+                case 3:
+                    PrintConfirmation(currentMenu, userChoice);
+                    HandleFilteringByCoach();
+
+                    ChooseMenu(menuStart);
+
+                    break;
+                default:
+                    Console.WriteLine("Opcja z poza zakresu, powrót do menu głównego");
+                    ChooseMenu(menuStart);
+                    break;
+            }
+        }
+
+        private void HandleFilteringByCoach()
+        {
+            var filteredExercisesByCoaches = _exerices.GroupBy(x => x.coachName).Select(y => y.First()).ToList();
+            for (var i = 0; i < filteredExercisesByCoaches.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByCoaches.ElementAt(i).coachName}");
+            }
+            Console.WriteLine("Proszę podaj numer trenera dla którego chciałbyś zobaczyć zajęcia");
+            var exerciseNumberByText = Console.ReadLine();
+
+            var exerciseCouchChooseByUser = filteredExercisesByCoaches.ElementAt(Int32.Parse(exerciseNumberByText) - 1).coachName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.coachName == exerciseCouchChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+        }
+
+        private void HandleFilteringByExerciseType()
+        {
+            var filteredExercises = _exerices.GroupBy(x => x.exerciseName).Select(y => y.First()).ToList();
+            for (var i = 0; i < filteredExercises.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercises.ElementAt(i).exerciseName}");
+            }
+            Console.WriteLine("Proszę podaj numer zadania dla którego chciałbyś zobaczyć dostępne daty");
+            var exerciseNumberByText = Console.ReadLine();
+            var exerciseNameChooseByUser = filteredExercises.ElementAt(Int32.Parse(exerciseNumberByText) - 1).exerciseName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.exerciseName == exerciseNameChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+
+        }
+
+
+        private void HandleFilteringByDate()
+        {
+            Console.WriteLine("Handle filtering by Date");
+            Console.WriteLine("Podaj datę początkową w formacie DD/MM/YYYY");
+            var beginningDate = Console.ReadLine();
+            Console.WriteLine("Podaj datę końcową w formacie DD/MM/YYYY");
+            var endDate = Console.ReadLine();
+            string[] beginingDateRange = BackEnd.FileDataReader.getDateConvertedToArray(beginningDate);
+            string[] endDateRange = BackEnd.FileDataReader.getDateConvertedToArray(endDate);
+            var beginningDateToCompare = new DateTime(
+                Int32.Parse(beginingDateRange[2]), // year
+                Int32.Parse(beginingDateRange[1]), // month
+                Int32.Parse(beginingDateRange[0]) // day
+            );
+            var endDateToCompare = new DateTime(
+                Int32.Parse(endDateRange[2]), // year
+                Int32.Parse(endDateRange[1]), // month
+                Int32.Parse(endDateRange[0]) // day
+            );
+
+            List<Exercise> filteredList = new List<Exercise>();
+
+            foreach (var exercise in _exerices)
+            {
+                int isAfterBeginingDate = DateTime.Compare(beginningDateToCompare, exercise.exerciseDate);
+                int isBeforeEndDate = DateTime.Compare(exercise.exerciseDate, endDateToCompare);
+                Console.WriteLine($"isAfterBeginingDate:{isAfterBeginingDate}");
+                Console.WriteLine($"isBeforeEndDate:{isBeforeEndDate}");
+                if (isAfterBeginingDate < 0 && isBeforeEndDate < 0)
+                {
+                    filteredList.Add(exercise);
+                }
+            }
+
+            Console.WriteLine("Lista zajęć która znajduje się w zakresie dat:");
+            Console.WriteLine($"OD: {beginningDate}");
+            Console.WriteLine($"DO: {endDate}");
+            foreach (var filteredExercise in filteredList)
+            {
+                Console.WriteLine($"Nazwa zajęcia{filteredExercise.exerciseName}, data: {filteredExercise.exerciseDate.ToLongDateString()}");
+            }
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
         }
         private void PrintInvalidTypeDataError()
         {
@@ -243,12 +402,6 @@ namespace GymManager
         private void PrintConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
         {
             Console.WriteLine($"Wybrałeś opcję nr {chosenNr}: {currentMenu.Positions[chosenNr-1]}" ); 
-        }
-        private Int16 GetMenuNrFromUser()
-        {
-            Console.WriteLine("\nWpisz nr z menu i wciśnij enter aby przejść dalej\n\n");
-            Int16.TryParse(Console.ReadLine(), out Int16 chosenNr);
-            return chosenNr;
         }
     }
 }

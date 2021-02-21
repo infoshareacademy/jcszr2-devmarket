@@ -9,6 +9,7 @@ namespace GymManager.BackEnd.Menu.MenuLevels
         public MenuStartAdmin()
         {
             Positions.Add("Dostępne zajęcia na silowni");
+            Positions.Add("Wyświetl zajęcia filtrowane wg kryteriów");
             Positions.Add("Zarządzaj użytkownikami");
             Positions.Add("Wyloguj");
             Positions.Add("Wyjście z programu");

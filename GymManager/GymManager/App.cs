@@ -12,13 +12,13 @@ namespace GymManager
     {
         public void Start()
         {
+
             
             Console.WriteLine("App is running\n");
             var fileDataReader = new BackEnd.FileDataReader("\\BackEnd\\Activities\\listOfExercises.json");
             var listOfAvailableExercises = fileDataReader.ReadJsonData(); 
             var listMenuOfAvailableExercises = new MenuExercises(listOfAvailableExercises);
-            new MenuManager().Run(listMenuOfAvailableExercises);
-
+            new GymManager.MenuManager(listOfAvailableExercises).Run(listMenuOfAvailableExercises);
         }
     }
 }
