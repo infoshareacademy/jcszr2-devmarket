@@ -1,15 +1,16 @@
-﻿using GymManager.FrontEnd.Menu;
+using GymManager.FrontEnd.Menu;
 using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
 using System.Linq;
 using System.Threading;
 
+
 namespace GymManager
 {
     public class MenuManager
     {
-        private MenuExercises menuExercises = new MenuExercises();
+        private MenuExercises menuExercises;
         private MenuTickets menuTickets = new MenuTickets();
         private MenuStart menuStart = new MenuStart();
         private MenuExercisesWithFiltering menuExercisesWithFiltering = new MenuExercisesWithFiltering();
@@ -22,8 +23,9 @@ namespace GymManager
             _exerices = exercises;
         }
 
-        public void Run()
+        public void Run(MenuExercises availableExercises)
         {
+            menuExercises = availableExercises;
             PrintGreet();
             ChangeMenu(menuStart);
         }
@@ -80,40 +82,22 @@ namespace GymManager
             else if (currentMenu == menuExercises)
             {
                 Console.Clear();
-                switch (userChoice)
+                if (userChoice < menuExercises.Positions.Count-3 && userChoice > 0)
                 {
-                    case 1:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Cardio
-                        break;
-                    case 2:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Sztuki walki
-                        break;
-                    case 3:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Crossfit
-                        break;
-                    case 4:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Ćwiczenia siłowe
-                        break;
-                    case 5:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Choreograficzne
-                        break;
-                    case 6:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        // Powrót do poprzedniego menu
-                        ChangeMenu(menuStart);
-                        break;
-                    case 7:
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        PrintInvalidTypeDataError();
-                        ChangeMenu(currentMenu);
-                        break;
+                    //ChangeMenu();
+                }
+                else if(userChoice == menuExercises.Positions.Count-3)
+                {
+                    ChangeMenu(menuStart);
+                }
+                else if (userChoice == menuExercises.Positions.Count-2)
+                {
+                    System.Environment.Exit(0);
+                }
+                else
+                {
+                    PrintInvalidTypeDataError();
+                    ChangeMenu(currentMenu);
                 }
             }
             else if (currentMenu == menuTickets)
@@ -297,7 +281,8 @@ namespace GymManager
         }
         private void PrintUserChoiceConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
         {
-            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}: {currentMenu.Positions[chosenNr]}");
+
+            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}:" ); //{currentMenu.Positions[]}
         }
 
     }

@@ -16,5 +16,10 @@ namespace GymManager.BackEnd
             exerciseDate = date;
             coachName = coach;
         }
+
+        public string GetExercise()
+        {
+            return exerciseName;
+        }
     }
 }
