@@ -8,7 +8,7 @@ namespace GymManager.BackEnd.Users
     {
         public void LogIn()
         {
-            var usersList = new JsonReader().readUsers();
+            var usersList = new JsonManager().GetUsers();
 
             Console.WriteLine("Podaj login");
             var enteredEmail = Console.ReadLine();
@@ -38,16 +38,17 @@ namespace GymManager.BackEnd.Users
         {
             User.currentUser = null;
         }
-        public User SignIn()
+        public User SignIn(bool isAdmin)
         {
             var user = new User();
             user.Email = SetEmail(user);
             user.Password = SetPassword(user);
+            user.IsAdmin = isAdmin;
             if (user.Email == null || user.Password == null)
             {
                 Console.WriteLine("Użytkownik nie został zarejestrowany\n");
             }
-            new JsonReader().addUser(user);
+            new JsonManager().addUser(user);
             PrintOperationSuccess();
             return user;
         }
@@ -68,7 +69,7 @@ namespace GymManager.BackEnd.Users
             SetEmail(user);
             return null;
         }
-        private string SetPassword(User user)
+        public string SetPassword(User user)
         {
             Console.WriteLine("Podaj hasło." +
                               "\nKryteria\n" +
@@ -96,7 +97,7 @@ namespace GymManager.BackEnd.Users
             SetPassword(user);
             return null;
         }
-        private bool IsPasswordValid(string password1,string password2)
+        public bool IsPasswordValid(string password1,string password2)
         {
             //var allowedChars = new Regex("^[a-zA-Z0-9 ]+$");
             var prohibitedChars = " <>',; ".ToCharArray();
@@ -111,9 +112,9 @@ namespace GymManager.BackEnd.Users
             }
             return false;
         }
-        private bool IsEmailValid(string userEmail)
+        public bool IsEmailValid(string userEmail)
         {
-            var usersList = new JsonReader().readUsers();
+            var usersList = new JsonManager().GetUsers();
             bool isAlreadyRegistered = usersList.Any(user => user.Email == userEmail);
 
             if (userEmail != null && !isAlreadyRegistered)

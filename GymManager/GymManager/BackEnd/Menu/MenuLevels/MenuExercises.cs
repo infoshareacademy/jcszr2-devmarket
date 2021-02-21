@@ -11,15 +11,15 @@ namespace GymManager
             {
                 try
                 {
-                    _positions.Add(availableExercises[i].GetExercise());
+                    Positions.Add(availableExercises[i].GetExercise());
 
                 }
                 catch
                 {
                 }
             }
-            _positions.Add("Wróć do poprzedniego menu");
-            _positions.Add("Wyjście z programu");
+            Positions.Add("Cofnij");
+            Positions.Add("Wyjdź");
         }
 
     }

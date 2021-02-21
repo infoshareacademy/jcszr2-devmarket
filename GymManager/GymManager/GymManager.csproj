@@ -6,6 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <Compile Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <Compile Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
@@ -17,9 +29,6 @@
 
   <ItemGroup>
     <Folder Include="BackEnd\Databases\" />
-    <Folder Include="BackEnd\Menu\MenuLevels\CommonMenu\" />
-    <Folder Include="BackEnd\Menu\MenuLevels\UnloggedMenu\" />
-    <Folder Include="BackEnd\Menu\MenuLevels\StandardUserMenu\" />
     <Folder Include="FrontEnd\" />
   </ItemGroup>
 

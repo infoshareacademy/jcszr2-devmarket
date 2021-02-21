@@ -12,7 +12,7 @@ namespace GymManager.BackEnd.Menu.MenuLevels.AdminUserMenu
             Positions.Add("Edytuj login");
             Positions.Add("Edytuj hasło");
             Positions.Add("Edytuj typ konta");
-            Positions.Add("Wróć");
+            Positions.Add("Cofnij");
             Positions.Add("Wyjdź");
         }
     }

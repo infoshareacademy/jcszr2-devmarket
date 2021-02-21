@@ -8,11 +8,11 @@ namespace GymManager.FrontEnd.Menu
     {
         public MenuRegister()
         {
-            _positions.Add("Podaj Login:");
-            _positions.Add("Podaj Hasło:");
-            _positions.Add("Podaj Email:");
-            _positions.Add("Powrót");
-            _positions.Add("Wyjście z programu");
+            Positions.Add("Podaj Login:");
+            Positions.Add("Podaj Hasło:");
+            Positions.Add("Podaj Email:");
+            Positions.Add("Cofnij");
+            Positions.Add("Wyjdź");
         }
     }
 }

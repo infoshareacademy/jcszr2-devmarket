@@ -8,12 +8,12 @@ namespace GymManager.BackEnd.Menu.MenuLevels
     {
         public MenuAdminCrudUsers()
         {
-            _positions.Add("Dodaj użytkownika");
-            _positions.Add("Usuń użytkownika");
-            _positions.Add("Wyświetl wszystkich użytkowników");
-            _positions.Add("Usuń użytkownika");
-            _positions.Add("Cofnij");
-            _positions.Add("Wyjdź z programu");
+            Positions.Add("Dodaj użytkownika");
+            Positions.Add("Wyświetl wszystkich użytkowników");
+            Positions.Add("Usuń użytkownika");
+            Positions.Add("Edytuj użytkownika");
+            Positions.Add("Cofnij");
+            Positions.Add("Wyjdź z programu");
         }
     }
 }

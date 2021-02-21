@@ -4,13 +4,13 @@
     {
         public MenuTickets()
             {
-            _positions.Add("Karnet jednorazowy");
-            _positions.Add("Karnet tygodniowy");
-            _positions.Add("Karnet miesięczny");
-            _positions.Add("Karnet 3-miesięczny");
-            _positions.Add("Wróć do poprzedniego menu");
-            _positions.Add("Wyjście z programu");
-            }
+            Positions.Add("Karnet jednorazowy");
+            Positions.Add("Karnet tygodniowy");
+            Positions.Add("Karnet miesięczny");
+            Positions.Add("Karnet 3-miesięczny");
+            Positions.Add("Cofnij");
+            Positions.Add("Wyjdź");
+        }
     }
 
 }

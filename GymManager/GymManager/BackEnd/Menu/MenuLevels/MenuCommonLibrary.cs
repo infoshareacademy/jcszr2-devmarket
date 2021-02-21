@@ -5,8 +5,13 @@ namespace GymManager
 {
     public abstract class MenuCommonLibrary
     {
-        protected List<string> _positions = new List<string>();
-        public List<string> Positions { get { return _positions; } }
+        private List<string> _positions = new List<string>();
+
+        public List<string> Positions
+        {
+            get { return _positions; }
+            set { _positions = value; }
+        }
 
         public void Print()
         {

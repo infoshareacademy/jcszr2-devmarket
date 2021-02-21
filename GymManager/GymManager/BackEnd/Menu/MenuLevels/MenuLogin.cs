@@ -9,11 +9,11 @@ namespace GymManager.FrontEnd.Menu
     {
         public MenuLogin()
         {
-            _positions.Add("Podaj dane logowania");
-            _positions.Add("Zapomniałem loginu");
-            _positions.Add("Zapomniałem Hasła");
-            _positions.Add("Powrót");
-            _positions.Add("Wyjście");
+            Positions.Add("Podaj dane logowania");
+            Positions.Add("Zapomniałem loginu");
+            Positions.Add("Zapomniałem Hasła");
+            Positions.Add("Cofnij");
+            Positions.Add("Wyjdź");
         }
     }
 }
