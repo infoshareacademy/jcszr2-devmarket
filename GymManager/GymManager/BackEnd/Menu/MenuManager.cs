@@ -2,9 +2,11 @@ using GymManager.FrontEnd.Menu;
 using System;
 using System.Collections.Generic;
 using GymManager.BackEnd;
+using GymManager.BackEnd.Menu.MenuLevels;
+using GymManager.BackEnd.Menu.MenuLevels.AdminUserMenu;
+using GymManager.BackEnd.Users;
 using System.Linq;
 using System.Threading;
-
 
 namespace GymManager
 {
@@ -12,7 +14,13 @@ namespace GymManager
     {
         private MenuExercises menuExercises;
         private MenuTickets menuTickets = new MenuTickets();
-        private MenuStart menuStart = new MenuStart();
+        private MenuStartUnlogged menuStart = new MenuStartUnlogged();
+        private MenuEditUser menuEditUser = new MenuEditUser();
+        private MenuAdminCrudUsers menuAdminCrudUsers = new MenuAdminCrudUsers();
+        private AdminUser adminUser = new AdminUser();
+        private MenuStartAdmin menuStartAdmin = new MenuStartAdmin();
+        private MenuStartStandardUser menuStartStandardUser = new MenuStartStandardUser();
+
         private MenuExercisesWithFiltering menuExercisesWithFiltering = new MenuExercisesWithFiltering();
 
         private List<Exercise> _exerices;
@@ -27,7 +35,7 @@ namespace GymManager
         {
             menuExercises = availableExercises;
             PrintGreet();
-            ChangeMenu(menuStart);
+            ChooseMenu(menuStart);
         }
         private void PrintGreet()
         {
@@ -39,107 +47,223 @@ namespace GymManager
             Int16.TryParse(Console.ReadLine(), out Int16 chosenNr);
             return chosenNr;
         }
-        private void ChangeMenu(MenuCommonLibrary currentMenu)
+        private void ChooseMenu(MenuCommonLibrary currentMenu)
         {
             Console.Clear();
             currentMenu.Print();
             var userChoice = GetMenuNrFromUser();
 
-            if (currentMenu == menuStart)
+            if (User.currentUser == null)
             {
-                switch (userChoice)
+                Console.WriteLine("Przeglądasz stronę jako użytkownik niezalogowany");
+                if (currentMenu == menuStart)
                 {
-                    case 1:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuExercises);
-                        break;
-                    case 2:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuExercisesWithFiltering);
-                        break;
-                    case 3:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuTickets);
-                        break;
-                    case 4:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Login
-                        break;
-                    case 5:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Register
-                        break;
-                    case 6:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        Environment.Exit(0);
-                        break;
-                    default:
+                    Console.Clear();
+                    switch (userChoice)
+                    {
+                        case 1:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuExercises);
+                            break;
+                        case 2:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuExercisesWithFiltering);
+                            break;
+                        case 3:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuTickets);
+                            break;
+                        case 4:
+                            PrintConfirmation(currentMenu, userChoice);
+                            new SignInLogIn().LogIn();
+                            if (User.currentUser.IsAdmin)
+                            {
+                                ChooseMenu(menuStartAdmin);
+                            }
+                            else
+                            {
+                                ChooseMenu(menuStartStandardUser);
+                            }
+                            break;
+                        case 5:
+                            PrintConfirmation(currentMenu, userChoice);
+                            new SignInLogIn().SignIn(false);
+                            ChooseMenu(menuStart);
+                            break;
+                        case 6:
+                            PrintConfirmation(currentMenu, userChoice);
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            PrintInvalidTypeDataError();
+                            ChooseMenu(currentMenu);
+                            break;
+                    }
+                }
+                else if (currentMenu == menuExercises)
+                {
+                    Console.Clear();
+                    var goBackPosition = currentMenu.Positions.Count - 1;
+                    var exitPosition = currentMenu.Positions.Count;
+
+                    if (userChoice < currentMenu.Positions.Count - 3 && userChoice > 0)
+                    {
+                        //ChangeMenu();
+                    }
+                    else if (userChoice == goBackPosition)
+                    {
+                        ChooseMenu(menuStart);
+                    }
+                    else if (userChoice == exitPosition)
+                    {
+                        System.Environment.Exit(0);
+                    }
+                    else
+                    {
                         PrintInvalidTypeDataError();
-                        ChangeMenu(currentMenu);
-                        break;
+                        ChooseMenu(currentMenu);
+                    }
+                }
+                else if (currentMenu == menuTickets)
+                {
+                    switch (userChoice)
+                    {
+                        case 0:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuTickets);
+                            break;
+                        case 1:
+                            PrintConfirmation(currentMenu, userChoice);
+                            //"Karnet jednorazowy"
+                            break;
+                        case 2:
+                            PrintConfirmation(currentMenu, userChoice);
+                            //"Karnet tygodniowy"
+                            break;
+                        case 3:
+                            PrintConfirmation(currentMenu, userChoice);
+                            //Karnet miesięczny")
+                            break;
+                        case 4:
+                            PrintConfirmation(currentMenu, userChoice);
+                            //Karnet 3-miesięczny"
+                            break;
+                        case 5:
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuStart);
+                            break;
+                        case 6:
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            PrintInvalidTypeDataError();
+                            ChooseMenu(currentMenu);
+                            break;
+                    }
+                }
+                else if (currentMenu == menuExercisesWithFiltering)
+                {
+                    Console.WriteLine("filtering");
+                    handleMenuExerciseWithFiltering(userChoice, currentMenu);
                 }
             }
-            else if (currentMenu == menuExercises)
+            else if(User.currentUser.IsAdmin)
             {
-                Console.Clear();
-                if (userChoice < menuExercises.Positions.Count-3 && userChoice > 0)
+                Console.WriteLine($"Zalogowany jako administrator: {User.currentUser.Email}");
+                if (currentMenu == menuStartAdmin)
                 {
-                    //ChangeMenu();
+                    switch (userChoice)
+                    {
+                        case 1: //dostępne zajęcia na słowni
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuExercises);
+                            break;
+                        case 2: //zarządzaj użytkownikami
+                            PrintConfirmation(currentMenu,userChoice);
+                            ChooseMenu(menuAdminCrudUsers);
+                            break;
+                        case 3: //wyloguj
+                            PrintConfirmation(currentMenu, userChoice);
+                            new SignInLogIn().LogOut();
+                            ChooseMenu(menuStart);
+                            break;
+                        case 4: //wyjdź
+                            Environment.Exit(0);
+                            break;
+                    }
                 }
-                else if(userChoice == menuExercises.Positions.Count-3)
+                else if (currentMenu == menuAdminCrudUsers)
                 {
-                    ChangeMenu(menuStart);
+                    switch (userChoice)
+                    {
+                        case 1: //dodaj użytkownika
+                            PrintConfirmation(currentMenu,userChoice);
+                            adminUser.CreateUser();
+                            ChooseMenu(currentMenu);
+                            break;
+                        case 2: //wyświetl wszystkich użytkowników
+                            PrintConfirmation(currentMenu, userChoice);
+                            adminUser.PrintAllUsers();
+                            ChooseMenu(currentMenu);
+                            break;
+                        case 3: //Usuń użytkownika
+                            PrintConfirmation(currentMenu, userChoice);
+                            adminUser.DeleteUser();
+                            break;
+                        case 4: //Edytuj użytkownika
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuEditUser);
+                            break;
+                        case 5: //Cofnij
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(menuStartAdmin);
+                            break;
+                        case 6: //wyjdź
+                            PrintConfirmation(currentMenu, userChoice);
+                            Environment.Exit(0);
+                            break;;
+                        default:
+                            PrintInvalidTypeDataError();
+                            ChooseMenu(currentMenu);
+                            break;
+                    }
                 }
-                else if (userChoice == menuExercises.Positions.Count-2)
+                if (currentMenu == menuEditUser)
                 {
-                    System.Environment.Exit(0);
-                }
-                else
-                {
-                    PrintInvalidTypeDataError();
-                    ChangeMenu(currentMenu);
+                    switch (userChoice)
+                    {
+                        case 1: //edytuj login
+                            PrintConfirmation(currentMenu,userChoice);
+                            adminUser.EditUsername();
+                            ChooseMenu(currentMenu);
+                            break;
+                        case 2: //edytuj hasło
+                            PrintConfirmation(currentMenu, userChoice);
+                            adminUser.EditPassword();
+                            ChooseMenu(currentMenu);
+                            break;
+                        case 3: //edytuj typ konta
+                            adminUser.EditUserRights();
+                            PrintConfirmation(currentMenu, userChoice);
+                            ChooseMenu(currentMenu);
+                            break;
+                        case 4: //cofnij
+                            PrintConfirmation(currentMenu,userChoice);
+                            ChooseMenu(menuAdminCrudUsers);
+                            break;
+                        case 5: //wyjdź
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            PrintInvalidTypeDataError();
+                            ChooseMenu(currentMenu);
+                            break;
+                    }
                 }
             }
-            else if (currentMenu == menuTickets)
+            else if(!User.currentUser.IsAdmin)
             {
-                switch (userChoice)
-                {
-                    case 0:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuTickets);
-                        break;
-                    case 1:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //"Karnet jednorazowy"
-                        break;
-                    case 2:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //"Karnet tygodniowy"
-                        break;
-                    case 3:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Karnet miesięczny")
-                        break;
-                    case 4:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        //Karnet 3-miesięczny"
-                        break;
-                    case 5:
-                        PrintUserChoiceConfirmation(currentMenu, userChoice);
-                        ChangeMenu(menuStart);
-                        break;
-                    case 6:
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        PrintInvalidTypeDataError();
-                        ChangeMenu(currentMenu);
-                        break;
-                }
-            }
-            else if (currentMenu == menuExercisesWithFiltering)
-            {
-                handleMenuExerciseWithFiltering(userChoice, currentMenu);
+                Console.WriteLine($"Zalogowany jako użytkownik standardowy {User.currentUser.Email}");
             }
         }
 
@@ -149,27 +273,27 @@ namespace GymManager
             switch (userChoice)
             {
                 case 1:
-                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    PrintConfirmation(currentMenu, userChoice);
                     HandleFilteringByDate();
 
-                    ChangeMenu(menuStart);
+                    ChooseMenu(menuStart);
                     break;
                 case 2:
-                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    PrintConfirmation(currentMenu, userChoice);
                     HandleFilteringByExerciseType();
 
-                    ChangeMenu(menuStart);
+                    ChooseMenu(menuStart);
                     break;
                 case 3:
-                    PrintUserChoiceConfirmation(currentMenu, userChoice);
+                    PrintConfirmation(currentMenu, userChoice);
                     HandleFilteringByCoach();
 
-                    ChangeMenu(menuStart);
+                    ChooseMenu(menuStart);
 
                     break;
                 default:
                     Console.WriteLine("Opcja z poza zakresu, powrót do menu głównego");
-                    ChangeMenu(menuStart);
+                    ChooseMenu(menuStart);
                     break;
             }
         }
@@ -177,7 +301,6 @@ namespace GymManager
         private void HandleFilteringByCoach()
         {
             var filteredExercisesByCoaches = _exerices.GroupBy(x => x.coachName).Select(y => y.First()).ToList();
-            Console.WriteLine(filteredExercisesByCoaches.Count);
             for (var i = 0; i < filteredExercisesByCoaches.Count; i++)
             {
                 Console.WriteLine($"{i + 1}. {filteredExercisesByCoaches.ElementAt(i).coachName}");
@@ -271,19 +394,14 @@ namespace GymManager
             Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
             Console.ReadKey();
         }
-
         private void PrintInvalidTypeDataError()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("Błąd, wprowadzono błędne dane z poza zakresu, lub podany format jest nieprawidłowy. Spróbuj ponownie\n\n");
-            Console.ForegroundColor = ConsoleColor.White;
         }
-        private void PrintUserChoiceConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
+        private void PrintConfirmation(MenuCommonLibrary currentMenu, int chosenNr)
         {
-
-            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}:" ); //{currentMenu.Positions[]}
+            Console.WriteLine($"Wybrałeś opcję nr {chosenNr}: {currentMenu.Positions[chosenNr-1]}" ); 
         }
-
     }
 }

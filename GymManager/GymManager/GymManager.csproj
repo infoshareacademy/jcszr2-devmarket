@@ -6,6 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <Compile Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <Compile Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <EmbeddedResource Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\CommonMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\StandardUserMenu\**" />
+    <None Remove="BackEnd\Menu\MenuLevels\UnloggedMenu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
@@ -13,6 +25,15 @@
     <None Update="BackEnd\Activities\listOfExercises.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="BackEnd\Users\listOfUsers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BackEnd\Databases\" />
+    <Folder Include="FrontEnd\" />
+    <Folder Include="FrontEnd\Menu\" />
   </ItemGroup>
 
 </Project>
