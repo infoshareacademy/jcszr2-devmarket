@@ -172,17 +172,16 @@ namespace GymManager
                     break;
                 case 2:
                     PrintUserChoiceConfirmation(currentMenu, userChoice);
-                    PrintAvailableExercises();
+                    HandleFilteringByExerciseType();
 
                     ChangeMenu(menuStart);
                     break;
                 case 3:
                     PrintUserChoiceConfirmation(currentMenu, userChoice);
-                    // filter by coach
-                    //Karnet miesięczny")
-                    break;
-                case 4:
+                    HandleFilteringByCoach();
+
                     ChangeMenu(menuStart);
+
                     break;
                 default:
                     Console.WriteLine("Opcja z poza zakresu, powrót do menu głównego");
@@ -191,7 +190,33 @@ namespace GymManager
             }
         }
 
-        private void PrintAvailableExercises()
+        private void HandleFilteringByCoach()
+        {
+            var filteredExercisesByCoaches = _exerices.GroupBy(x => x.coachName).Select(y => y.First()).ToList();
+            Console.WriteLine(filteredExercisesByCoaches.Count);
+            for (var i = 0; i < filteredExercisesByCoaches.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByCoaches.ElementAt(i).coachName}");
+            }
+            Console.WriteLine("Proszę podaj numer trenera dla którego chciałbyś zobaczyć zajęcia");
+            var exerciseNumberByText = Console.ReadLine();
+
+            var exerciseCouchChooseByUser = filteredExercisesByCoaches.ElementAt(Int32.Parse(exerciseNumberByText) - 1).coachName;
+            var filteredExercisesByUserChoice =
+                _exerices.FindAll(exercise => exercise.coachName == exerciseCouchChooseByUser).ToList();
+            Console.Clear();
+            for (var i = 0; i < filteredExercisesByUserChoice.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}. {filteredExercisesByUserChoice.ElementAt(i).exerciseName} {filteredExercisesByUserChoice.ElementAt(i).exerciseDate.ToLongDateString()}");
+            }
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Przyciśnij jakiś klawisz aby wrócić do menu głównego");
+            Console.ReadKey();
+        }
+
+        private void HandleFilteringByExerciseType()
         {
             var filteredExercises = _exerices.GroupBy(x => x.exerciseName).Select(y => y.First()).ToList();
             for (var i = 0; i < filteredExercises.Count(); i++)

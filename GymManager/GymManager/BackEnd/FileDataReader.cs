@@ -36,6 +36,9 @@ namespace GymManager.BackEnd
             foreach (DataRow row in dataTable.Rows)
             {
                 string exerciseName = row["exercise_name"].ToString();
+                string coach = row["coach"].ToString();
+                Console.WriteLine(coach);
+
                 string[] date = getDateConvertedToArray(row["date_time"].ToString());
 
                 var newExercise = new Exercise(exerciseName,
@@ -46,7 +49,8 @@ namespace GymManager.BackEnd
                     Int32.Parse(date[3]),   // hour
                     Int32.Parse(date[4]),   // minute
                     Int32.Parse(date[5])    //  seconds
-                    )
+                    
+                    ), coach
                     );
                 listOfExercises.Add(newExercise);
             }
