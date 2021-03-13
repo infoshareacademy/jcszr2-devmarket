@@ -12,6 +12,16 @@ a {
   color: #0366d6;
 }
 
+.link-menu {
+    text-decoration: none;
+    color: black;
+}
+
+    .link-menu:hover {
+        text-decoration: none;
+        color: #fff;
+    }
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -22,6 +32,10 @@ a {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+.bg-red {
+    background-color: red;
 }
 
 /* Sticky footer styles
