@@ -51,6 +51,11 @@ namespace GymManagerWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "User",
+                    pattern: "{controller=User}/{action=SignIn}/{id?}");
+
             });
         }
     }

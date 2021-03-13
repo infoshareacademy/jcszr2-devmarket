@@ -6,35 +6,34 @@ namespace GymManagerWebApp.Models
 {
     public class User
     {
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
         
         [Required]
-        [DisplayName]
-        public string FirstName { get; protected set; }
+        public string FirstName { get; set; }
         
         [Required]
-        public string SurName { get; protected set; }
+        public string SurName { get; set; }
         
         [Required]
         [Phone]
-        public PhoneAttribute PhoneNr { get; protected set; }
+        public string PhoneNr { get; set; }
         
         [Required]
         [EmailAddress]
-        public string Email { get; protected set; }
+        public string Email { get; set; }
         
         [Required]
         [PasswordPropertyText]
-        public PasswordPropertyTextAttribute Password { get; protected set; }
+        public string Password { get; set; }
 
         [Required]
         [PasswordPropertyText]
-        public PasswordPropertyTextAttribute RepeatedPassword { get; protected set; }
+        public string RepeatedPassword { get; set; }
 
         [Required]
         public string Gender { get; set; }
        
-        public DateTime CreatedAt { get; protected set; }
+        public DateTime CreatedAt { get; set; }
 
 
     }
