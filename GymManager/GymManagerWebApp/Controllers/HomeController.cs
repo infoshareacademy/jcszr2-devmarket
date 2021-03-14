@@ -23,7 +23,7 @@ namespace GymManagerWebApp.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult BuyCarnet()
         {
             return View();
         }

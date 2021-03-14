@@ -1,0 +1,28 @@
+﻿@model BuyCarnet
+
+@{
+    ViewData["Title"] = "Kup karnet";
+
+}
+<div>
+    <div class="text-center">
+        <h2>Tutaj możesz kupić karnet:</h2>
+    </div>
+    <div class="text-left">
+        <form asp-for="Tickets" asp-action="BuyCarnet" method="post">
+            @{ foreach (var value in Model.getCarnets())
+                {
+                    <div class="row-flex-space">
+                        <div>
+                            @value
+                        </div>
+                        <button asp-for="TicketType" name="CarnetType" type="submit" value="@value.Id">
+                            Kup!
+                        </button>
+                    </div>
+                }
+            }
+        </form>
+    </div>
+
+</div>
