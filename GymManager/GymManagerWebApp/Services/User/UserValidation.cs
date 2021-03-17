@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using GymManagerWebApp.FileReaders;
 using GymManagerWebApp.Models;
 
@@ -9,9 +10,10 @@ namespace GymManagerWebApp.Services
 {
     public class UserValidation : IUserValidation
     {
-        public bool IsValid(User model)
+        
+        public async Task<bool> IsValidAsync(User model)
         {
-            if (IsNotAlreadyRegistered(model.Email)
+            if (await IsNotAlreadyRegisteredAsync(model.Email)
                 && IsEmailValid(model.Email)
                 && IsPasswordValid(model.Password1, model.Password2)
                 && IsNameValid(model.FirstName)
@@ -20,9 +22,9 @@ namespace GymManagerWebApp.Services
             ) return true;
             return false;
         }
-        public bool IsNotAlreadyRegistered(string email)
+        public async Task<bool> IsNotAlreadyRegisteredAsync(string email)
         {
-            var users = JsonManager.GetUsers();
+            var users = await JsonManager.GetUsersAsync();
             email = email.ToLower();
 
             if (string.IsNullOrWhiteSpace(email))
@@ -30,7 +32,7 @@ namespace GymManagerWebApp.Services
                 throw new NotImplementedException($"Walidacja: Błąd, pole email nie może być puste!");
             }
 
-            if (users.Any(x => x.Email.Equals(email)))
+            if ( users.Any(x => x.Email.Equals(email)))
             {
                 throw new NotImplementedException($"Walidacja: Błąd, użytkownik o adresie email: {email} jest już zarejestrowany!");
             };

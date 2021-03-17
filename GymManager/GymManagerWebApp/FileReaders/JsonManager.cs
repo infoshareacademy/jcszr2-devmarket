@@ -18,19 +18,22 @@ namespace GymManagerWebApp.FileReaders
             return fullPath;
         }
 
-        public static IList<User> GetUsers()
+        public static async Task<IList<User>> GetUsersAsync()
         {
             var filePath = GetUsersFilePath();
-            var listOfUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath));
+            var listOfUsers =  await Task.Run(()=>JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath)));
+            listOfUsers = listOfUsers.ToList();
             return listOfUsers;
         }
         
-        public static void AddUser(User user)
+        public static async Task AddUserAsync(User user)
         {
-            var listOfUsers = GetUsers();
+            var listOfUsers = await  GetUsersAsync();
             listOfUsers.Add(user);
-            var updatedJson = JsonConvert.SerializeObject(listOfUsers, Formatting.Indented);
-            File.WriteAllText(GetUsersFilePath(), updatedJson);
+            var updatedJson = await Task.Run(()=>JsonConvert.SerializeObject(listOfUsers, Formatting.Indented));
+            File.WriteAllText(GetUsersFilePath().ToString(), updatedJson);
         }
+
+        
     }
 }

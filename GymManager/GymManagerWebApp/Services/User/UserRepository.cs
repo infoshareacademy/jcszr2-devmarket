@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using GymManagerWebApp.FileReaders;
 using GymManagerWebApp.Models;
 
@@ -13,13 +14,13 @@ namespace GymManagerWebApp.Services
     {
         private static IList<User> _users = new List<User>();
 
-        public User GetUser(string email)
+        public async Task<User> GetUserAsync(string email)
         {
-            _users = JsonManager.GetUsers();
+            _users = await JsonManager.GetUsersAsync();
             return _users.SingleOrDefault(x => x.Email == email);
         }
 
-        public void AddUser(User userFormData, Guid id, DateTime createdAt, string rights)
+        public async Task AddUserAsync(User userFormData, Guid id, DateTime createdAt, string rights)
         {
             userFormData.FirstName = char.ToUpper(userFormData.FirstName[0]) + userFormData.FirstName.Substring(1);
             userFormData.LastName = char.ToUpper(userFormData.LastName[0]) + userFormData.LastName.Substring(1);
@@ -37,12 +38,12 @@ namespace GymManagerWebApp.Services
                 rights,
                 createdAt);
 
-            JsonManager.AddUser(user);
+            await JsonManager.AddUserAsync(user);
         }
 
-        public IList<User> GetUsers()
+        public async Task<IList<User>> GetUsersAsync()
         {
-            _users = JsonManager.GetUsers();
+            _users = await JsonManager.GetUsersAsync();
             return _users;
         }
     }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GymManagerWebApp.Models;
 
 namespace GymManagerWebApp.Services
 {
     public interface IUserRepository
     {
-        User GetUser(string email);
-        void AddUser(User userFormData, Guid id, DateTime createdAt, string rights);
-        IList<User> GetUsers();
+        Task<User> GetUserAsync(string email);
+        Task AddUserAsync(User userFormData, Guid id, DateTime createdAt, string rights);
+        Task<IList<User>> GetUsersAsync();
     }
 }

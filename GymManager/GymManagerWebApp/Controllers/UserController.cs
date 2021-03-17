@@ -34,21 +34,20 @@ namespace GymManagerWebApp.Controllers
 
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public IActionResult PostUser(User model)
+        public async Task<IActionResult> PostUserAsync(User model)
         {
             model.Gender = HttpContext.Request.Form["Gender"].ToString();
             Guid id = Guid.NewGuid();
             DateTime createdAt =DateTime.UtcNow;
             string rights = "standard user";
 
-            if (_userValidation.IsValid(model))
+            if (await _userValidation.IsValidAsync(model))
             {
-                
-                _userService.RegisterUser(model,id,createdAt,rights);
+                await _userService.RegisterUserAsync(model,id,createdAt,rights);
                 return View("SignInSuccess",model);
             }
 
-            return View("GetUser");
+            return Redirect("GetUser");
         }
 
     }

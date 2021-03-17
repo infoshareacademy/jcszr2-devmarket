@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using GymManagerWebApp.FileReaders;
 using GymManagerWebApp.Models;
 
@@ -15,9 +16,9 @@ namespace GymManagerWebApp.Services
             _userRepository = userRepository;
         }
 
-        public void RegisterUser(User userFormData, Guid id, DateTime createdAt, string rights)
+        public async Task RegisterUserAsync(User userFormData, Guid id, DateTime createdAt, string rights)
         {
-            _userRepository.AddUser(userFormData, id, createdAt,rights);
+            await _userRepository.AddUserAsync(userFormData, id, createdAt,rights);
         }
 
         
