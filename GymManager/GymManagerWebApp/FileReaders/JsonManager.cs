@@ -21,9 +21,7 @@ namespace GymManagerWebApp.FileReaders
         public static async Task<IList<User>> GetUsersAsync()
         {
             var filePath = GetUsersFilePath();
-            var listOfUsers =  await Task.Run(()=>JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath)));
-            listOfUsers = listOfUsers.ToList();
-            return listOfUsers;
+            return  await Task.Run(()=>JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(filePath)));
         }
         
         public static async Task AddUserAsync(User user)
