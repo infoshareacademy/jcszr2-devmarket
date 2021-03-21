@@ -32,6 +32,34 @@ namespace GymManagerWebApp.Controllers
             return View(user);
         }
 
+        [HttpGet]
+        public IActionResult LogIn()
+        {
+            var user = new User();
+            return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ForgotEmail()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult PostLogIn()
+        {
+            return View();
+
+        }
+
+
         [HttpPost] 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PostUserAsync(User model)
