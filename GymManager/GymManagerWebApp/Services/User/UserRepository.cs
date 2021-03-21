@@ -26,7 +26,7 @@ namespace GymManagerWebApp.Services
             return _users;
         }
 
-        public async Task AddUserAsync(User userFormData, Guid id, DateTime createdAt, string rights)
+        public async Task AddUserAsync(User userFormData, string hashPassword, Guid id, DateTime createdAt, string rights)
         {
             userFormData.FirstName = char.ToUpper(userFormData.FirstName[0]) + userFormData.FirstName.Substring(1);
             userFormData.LastName = char.ToUpper(userFormData.LastName[0]) + userFormData.LastName.Substring(1);

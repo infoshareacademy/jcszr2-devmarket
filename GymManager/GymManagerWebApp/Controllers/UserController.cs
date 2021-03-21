@@ -12,6 +12,7 @@ using GymManagerWebApp.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
+
 namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
@@ -73,14 +74,15 @@ namespace GymManagerWebApp.Controllers
 
             if (await _userValidation.IsValidAsync(model))
             {
-                await _userService.RegisterUserAsync(model,id,createdAt,rights);
+                string hashPassword = await _userService.EncryptBySha256Hash(model.Password1);
+                await _userService.RegisterUserAsync(model,hashPassword,id,createdAt,rights);
                 return View("SignInSuccess",model);
             }
 
             return Redirect("GetUser");
         }
         #endregion
-
+            
     }
 
 
