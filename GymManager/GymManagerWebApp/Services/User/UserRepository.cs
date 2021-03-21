@@ -20,6 +20,12 @@ namespace GymManagerWebApp.Services
             return _users.SingleOrDefault(x => x.Email == email);
         }
 
+        public async Task<IList<User>> GetUsersAsync()
+        {
+            _users = await JsonManager.GetUsersAsync();
+            return _users;
+        }
+
         public async Task AddUserAsync(User userFormData, Guid id, DateTime createdAt, string rights)
         {
             userFormData.FirstName = char.ToUpper(userFormData.FirstName[0]) + userFormData.FirstName.Substring(1);
@@ -41,10 +47,5 @@ namespace GymManagerWebApp.Services
             await JsonManager.AddUserAsync(user);
         }
 
-        public async Task<IList<User>> GetUsersAsync()
-        {
-            _users = await JsonManager.GetUsersAsync();
-            return _users;
-        }
     }
 }

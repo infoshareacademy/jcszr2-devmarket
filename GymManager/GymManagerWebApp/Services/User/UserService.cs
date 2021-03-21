@@ -21,6 +21,15 @@ namespace GymManagerWebApp.Services
             await _userRepository.AddUserAsync(userFormData, id, createdAt,rights);
         }
 
+        public async Task LoginUserAsync(string email, string password)
+        {
+            var user = await _userRepository.GetUserAsync(email);
+            if(user == null || user.Password1 != password)
+            {
+                throw new NotImplementedException("Nieprawidłowe dane logowania");
+            }
+        }
+
         
 
     }

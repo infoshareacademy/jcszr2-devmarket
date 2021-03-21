@@ -25,18 +25,18 @@ namespace GymManagerWebApp.Controllers
             _userValidation = userValidation;
         }
 
-        [HttpGet]
-        public IActionResult GetUser()
-        {
-            var user = new User();
-            return View(user);
-        }
-
+        #region Login
         [HttpGet]
         public IActionResult LogIn()
         {
-            var user = new User();
-            return View(user);
+            var login = new Login();
+            return View(login);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PostLogIn(Login login)
+        {
+            await _userService.LoginUserAsync(login.Email, login.Password);
+            return View();
         }
 
         [HttpGet]
@@ -52,13 +52,15 @@ namespace GymManagerWebApp.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult PostLogIn()
+
+        #endregion
+        #region Register
+        [HttpGet]
+        public IActionResult GetUser()
         {
-            return View();
-
+            var user = new User();
+            return View(user);
         }
-
 
         [HttpPost] 
         [ValidateAntiForgeryToken]
@@ -77,6 +79,7 @@ namespace GymManagerWebApp.Controllers
 
             return Redirect("GetUser");
         }
+        #endregion
 
     }
 

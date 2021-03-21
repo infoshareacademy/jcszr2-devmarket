@@ -40,7 +40,6 @@ namespace GymManagerWebApp.Models
 
         public User()
         {
-
         }
 
         public User(Guid id, string firstName, string lastName, string email, string password1,
@@ -57,6 +56,5 @@ namespace GymManagerWebApp.Models
             Rights = rights;
             CreatedAt = createdAt;
         }
-
     }
 }
