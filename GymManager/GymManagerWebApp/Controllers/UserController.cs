@@ -36,7 +36,8 @@ namespace GymManagerWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> PostLogIn(Login login)
         {
-            await _userService.LoginUserAsync(login.Email, login.Password);
+            string hashPassword = await _userService.EncryptBySha256Hash(login.Password);
+            await _userService.LoginUserAsync(login.Email, hashPassword);
             return View();
         }
 
@@ -67,6 +68,7 @@ namespace GymManagerWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PostUserAsync(User model)
         {
+            //setting user data which are not input by the user in the sign in form
             model.Gender = HttpContext.Request.Form["Gender"].ToString();
             Guid id = Guid.NewGuid();
             DateTime createdAt =DateTime.UtcNow;

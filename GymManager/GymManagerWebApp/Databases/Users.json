@@ -5,8 +5,7 @@
     "lastName": "zió³kowsi",
     "phoneNr": "513558514",
     "email": "Ziolek071@gmail.com",
-    "password1": "WielkiKasztan20",
-    "password2": "WielkiKasztan20",
+    "password": "WielkiKasztan20",
     "gender": "Male",
     "createdAt": "0001-01-01T00:00:00",
     "rights":  "standard user" 
