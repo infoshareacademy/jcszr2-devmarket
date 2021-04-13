@@ -9,29 +9,40 @@ namespace GymManagerWebApp.Models
     {
         public Guid Id { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Wymagane imię")]
+        [StringLength(maximumLength: 20, MinimumLength= 3,ErrorMessage ="Nieprawidłowe imię")]
+        [DataType(DataType.Text)]
         public string FirstName { get; set; }
-        
-        [Required]
+
+        [Required(ErrorMessage = "Wymagane nazwisko")]
+        [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "Nieprawidłe nazwisko")]
+        [DataType(DataType.Text)]
         public string LastName { get; set; }
         
-        [Required]
-        [Phone]
+        [Required(ErrorMessage ="Wymagany numer telefonu")]
+        [Phone(ErrorMessage ="Nieprawidłowy nr telefonu- proszę wprowadzić 9 cyfrowy numer")]
+        [DataType(DataType.PhoneNumber)]
         public string PhoneNr { get; set; }
         
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="Wymagany adres e-mail")]
+        [EmailAddress(ErrorMessage ="Nieprawidłowy adres e-mail")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        
-        [Required]
-        [PasswordPropertyText]
+
+        [Required(ErrorMessage ="Wymagane hasło")]
+        [StringLength(20, ErrorMessage = "Podane hasło jest za krótkie- minimalna długość to {2} znaków", MinimumLength = 6)]
+        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$", ErrorMessage = "Nieprawidłowe hasło. Hasło musi się składać z 6 znaków, 1 cyfry i 1 dużej litery")]
+        [DataType(DataType.Password)]
         public string Password1 { get; set; }
 
-        [Required]
-        [PasswordPropertyText]
+        [Required(ErrorMessage =("Wymagane potwierdzenie hasła"))]
+        [StringLength(20, ErrorMessage = "Podane hasło jest za krótkie- minimalna długość to {2} znaków", MinimumLength = 6)]
+        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$", ErrorMessage = "Nieprawidłowe hasło. Hasło musi się składać z 6 znaków, 1 cyfry i 1 dużej litery")]
+        [Compare(otherProperty:"Password1",ErrorMessage ="Proszę podać takie same hasła")]
+        [DataType(DataType.Password)]
         public string Password2 { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Wymagane zaznaczenie płci")]
         public string Gender { get; set; }
        
         public DateTime CreatedAt { get; set; }

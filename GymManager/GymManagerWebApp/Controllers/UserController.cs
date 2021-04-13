@@ -33,11 +33,16 @@ namespace GymManagerWebApp.Controllers
             var login = new Login();
             return View(login);
         }
+
         [HttpPost]
-        public async Task<IActionResult> PostLogIn(Login login)
+        public async Task<IActionResult> LogInAsync(Login login)
         {
             string hashPassword = await _userService.EncryptBySha256Hash(login.Password);
-            await _userService.LoginUserAsync(login.Email, hashPassword);
+            if (await _userValidation.IsLogInValid(login))
+            {
+                await _userService.LoginUserAsync(login.Email, hashPassword);
+                return View();
+            }
             return View();
         }
 
@@ -54,11 +59,10 @@ namespace GymManagerWebApp.Controllers
         }
 
 
-
         #endregion
         #region Register
         [HttpGet]
-        public IActionResult GetUser()
+        public IActionResult SignIn()
         {
             var user = new User();
             return View(user);
@@ -66,22 +70,24 @@ namespace GymManagerWebApp.Controllers
 
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostUserAsync(User model)
+        public async Task<IActionResult> SignInAsync(User model)
         {
-            //setting user data which are not input by the user in the sign in form
-            model.Gender = HttpContext.Request.Form["Gender"].ToString();
-            Guid id = Guid.NewGuid();
-            DateTime createdAt =DateTime.UtcNow;
-            string rights = "standard user";
-
-            if (await _userValidation.IsValidAsync(model))
+            if (ModelState.IsValid)
             {
-                string hashPassword = await _userService.EncryptBySha256Hash(model.Password1);
-                await _userService.RegisterUserAsync(model,hashPassword,id,createdAt,rights);
-                return View("SignInSuccess",model);
-            }
+                if (await _userValidation.IsSignInValidBackEnd(model))
+                {
+                    //setting user data which are not input by the user in the signin form
+                    model.Gender = HttpContext.Request.Form["Gender"].ToString();
+                    Guid id = Guid.NewGuid();
+                    DateTime createdAt = DateTime.UtcNow;
+                    string rights = "standard user";
 
-            return Redirect("GetUser");
+                    string hashPassword = await _userService.EncryptBySha256Hash(model.Password1);
+                    await _userService.RegisterUserAsync(model, hashPassword, id, createdAt, rights);
+                    return RedirectToAction("SignInSuccess", model);
+                }
+            }
+            return View();
         }
         #endregion
             
