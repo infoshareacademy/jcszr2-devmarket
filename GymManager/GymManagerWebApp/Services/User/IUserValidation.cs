@@ -5,11 +5,12 @@ namespace GymManagerWebApp.Services
 {
     public interface IUserValidation
     {
-        Task<bool> IsValidAsync(User model);
+        Task<bool> ValidateSignInAsync(User model);
+        Task<bool> ValidateLogInAsync(Login model);
         bool IsNameValid(string name);
         bool IsPhoneValid(string phoneNr);
         bool IsEmailValid(string email);
-        bool IsPasswordValid(string password1, string password2);
-        Task<bool> IsNotAlreadyRegisteredAsync(string email);
+        bool ArePasswordsValid(string password1, string password2);
+        Task<bool> IsEmailNotExists(string email);
     }
 }

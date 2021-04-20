@@ -60,6 +60,10 @@ namespace GymManagerWebApp
                     name: "User",
                     pattern: "{controller=User}/{action=SignIn}/{id?}");
 
+                endpoints.MapControllerRoute(
+                  name: "User",
+                  pattern: "{controller=User}/{action=SignIn}/{id?}");
+
             });
         }
     }

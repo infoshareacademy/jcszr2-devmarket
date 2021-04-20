@@ -19,30 +19,25 @@ namespace GymManagerWebApp.Services
             _users = await JsonManager.GetUsersAsync();
             return _users.SingleOrDefault(x => x.Email == email);
         }
-
         public async Task<IList<User>> GetUsersAsync()
         {
             _users = await JsonManager.GetUsersAsync();
             return _users;
         }
 
-        public async Task AddUserAsync(User userFormData, string hashPassword, Guid id, DateTime createdAt, string rights)
+        public async Task AddUserAsync(User model)
         {
-            userFormData.FirstName = char.ToUpper(userFormData.FirstName[0]) + userFormData.FirstName.Substring(1);
-            userFormData.LastName = char.ToUpper(userFormData.LastName[0]) + userFormData.LastName.Substring(1);
-            userFormData.Email = userFormData.Email.ToLower();
-
             var user = new User(
-                id,
-                userFormData.FirstName,
-                userFormData.LastName,
-                userFormData.Email,
-                hashPassword,
-                hashPassword,
-                userFormData.PhoneNr,
-                userFormData.Gender,
-                rights,
-                createdAt);
+                model.Id,
+                model.FirstName,
+                model.LastName,
+                model.Email,
+                model.Password1,
+                model.Password1,
+                model.PhoneNr,
+                model.Gender,
+                model.Rights,
+                model.CreatedAt);
 
             await JsonManager.AddUserAsync(user);
         }

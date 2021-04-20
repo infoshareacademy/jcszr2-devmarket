@@ -7,8 +7,9 @@ namespace GymManagerWebApp.Services
 {
     public interface IUserService
     {
-        Task RegisterUserAsync(User userFormData, string hashPassword, Guid id, DateTime createdAt, string rights);
-        Task LoginUserAsync(string email, string password);
+        Task RegisterUserAsync(User model);
+        Task<User> LoginUserAsync(string email, string password);
         Task<string> EncryptBySha256Hash(string password);
+        Task<bool> FindUser(string email, string password);
     }
 }

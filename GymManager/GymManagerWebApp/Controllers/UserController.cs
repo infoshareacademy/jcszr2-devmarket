@@ -17,6 +17,7 @@ namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
+        #region Dependencies
         private IUserService _userService;
         private IUserValidation _userValidation;
 
@@ -25,7 +26,7 @@ namespace GymManagerWebApp.Controllers
             _userService = userService;
             _userValidation = userValidation;
         }
-
+        #endregion
         #region Login
         [HttpGet]
         public IActionResult LogIn()
@@ -35,27 +36,22 @@ namespace GymManagerWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogInAsync(Login login)
         {
-            string hashPassword = await _userService.EncryptBySha256Hash(login.Password);
-            if (await _userValidation.IsLogInValid(login))
+            if (ModelState.IsValid)
             {
-                await _userService.LoginUserAsync(login.Email, hashPassword);
-                return View();
+                //Adjustment format to compare entered user with users from DB
+                login.Email = login.Email.ToLower();
+                login.Password = await _userService.EncryptBySha256Hash(login.Password);
+
+                if (await _userValidation.ValidateLogInAsync(login))
+                {
+                    var activeUser = await _userService.LoginUserAsync(login.Email,login.Password);
+                    return View("UserHomePage", activeUser);
+                }
             }
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult ForgotEmail()
-        {
-            return View();
+            return View("LogIn", login);
         }
 
 
@@ -74,23 +70,29 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _userValidation.IsSignInValidBackEnd(model))
-                {
-                    //setting user data which are not input by the user in the signin form
-                    model.Gender = HttpContext.Request.Form["Gender"].ToString();
-                    Guid id = Guid.NewGuid();
-                    DateTime createdAt = DateTime.UtcNow;
-                    string rights = "standard user";
+                //Data out of the form
+                model.Gender = HttpContext.Request.Form["Gender"].ToString();
+                model.Id = Guid.NewGuid();
+                model.CreatedAt = DateTime.UtcNow;
+                model.Rights = "standard user";
 
-                    string hashPassword = await _userService.EncryptBySha256Hash(model.Password1);
-                    await _userService.RegisterUserAsync(model, hashPassword, id, createdAt, rights);
-                    return RedirectToAction("SignInSuccess", model);
+                //Adjustment format to store in database
+                model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
+                model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
+                model.Email = model.Email.ToLower();
+
+                if (await _userValidation.ValidateSignInAsync(model))
+                {
+                    model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
+                    model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
+                    await _userService.RegisterUserAsync(model);
+
+                    return View("SignInSuccess",model);
                 }
             }
             return View();
         }
         #endregion
-            
     }
 
 

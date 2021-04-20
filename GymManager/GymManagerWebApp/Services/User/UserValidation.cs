@@ -10,33 +10,62 @@ namespace GymManagerWebApp.Services
 {
     public class UserValidation : IUserValidation
     {
-        
-        public async Task<bool> IsValidAsync(User model)
+        #region Dependencies
+        IUserRepository _userRepository;
+        IUserService _userService;
+
+        public UserValidation(IUserRepository userRepository, IUserService userService)
         {
-            if (await IsNotAlreadyRegisteredAsync(model.Email)
+            _userRepository = userRepository;
+            _userService = userService;
+        }
+        #endregion
+
+        #region SignIn validation
+        public async Task<bool> ValidateSignInAsync(User model)
+        {
+            if (await IsEmailNotExists(model.Email)
                 && IsEmailValid(model.Email)
-                && IsPasswordValid(model.Password1, model.Password2)
+                && ArePasswordsValid(model.Password1, model.Password2)
                 && IsNameValid(model.FirstName)
                 && IsNameValid(model.LastName)
                 && IsPhoneValid(model.PhoneNr)
             ) return true;
             return false;
         }
-        public async Task<bool> IsNotAlreadyRegisteredAsync(string email)
+        public async Task<bool> IsEmailNotExists(string email)
         {
             var users = await JsonManager.GetUsersAsync();
             email = email.ToLower();
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                throw new NotImplementedException($"Walidacja: Błąd, pole email nie może być puste!");
+                return false;
             }
 
-            if ( users.Any(x => x.Email.Equals(email)))
+            if (users.Any(x => x.Email.Equals(email)))
             {
-                throw new NotImplementedException($"Walidacja: Błąd, użytkownik o adresie email: {email} jest już zarejestrowany!");
+                return false;
             };
             return true;
+        }
+        public bool IsNameValid(string name)
+        {
+            name = char.ToUpper(name[0]) + name.Substring(1);
+            if (Regex.Match(name, "^[AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]*$").Success &&
+                !string.IsNullOrWhiteSpace(name))
+            {
+                return true;
+            }
+            throw new NotImplementedException($"Walidacja: Nieprawiłdowe dane: {name}");
+        }
+        public bool IsPhoneValid(string phoneNr)
+        {
+            if (Regex.Match(phoneNr, "^[0-9]{9}").Success && !string.IsNullOrWhiteSpace(phoneNr))
+            {
+                return true;
+            }
+            throw new NotImplementedException($"Walidacja: Nieprawiłdowe dane: {phoneNr}");
         }
         public bool IsEmailValid(string email)
         {
@@ -81,7 +110,7 @@ namespace GymManagerWebApp.Services
                 return false;
             }
         }
-        public bool IsPasswordValid(string password1, string password2)
+        public bool ArePasswordsValid(string password1, string password2)
         {
 
             var hasNumber = new Regex(@"[0-9]+");
@@ -103,24 +132,20 @@ namespace GymManagerWebApp.Services
             }
             throw new NotImplementedException($"Walidacja: Nieprawidłowe hasło");
         }
-        public bool IsNameValid(string name)
+        #endregion
+        #region Login validation
+        public async Task<bool> ValidateLogInAsync(Login user)
         {
-            name = char.ToUpper(name[0]) + name.Substring(1);
-            if (Regex.Match(name, "^[AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]*$").Success &&
-                !string.IsNullOrWhiteSpace(name))
+            if (await _userService.FindUser(user.Email, user.Password))
             {
                 return true;
             }
-            throw new NotImplementedException($"Walidacja: Nieprawiłdowe dane: {name}");
+            return false;
         }
-        public bool IsPhoneValid(string phoneNr)
-        {
-            if (Regex.Match(phoneNr, "^[0-9]{9}").Success && !string.IsNullOrWhiteSpace(phoneNr))
-            {
-                return true;
-            }
-            throw new NotImplementedException($"Walidacja: Nieprawiłdowe dane: {phoneNr}");
-        }
+
+        #endregion
+
+
 
     }
 }

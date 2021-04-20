@@ -18,18 +18,15 @@ namespace GymManagerWebApp.Services
             _userRepository = userRepository;
         }
 
-        public async Task RegisterUserAsync(User userFormData, string hashPassword, Guid id, DateTime createdAt, string rights)
+        public async Task RegisterUserAsync(User model)
         {
-            await _userRepository.AddUserAsync(userFormData, hashPassword, id, createdAt,rights);
+            await _userRepository.AddUserAsync(model);
         }
 
-        public async Task LoginUserAsync(string email, string password)
+        public async Task<User> LoginUserAsync(string email, string hashPassword)
         {
             var user = await _userRepository.GetUserAsync(email);
-            if(user == null || user.Password1 != password)
-            {
-                throw new NotImplementedException("Nieprawidłowe dane logowania");
-            }
+            return user;
         }
 
         public async Task<string> EncryptBySha256Hash(string password)
@@ -48,6 +45,12 @@ namespace GymManagerWebApp.Services
                 }
                 return builder.ToString();
             }
+        }
+
+        public async Task<bool> FindUser(string email, string password)
+        {
+            var _users = await JsonManager.GetUsersAsync();
+            return _users.Any(x => x.Email == email && x.Password1 == password);
         }
 
     }

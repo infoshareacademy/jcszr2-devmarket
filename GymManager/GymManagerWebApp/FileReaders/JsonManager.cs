@@ -32,6 +32,5 @@ namespace GymManagerWebApp.FileReaders
             File.WriteAllText(GetUsersFilePath().ToString(), updatedJson);
         }
 
-        
     }
 }

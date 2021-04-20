@@ -11,16 +11,19 @@ namespace GymManagerWebApp.Models
         
         [Required(ErrorMessage = "Wymagane imię")]
         [StringLength(maximumLength: 20, MinimumLength= 3,ErrorMessage ="Nieprawidłowe imię")]
+        [RegularExpression(@"^\p{L}+(?: \p{L}+)*$", ErrorMessage = "Imię powinno składać się tylko z liter!")]
         [DataType(DataType.Text)]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Wymagane nazwisko")]
         [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "Nieprawidłe nazwisko")]
+        [RegularExpression(@"^\p{L}+(?: \p{L}+)*$", ErrorMessage = "Nawisko powinno składać się tylko z liter!")]
         [DataType(DataType.Text)]
         public string LastName { get; set; }
         
         [Required(ErrorMessage ="Wymagany numer telefonu")]
-        [Phone(ErrorMessage ="Nieprawidłowy nr telefonu- proszę wprowadzić 9 cyfrowy numer")]
+        [Phone(ErrorMessage ="Numer telefonu powinien zawierać tylko cyfry!")]
+        [StringLength(maximumLength: 9, MinimumLength = 9, ErrorMessage = "Nieprawidłowa długość- numer telefonu musi składać się z 9 cyfr!")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNr { get; set; }
         
@@ -38,7 +41,7 @@ namespace GymManagerWebApp.Models
         [Required(ErrorMessage =("Wymagane potwierdzenie hasła"))]
         [StringLength(20, ErrorMessage = "Podane hasło jest za krótkie- minimalna długość to {2} znaków", MinimumLength = 6)]
         [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$", ErrorMessage = "Nieprawidłowe hasło. Hasło musi się składać z 6 znaków, 1 cyfry i 1 dużej litery")]
-        [Compare(otherProperty:"Password1",ErrorMessage ="Proszę podać takie same hasła")]
+        [Compare(otherProperty:"Password1",ErrorMessage ="Podane hasła nie pasujądo siebie, wpisz 2 takie same hasła")]
         [DataType(DataType.Password)]
         public string Password2 { get; set; }
 

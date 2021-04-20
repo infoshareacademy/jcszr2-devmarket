@@ -14,7 +14,8 @@ namespace GymManagerWebApp.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Wymagane hasło")]
-        [DataType(DataType.Password,ErrorMessage ="Nieprawidłowe hasło")]
+        [StringLength(20, ErrorMessage = "Podane hasło jest za krótkie- minimalna długość to {2} znaków", MinimumLength = 6)]
+        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$", ErrorMessage = "Nieprawidłowe hasło. Hasło musi się składać z 6 znaków, 1 cyfry i 1 dużej litery")]
         public string Password { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace GymManagerWebApp.Services
     public interface IUserRepository
     {
         Task<User> GetUserAsync(string email);
-        Task AddUserAsync(User userFormData, string hashPassword, Guid id, DateTime createdAt, string rights);
+        Task AddUserAsync(User model);
         Task<IList<User>> GetUsersAsync();
     }
 }
