@@ -6,7 +6,14 @@ namespace GymManagerWebApp.Models
 {
     public class Exercises : IExercises
     {
-        public IList<Exercise> ListOfExercises = new List<Exercise>();
+        public IList<Exercise> ListOfExercises { get; set; }
+        public List<Options> ListOfOptions = new List<Options> {
+            new Options { OptionName = "", OptionValue = 0 },
+            new Options { OptionName = "Opcja pierwsza", OptionValue = 1 },
+            new Options { OptionName = "Opcja druga", OptionValue = 2 },
+            new Options { OptionName = "Opcja trzecia", OptionValue = 3 },
+            new Options { OptionName = "Opcja czwarta", OptionValue = 4 },
+        };
 
         public async Task Init()
         {
@@ -17,6 +24,10 @@ namespace GymManagerWebApp.Models
         public IList<Exercise> GetAllExercises()
         {
             return this.ListOfExercises;
+        }
+        public string getHourAndMinutes(int value)
+        {
+            return value.ToString();
         }
     }
 }

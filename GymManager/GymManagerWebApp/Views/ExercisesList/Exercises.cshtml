@@ -1,36 +1,56 @@
-﻿
-@model Exercises
-
+﻿@model Exercises
 
 @{
     <div>
-                <div class="row-flex-space">
-                    <table>
-                        <tr>
-                            <th>L.P.</th>
-                            <th>Nazwa zajęć</th>
-                            <th>Data zajęć</th>
-                            <th>Czas trwania</th>
-                        </tr>
-                        @{ foreach (var value in Model.GetAllExercises())
-                            {
-                                <tr>
-                                    <td>
-                                        @value.Id
-                                    </td>
-                                    <td>
-                                        @value.ExerciseName
-                                    </td>
-                                      <td>
-                                        @value.ExerciseDate
-                                    </td>
-                                     <td>
-                                        @value.ExerciseDurationTime
-                                    </td>
-                                </tr>
+        <div>
+            <div>
+                <label>
+                    Filtruj po:
+                    <select type="select">
+                        @{foreach (var option in Model.ListOfOptions)
+                            { 
+                                    <option value="@option.OptionValue">@option.OptionName</option>
+                                }
                             }
-                        }
-                    </table>
-                </div>
+                        </select>
+                </label>
+            </div>
+            <div>
+                <label>
+                    Wpisz wartość po której filtrować:
+                    <input type="text" />
+                </label>
+            </div>
+
+        </div>
+        <div class="row-flex-space">
+
+            <table>
+                <tr>
+                    <th>L.P.</th>
+                    <th>Nazwa zajęć</th>
+                    <th>Data zajęć</th>
+                    <th>Czas trwania</th>
+                </tr>
+                @{ foreach (var value in Model.GetAllExercises())
+                    {
+                        <tr>
+                            <td>
+                                @value.Id
+                            </td>
+                            <td>
+                                @value.ExerciseName
+                            </td>
+                            <td>
+                                @value.ExerciseDate
+                            </td>
+                            <td>
+                                @value.ExerciseDurationTime
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
     </div>
 }
