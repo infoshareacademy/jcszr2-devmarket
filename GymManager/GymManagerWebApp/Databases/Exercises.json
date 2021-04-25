@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "ExerciseName": "Pierwsze zajêcia",
+    "ExerciseDate": "5/3/2021",
+    "ExerciseDurationTime": 1,
+    "ExerciseCoachId": 1
+  },
+  {
+    "Id": 2,
+    "ExerciseName": "Drugie zajêcia",
+    "ExerciseDate": "5/3/2021",
+    "ExerciseDurationTime": 1,
+    "ExerciseCoachId": 2
+  },
+  {
+    "Id": 3,
+    "ExerciseName": "Trzecie zajêcia",
+    "ExerciseDate": "5/3/2021",
+    "ExerciseDurationTime": 1,
+    "ExerciseCoachId": 3
+  }
+]

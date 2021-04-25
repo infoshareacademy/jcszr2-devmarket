@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManager", "GymManager\GymManager.csproj", "{83B36945-B89C-4865-89AE-9C030AC85FAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagerWebApp", "GymManagerWebApp\GymManagerWebApp.csproj", "{7185CAF5-04CD-4D6C-9DF2-FAABF767CB44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagerWebApp", "GymManagerWebApp\GymManagerWebApp.csproj", "{7185CAF5-04CD-4D6C-9DF2-FAABF767CB44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
