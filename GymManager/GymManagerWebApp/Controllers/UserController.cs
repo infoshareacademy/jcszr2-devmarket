@@ -11,23 +11,25 @@ using GymManagerWebApp.Models;
 using GymManagerWebApp.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
-        #region Dependencies
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private IUserService _userService;
         private IUserValidation _userValidation;
 
-        public UserController(IUserService userService, IUserValidation userValidation)
+        public UserController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserService userService, IUserValidation userValidation)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _userService = userService;
             _userValidation = userValidation;
         }
-        #endregion
-        #region Login
+
         [HttpGet]
         public IActionResult LogIn()
         {
@@ -54,9 +56,7 @@ namespace GymManagerWebApp.Controllers
             return View("LogIn", login);
         }
 
-
-        #endregion
-        #region Register
+        
         [HttpGet]
         public IActionResult SignIn()
         {
@@ -83,16 +83,31 @@ namespace GymManagerWebApp.Controllers
 
                 if (await _userValidation.ValidateSignInAsync(model))
                 {
-                    model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
-                    model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
-                    await _userService.RegisterUserAsync(model);
+                    //model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
+                    //model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
+                    //await _userService.RegisterUserAsync(model);
+                    var user = new IdentityUser {
+                        Gender = model.Gender,
 
-                    return View("SignInSuccess",model);
+
+                    }; //w nawiasach klamrowych przypisać wszystkie property z modelu
+                    var result = await _userManager.CreateAsync(user, model.Password1);
+
+                    if (result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("index", "home");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View("SignInSuccess", model);
                 }
             }
             return View();
         }
-        #endregion
     }
 
 
