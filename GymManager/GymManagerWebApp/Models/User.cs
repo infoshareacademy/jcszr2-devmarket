@@ -6,10 +6,8 @@ using System.ComponentModel.Design.Serialization;
 
 namespace GymManagerWebApp.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public Guid Id { get; set; }
-        
         [Required(ErrorMessage = "Wymagane imię")]
         [StringLength(maximumLength: 20, MinimumLength= 3,ErrorMessage ="Nieprawidłowe imię")]
         [RegularExpression(@"^\p{L}+(?: \p{L}+)*$", ErrorMessage = "Imię powinno składać się tylko z liter!")]
@@ -31,7 +29,7 @@ namespace GymManagerWebApp.Models
         [Required(ErrorMessage ="Wymagany adres e-mail")]
         [EmailAddress(ErrorMessage ="Nieprawidłowy adres e-mail")]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public override string Email { get; set; }
 
         [Required(ErrorMessage ="Wymagane hasło")]
         [StringLength(20, ErrorMessage = "Podane hasło jest za krótkie- minimalna długość to {2} znaków", MinimumLength = 6)]
@@ -57,10 +55,9 @@ namespace GymManagerWebApp.Models
         {
         }
 
-        public User(Guid id, string firstName, string lastName, string email, string password1,
+        public User(string firstName, string lastName, string email, string password1,
             string password2, string phoneNr, string gender, string rights, DateTime createdAt)
         {
-            Id = id;
             FirstName = firstName;
             LastName= lastName;
             Email = email;

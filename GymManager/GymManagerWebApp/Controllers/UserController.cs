@@ -17,17 +17,15 @@ namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private IUserService _userService;
         private IUserValidation _userValidation;
+        private IUserRepository _userRepository;
 
-        public UserController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserService userService, IUserValidation userValidation)
+        public UserController(IUserService userService, IUserValidation userValidation, IUserRepository userRepository)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _userService = userService;
             _userValidation = userValidation;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -70,41 +68,34 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Data out of the form
-                model.Gender = HttpContext.Request.Form["Gender"].ToString();
-                model.Id = Guid.NewGuid();
-                model.CreatedAt = DateTime.UtcNow;
-                model.Rights = "standard user";
+                ////Data out of the form
+                //model.Gender = HttpContext.Request.Form["Gender"].ToString();
+                //model.CreatedAt = DateTime.UtcNow;
+                //model.Rights = "standard user";
 
-                //Adjustment format to store in database
-                model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
-                model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
-                model.Email = model.Email.ToLower();
+                ////Adjustment format to store in database
+                //model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
+                //model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
+                //model.Email = model.Email.ToLower();
 
-                if (await _userValidation.ValidateSignInAsync(model))
+                //if (await _userValidation.ValidateSignInAsync(model))
+                //{
+                //    //model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
+                //    //model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
+                //    //await _userService.RegisterUserAsync(model);
+                //}
+
+                var result = await _userRepository.CreateUserAsync(model);
+                if(!result.Succeeded)
                 {
-                    //model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
-                    //model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
-                    //await _userService.RegisterUserAsync(model);
-                    var user = new IdentityUser {
-                        Gender = model.Gender,
-
-
-                    }; //w nawiasach klamrowych przypisać wszystkie property z modelu
-                    var result = await _userManager.CreateAsync(user, model.Password1);
-
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("index", "home");
-                    }
-
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
                     }
-                    return View("SignInSuccess", model);
                 }
+
+                ModelState.Clear();
+
             }
             return View();
         }

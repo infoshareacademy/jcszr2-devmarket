@@ -9,25 +9,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagerWebApp.Services;
+using GymManagerWebApp.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using GymManagerWebApp.Models;
 
 namespace GymManagerWebApp
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<GymManagerContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<User, IdentityRole>(o=>
+            {
+                o.Password.RequireNonAlphanumeric = false;
+            })
+                .AddEntityFrameworkStores<GymManagerContext>();
             services.AddControllersWithViews();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserValidation, UserValidation>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +59,7 @@ namespace GymManagerWebApp
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -59,11 +71,6 @@ namespace GymManagerWebApp
                 endpoints.MapControllerRoute(
                     name: "User",
                     pattern: "{controller=User}/{action=SignIn}/{id?}");
-
-                endpoints.MapControllerRoute(
-                  name: "User",
-                  pattern: "{controller=User}/{action=SignIn}/{id?}");
-
             });
         }
     }

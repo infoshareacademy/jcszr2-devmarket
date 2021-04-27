@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GymManagerWebApp.Services
 {
@@ -10,5 +11,6 @@ namespace GymManagerWebApp.Services
         Task<User> GetUserAsync(string email);
         Task AddUserAsync(User model);
         Task<IList<User>> GetUsersAsync();
+        Task<IdentityResult> CreateUserAsync(User model);
     }
 }

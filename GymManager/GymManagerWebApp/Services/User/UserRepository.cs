@@ -7,12 +7,31 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GymManagerWebApp.FileReaders;
 using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GymManagerWebApp.Services
 {
     public class UserRepository : IUserRepository
     {
         private static IList<User> _users = new List<User>();
+        private readonly UserManager<User> _userManager;
+        public UserRepository(UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
+
+        public async Task<IdentityResult> CreateUserAsync(User model)
+        {
+            var user = new User()
+            {
+                Email = model.Email,
+                UserName = model.Email,
+            };
+
+           var result = await _userManager.CreateAsync(user, model.Password1);
+           return result;
+        }
+
 
         public async Task<User> GetUserAsync(string email)
         {
@@ -28,7 +47,6 @@ namespace GymManagerWebApp.Services
         public async Task AddUserAsync(User model)
         {
             var user = new User(
-                model.Id,
                 model.FirstName,
                 model.LastName,
                 model.Email,
