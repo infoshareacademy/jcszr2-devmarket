@@ -39,13 +39,17 @@ namespace GymManagerWebApp.Controllers
         [Route("LogIn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogInAsync(Login login)
+        public async Task<IActionResult> LogInAsync(Login login, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 var result = await _userRepository.LoginAsync(login);
                 if(result.Succeeded)
                 {
+                    if(!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }    
                     return RedirectToAction("Index", "Home");
                 }
 
