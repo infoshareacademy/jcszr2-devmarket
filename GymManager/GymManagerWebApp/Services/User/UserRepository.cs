@@ -26,6 +26,13 @@ namespace GymManagerWebApp.Services
             {
                 Email = model.Email,
                 UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                PasswordHash = model.Password1,
+                CreatedAt = model.CreatedAt,
+                Role = model.Role,
             };
 
            var result = await _userManager.CreateAsync(user, model.Password1);
@@ -52,9 +59,9 @@ namespace GymManagerWebApp.Services
                 model.Email,
                 model.Password1,
                 model.Password1,
-                model.PhoneNr,
+                model.PhoneNumber,
                 model.Gender,
-                model.Rights,
+                model.Role,
                 model.CreatedAt);
 
             await JsonManager.AddUserAsync(user);

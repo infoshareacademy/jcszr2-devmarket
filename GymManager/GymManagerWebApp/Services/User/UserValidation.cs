@@ -29,7 +29,7 @@ namespace GymManagerWebApp.Services
                 && ArePasswordsValid(model.Password1, model.Password2)
                 && IsNameValid(model.FirstName)
                 && IsNameValid(model.LastName)
-                && IsPhoneValid(model.PhoneNr)
+                && IsPhoneValid(model.PhoneNumber)
             ) return true;
             return false;
         }

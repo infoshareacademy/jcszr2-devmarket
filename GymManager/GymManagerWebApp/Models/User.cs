@@ -24,7 +24,7 @@ namespace GymManagerWebApp.Models
         [Phone(ErrorMessage ="Numer telefonu powinien zawierać tylko cyfry!")]
         [StringLength(maximumLength: 9, MinimumLength = 9, ErrorMessage = "Nieprawidłowa długość- numer telefonu musi składać się z 9 cyfr!")]
         [DataType(DataType.PhoneNumber)]
-        public string PhoneNr { get; set; }
+        public override string PhoneNumber { get; set; }
         
         [Required(ErrorMessage ="Wymagany adres e-mail")]
         [EmailAddress(ErrorMessage ="Nieprawidłowy adres e-mail")]
@@ -49,23 +49,23 @@ namespace GymManagerWebApp.Models
        
         public DateTime CreatedAt { get; set; }
 
-        public string Rights { get; set; }
+        public string Role { get; set; }
 
         public User()
         {
         }
 
         public User(string firstName, string lastName, string email, string password1,
-            string password2, string phoneNr, string gender, string rights, DateTime createdAt)
+            string password2, string phoneNr, string gender, string role, DateTime createdAt)
         {
             FirstName = firstName;
             LastName= lastName;
             Email = email;
             Password1 = password1;
             Password2 = password2;
-            PhoneNr = phoneNr;
+            PhoneNumber = phoneNr;
             Gender = gender;
-            Rights = rights;
+            Role = role;
             CreatedAt = createdAt;
         }
     }

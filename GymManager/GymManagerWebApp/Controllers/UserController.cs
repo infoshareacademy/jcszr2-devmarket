@@ -68,34 +68,28 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                ////Data out of the form
-                //model.Gender = HttpContext.Request.Form["Gender"].ToString();
-                //model.CreatedAt = DateTime.UtcNow;
-                //model.Rights = "standard user";
+                //Data out of the form
+                model.Gender = HttpContext.Request.Form["Gender"].ToString();
+                model.CreatedAt = DateTime.UtcNow;
+                model.Role = "standard";
 
-                ////Adjustment format to store in database
-                //model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
-                //model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
-                //model.Email = model.Email.ToLower();
+                //Adjustment format to store in database
+                model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
+                model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
 
-                //if (await _userValidation.ValidateSignInAsync(model))
-                //{
-                //    //model.Password1 = await _userService.EncryptBySha256Hash(model.Password1);
-                //    //model.Password2 = await _userService.EncryptBySha256Hash(model.Password2);
-                //    //await _userService.RegisterUserAsync(model);
-                //}
-
-                var result = await _userRepository.CreateUserAsync(model);
-                if(!result.Succeeded)
+                if (await _userValidation.ValidateSignInAsync(model))
                 {
-                    foreach (var error in result.Errors)
+                    var result = await _userRepository.CreateUserAsync(model);
+                    if (!result.Succeeded)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
                     }
+
+                    ModelState.Clear();
                 }
-
-                ModelState.Clear();
-
             }
             return View();
         }
@@ -104,3 +98,6 @@ namespace GymManagerWebApp.Controllers
 
 
 }
+
+
+
