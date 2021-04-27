@@ -54,6 +54,14 @@ namespace GymManagerWebApp.Controllers
             return View("LogIn", login);
         }
 
+        [Route("Logout")]
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _userRepository.LogoutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         [Route("SignIn")]
         [HttpGet]
         public IActionResult SignIn()

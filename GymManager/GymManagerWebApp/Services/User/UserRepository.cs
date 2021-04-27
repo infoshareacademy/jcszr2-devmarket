@@ -48,6 +48,12 @@ namespace GymManagerWebApp.Services
             return result;
         }
 
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
+
         public async Task<User> GetUserAsync(string email)
         {
             _users = await JsonManager.GetUsersAsync();
@@ -74,9 +80,6 @@ namespace GymManagerWebApp.Services
 
             await JsonManager.AddUserAsync(user);
         }
-
-
- 
 
     }
 }
