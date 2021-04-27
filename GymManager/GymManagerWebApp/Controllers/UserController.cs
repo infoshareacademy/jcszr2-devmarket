@@ -28,6 +28,7 @@ namespace GymManagerWebApp.Controllers
             _userRepository = userRepository;
         }
 
+        [Route("LogIn")]
         [HttpGet]
         public IActionResult LogIn()
         {
@@ -35,26 +36,25 @@ namespace GymManagerWebApp.Controllers
             return View(login);
         }
 
+        [Route("LogIn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogInAsync(Login login)
         {
             if (ModelState.IsValid)
             {
-                //Adjustment format to compare entered user with users from DB
-                login.Email = login.Email.ToLower();
-                login.Password = await _userService.EncryptBySha256Hash(login.Password);
-
-                if (await _userValidation.ValidateLogInAsync(login))
+                var result = await _userRepository.LoginAsync(login);
+                if(result.Succeeded)
                 {
-                    var activeUser = await _userService.LoginUserAsync(login.Email,login.Password);
-                    return View("UserHomePage", activeUser);
+                    return RedirectToAction("Index", "Home");
                 }
+
+                ModelState.AddModelError("","Nieprawidłowe dane logowania. Spróbój ponownie");
             }
             return View("LogIn", login);
         }
 
-        
+        [Route("SignIn")]
         [HttpGet]
         public IActionResult SignIn()
         {
@@ -62,6 +62,7 @@ namespace GymManagerWebApp.Controllers
             return View(user);
         }
 
+        [Route("SignIn")]
         [HttpPost] 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignInAsync(User model)

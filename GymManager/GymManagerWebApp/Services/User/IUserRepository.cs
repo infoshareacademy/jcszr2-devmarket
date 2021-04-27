@@ -12,5 +12,6 @@ namespace GymManagerWebApp.Services
         Task AddUserAsync(User model);
         Task<IList<User>> GetUsersAsync();
         Task<IdentityResult> CreateUserAsync(User model);
+        Task<SignInResult> LoginAsync(Login login);
     }
 }

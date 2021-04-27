@@ -15,9 +15,12 @@ namespace GymManagerWebApp.Services
     {
         private static IList<User> _users = new List<User>();
         private readonly UserManager<User> _userManager;
-        public UserRepository(UserManager<User> userManager)
+        private readonly SignInManager<User> _signInManager;
+
+        public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> CreateUserAsync(User model)
@@ -39,6 +42,11 @@ namespace GymManagerWebApp.Services
            return result;
         }
 
+        public async Task<SignInResult> LoginAsync(Login login)
+        {
+            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false, lockoutOnFailure: false);
+            return result;
+        }
 
         public async Task<User> GetUserAsync(string email)
         {
@@ -66,6 +74,9 @@ namespace GymManagerWebApp.Services
 
             await JsonManager.AddUserAsync(user);
         }
+
+
+ 
 
     }
 }
