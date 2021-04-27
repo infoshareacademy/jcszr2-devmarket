@@ -18,14 +18,10 @@ namespace GymManagerWebApp.Controllers
     public class UserController : Controller
     {
         private IUserService _userService;
-        private IUserValidation _userValidation;
-        private IUserRepository _userRepository;
 
-        public UserController(IUserService userService, IUserValidation userValidation, IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _userValidation = userValidation;
-            _userRepository = userRepository;
         }
 
         [Route("LogIn")]
@@ -43,7 +39,7 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userRepository.LoginAsync(login);
+                var result = await _userService.LoginAsync(login);
                 if(result.Succeeded)
                 {
                     if(!string.IsNullOrEmpty(returnUrl))
@@ -62,7 +58,7 @@ namespace GymManagerWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await _userRepository.LogoutAsync();
+            await _userService.LogoutAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -90,19 +86,17 @@ namespace GymManagerWebApp.Controllers
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
 
-                if (await _userValidation.ValidateSignInAsync(model))
+                var result = await _userService.CreateUserAsync(model);
+                if (!result.Succeeded)
                 {
-                    var result = await _userRepository.CreateUserAsync(model);
-                    if (!result.Succeeded)
+                    foreach (var error in result.Errors)
                     {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
+                        ModelState.AddModelError("", error.Description);
                     }
-
-                    ModelState.Clear();
                 }
+
+                ModelState.Clear();
+
             }
             return View();
         }

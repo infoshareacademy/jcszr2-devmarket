@@ -7,51 +7,54 @@ using GymManagerWebApp.FileReaders;
 using GymManagerWebApp.Models;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace GymManagerWebApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+
+        private static IList<User> _users = new List<User>();
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+
+        public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _userRepository = userRepository;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        public async Task RegisterUserAsync(User model)
+        public async Task<IdentityResult> CreateUserAsync(User model)
         {
-            await _userRepository.AddUserAsync(model);
-        }
-
-        public async Task<User> LoginUserAsync(string email, string hashPassword)
-        {
-            var user = await _userRepository.GetUserAsync(email);
-            return user;
-        }
-
-        public async Task<string> EncryptBySha256Hash(string password)
-        {
-            // Create a SHA256   
-            using (SHA256 sha256Hash = SHA256.Create())
+            var user = new User()
             {
-                // ComputeHash - returns byte array  
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+                Email = model.Email,
+                UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                PasswordHash = model.Password1,
+                CreatedAt = model.CreatedAt,
+                Role = model.Role,
+            };
 
-                // Convert byte array to a string   
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
+            var result = await _userManager.CreateAsync(user, model.Password1);
+            return result;
         }
 
-        public async Task<bool> FindUser(string email, string password)
+        public async Task<SignInResult> LoginAsync(Login login)
         {
-            var _users = await JsonManager.GetUsersAsync();
-            return _users.Any(x => x.Email == email && x.Password1 == password);
+            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false, lockoutOnFailure: false);
+            return result;
         }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
 
     }
 }

@@ -40,9 +40,7 @@ namespace GymManagerWebApp
             services.ConfigureApplicationCookie(config => 
             config.LoginPath = _configuration["Application:LoginPath"]);
 
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserValidation, UserValidation>();
 
         }
 

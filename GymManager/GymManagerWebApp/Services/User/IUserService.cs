@@ -2,14 +2,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GymManagerWebApp.Services
 {
     public interface IUserService
     {
-        Task RegisterUserAsync(User model);
-        Task<User> LoginUserAsync(string email, string password);
-        Task<string> EncryptBySha256Hash(string password);
-        Task<bool> FindUser(string email, string password);
+        Task<IdentityResult> CreateUserAsync(User model);
+        Task<SignInResult> LoginAsync(Login login);
+        Task LogoutAsync();
     }
 }
