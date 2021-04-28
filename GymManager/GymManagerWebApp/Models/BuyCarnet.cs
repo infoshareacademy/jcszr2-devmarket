@@ -5,32 +5,36 @@ using System.Threading.Tasks;
 
 namespace GymManagerWebApp.Models
 {
-    public class BuyCarnet
+    public class CarnetViewModel
     {
-        private List<Carnet> carnetListTypes = new List<Carnet>()
-        {
-            new Carnet(1, "Karnet jednorazowy"), new Carnet(2, "Karnet 1 tygodniowy"), new Carnet(3, "Karnet 1 miesięczny")
-        };
-        public string TicketType { get; set; }
+      public int Id { get; set; }
+      public string Name { get; set; }
 
-        public List<Carnet> getCarnets()
-        {
-            return this.carnetListTypes;
-        }
     }
 
     public class Carnet
     {
-        public int Id;
-        public string CarnetTypeName;
-
-        public Carnet(int id, string carnetTypeName)
-        {
-            this.Id = id;
-            this.CarnetTypeName = carnetTypeName;
-        }
+        public string Name { get; set; }
+        public DateTime PurchasedAt { get; set; }
+        public double Price { get; set; }
+        public User Owner { get; set; }
 
     }
+
+    public class CarnetTemporaryType : Carnet
+    {
+        public DateTime ExpireDate { get; set; }
+    }
+
+    public class CarnetQuantitativeType : Carnet
+    {
+        public int PurchasedAmount { get; set; }
+        public int RemainAmount {get; set; }
+        public int UsedAmount { get; set; }
+    }
+
+
+
 }
 
 
