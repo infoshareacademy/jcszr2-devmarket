@@ -14,10 +14,10 @@
                 @if (user.IsSignedIn(User))
                 {
                     <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Tickets" asp-action="BuyCarnet">Twoje konto</a>
+                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="PurchasedCarnets">Twoje karnety</a>
                     </li>
                     <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Tickets" asp-action="BuyCarnet">Kup karnet</a>
+                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="BuyCarnet">Kup karnet</a>
                     </li>
                     <li class="nav-item">
                         <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>
@@ -31,7 +31,7 @@
                         <a class="link-menu" asp-area="" asp-controller="Home" asp-action="Index">Strona Główna</a>
                     </li>
                     <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Tickets" asp-action="BuyCarnet">Kup karnet</a>
+                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="BuyCarnet">Kup karnet</a>
                     </li>
                     <li class="nav-item">
                         <a class="link-menu" asp-area="" asp-controller="User" asp-action="LogIn">Logowanie</a>

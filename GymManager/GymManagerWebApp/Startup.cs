@@ -13,6 +13,7 @@ using GymManagerWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GymManagerWebApp.Models;
+using GymManagerWebApp.Services.CarnetService;
 
 namespace GymManagerWebApp
 {
@@ -41,6 +42,7 @@ namespace GymManagerWebApp
             config.LoginPath = _configuration["Application:LoginPath"]);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICarnetService, CarnetService>();
 
         }
 

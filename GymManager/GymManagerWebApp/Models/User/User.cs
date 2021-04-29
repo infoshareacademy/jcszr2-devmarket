@@ -50,6 +50,7 @@ namespace GymManagerWebApp.Models
         public DateTime CreatedAt { get; set; }
 
         public string Role { get; set; }
+        public static object Identity { get; internal set; }
 
         public User()
         {

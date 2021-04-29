@@ -14,8 +14,6 @@ namespace GymManagerWebApp.Services
 {
     public class UserService : IUserService
     {
-
-        private static IList<User> _users = new List<User>();
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 

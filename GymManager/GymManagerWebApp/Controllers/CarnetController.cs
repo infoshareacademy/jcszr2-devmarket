@@ -4,27 +4,47 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
+using GymManagerWebApp.Services.CarnetService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagerWebApp.Controllers
 {
-    public class TicketsController : Controller
+    public class CarnetController : Controller
     {
-        [Authorize]
-        public IActionResult BuyCarnet()
+        private  ICarnetService _carnetService;
+
+        public CarnetController(ICarnetService userService)
         {
-            var TicketsModel = new BuyCarnet();
-            return View(TicketsModel);
+            _carnetService = userService;
         }
 
+        [HttpGet]
+        public IActionResult BuyCarnet(CarnetViewModel carnet)
+        {
+            return View(carnet);
+        }
+
+        [Authorize]
         [HttpPost]
-        public IActionResult BuyCarnet(BuyCarnet Carnet)
+        public async Task<IActionResult> BuyCarnet()
         {
             const string CARNET_FIELD = "CarnetType";
-            var carnetTypeId = HttpContext.Request.Form[CARNET_FIELD];
+            var carnetId = HttpContext.Request.Form[CARNET_FIELD]; //returns full ticket object
+            var currentUserEmail = HttpContext.User.Identity.Name;
+            await _carnetService.AddCarnetAsync(Int32.Parse(carnetId), currentUserEmail);
 
             return Redirect("/");
         }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> PurchasedCarnets()
+        {
+
+
+        }
+
     }
 }
