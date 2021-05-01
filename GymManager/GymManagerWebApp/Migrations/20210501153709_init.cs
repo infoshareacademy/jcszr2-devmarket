@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymManagerWebApp.Migrations
 {
-    public partial class InitMigration : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,6 +52,29 @@ namespace GymManagerWebApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PurchasedCarnets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CarnetTypeNumber = table.Column<int>(nullable: false),
+                    CarnetCategory = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    PurchasedAt = table.Column<DateTime>(nullable: false),
+                    OwnerEmail = table.Column<string>(nullable: true),
+                    Quantity = table.Column<int>(nullable: false),
+                    UsedOn = table.Column<DateTime>(nullable: false),
+                    ExpireDate = table.Column<DateTime>(nullable: false),
+                    IsExpired = table.Column<bool>(nullable: false),
+                    RemainQty = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchasedCarnets", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,6 +239,9 @@ namespace GymManagerWebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "PurchasedCarnets");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

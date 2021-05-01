@@ -1,4 +1,4 @@
-﻿@model CarnetViewModel
+﻿@model CarnetsOfferViewModel
 
 @{
     ViewData["Title"] = "Kup karnet";
@@ -15,7 +15,7 @@
                         <div>
                             @carnet.Name, @carnet.Price
                         </div>
-                        <button asp-for="CarnetType" name="CarnetType" type="submit" value="@carnet.Id">
+                        <button asp-for="CarnetType" name="CarnetType" type="submit" value="@carnet.CarnetTypeNumber">
                             Kup!
                         </button>
                     </div>

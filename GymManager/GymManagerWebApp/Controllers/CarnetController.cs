@@ -20,7 +20,7 @@ namespace GymManagerWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult BuyCarnet(CarnetViewModel carnet)
+        public IActionResult BuyCarnet(CarnetsOfferViewModel carnet)
         {
             return View(carnet);
         }
@@ -30,11 +30,11 @@ namespace GymManagerWebApp.Controllers
         public async Task<IActionResult> BuyCarnet()
         {
             const string CARNET_FIELD = "CarnetType";
-            var carnetId = HttpContext.Request.Form[CARNET_FIELD]; //returns full ticket object
+            var carnetTypeNr = HttpContext.Request.Form[CARNET_FIELD]; //returns full ticket object
             var currentUserEmail = HttpContext.User.Identity.Name;
-            await _carnetService.AddCarnetAsync(Int32.Parse(carnetId), currentUserEmail);
+            await _carnetService.AddCarnetAsync(Int32.Parse(carnetTypeNr), currentUserEmail);
 
-            return Redirect("/");
+            return View("PurchaseConfirmation");
         }
 
 
@@ -42,9 +42,15 @@ namespace GymManagerWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> PurchasedCarnets()
         {
+            string TimeCarnetCategoryName = new CarnetsOfferViewModel().TimeCarnetCategory;
+            string QuantityCarnetCategoryName = new CarnetsOfferViewModel().QuantityCarnetCategory;
+            var currentUserEmail = HttpContext.User.Identity.Name;
+            PurchasedCarnetsViewModel model = new PurchasedCarnetsViewModel();
 
+            model.TimeCarnets = await _carnetService.GetPurchasedCarnets(currentUserEmail, TimeCarnetCategoryName);
+            model.QuantityCarnets = await  _carnetService.GetPurchasedCarnets(currentUserEmail, QuantityCarnetCategoryName);
 
+            return View("PurchasedCarnets", model);
         }
-
     }
 }

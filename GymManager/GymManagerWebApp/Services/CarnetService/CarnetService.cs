@@ -11,56 +11,42 @@ namespace GymManagerWebApp.Services.CarnetService
 {
     public class CarnetService : ICarnetService
     {
-        public async Task AddCarnetAsync(int carnetId, string currentUsername)
+
+        public async Task AddCarnetAsync(int carnetTypeNumber, string currentUsername)
         {
             using (var context = new GymManagerContext())
             {
-                var carnets = new CarnetViewModel().CarnetList;
-                var chosenCarnet = carnets.Single(x => x.Id == carnetId);
+                var allCarnetTypes = new CarnetsOfferViewModel().CarnetList;
+                var selectedCarnet = allCarnetTypes.Single(x => x.CarnetTypeNumber == carnetTypeNumber); //getting right carnet type object from carnet list modelview
 
-                if(chosenCarnet.GetType().Name == "TimeCarnet")
+                var carnet = new Carnet()
                 {
-                    var carnet = new TimeCarnet()
-                    {
-                        Id = carnetId,
-                        Name = chosenCarnet.Name,
-                        Quantity = chosenCarnet.Quantity,
-                        Price = chosenCarnet.Price,
-                        PurchasedAt = DateTime.UtcNow,
-                        OwnerEmail = currentUsername,
+                    CarnetTypeNumber = carnetTypeNumber,
+                    CarnetCategory = selectedCarnet.CarnetCategory,
+                    Name = selectedCarnet.Name,
+                    Quantity = selectedCarnet.Quantity,
+                    Price = selectedCarnet.Price,
+                    PurchasedAt = DateTime.UtcNow,
+                    OwnerEmail = currentUsername,
+                    RemainQty = selectedCarnet.Quantity,
+                };
 
-                    };
+                await context.AddAsync(carnet);
+                await context.SaveChangesAsync();
+            }
 
-                    await context.AddAsync(carnet);
-                    await context.SaveChangesAsync();
-                }
-                else
-                {
-                    var carnet = new QuantityCarnet()
-                    {
-                        Id = carnetId,
-                        Name = chosenCarnet.Name,
-                        Quantity = chosenCarnet.Quantity,
-                        Price = chosenCarnet.Price,
-                        PurchasedAt = DateTime.UtcNow,
-                        OwnerEmail = currentUsername
-                    };
+        }
 
-                    await context.AddAsync(carnet);
-                    await context.SaveChangesAsync();
-                }
+        public async Task<List<Carnet>> GetPurchasedCarnets(string currentUserEmail, string carnetCategoryName)
+        {
+            using (var context = new GymManagerContext())
+            {
+                var timeCarnets = await context.PurchasedCarnets
+                    .Where(x => x.CarnetCategory == carnetCategoryName && x.OwnerEmail == currentUserEmail).Select(x => x).ToListAsync();
 
+                return timeCarnets;
             }
         }
-       
-        //public List<TimeCarnet> GetPurchasedTimeCarnets(string username)
-        //{
-
-        //}
-
-        //public List<TimeCarnet> GetPurchasedQuantityCarnets(string username)
-        //{
-
-        //}
     }
 }
+

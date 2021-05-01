@@ -98,12 +98,9 @@ namespace GymManagerWebApp.Controllers
                 ModelState.Clear();
 
             }
-            return View();
+            return View("SignInConfirmation");
         }
     }
-
-
-
 }
 
 

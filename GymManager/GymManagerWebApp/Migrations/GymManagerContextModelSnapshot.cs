@@ -19,47 +19,18 @@ namespace GymManagerWebApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("GymManagerWebApp.Models.QuantityCarnet", b =>
+            modelBuilder.Entity("GymManagerWebApp.Carnet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CarnetCategory")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("PurchasedAmount")
+                    b.Property<int>("CarnetTypeNumber")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("PurchasedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RemainAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsedAmount")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("PurchasedQuantityCarnets");
-                });
-
-            modelBuilder.Entity("GymManagerWebApp.Models.TimeCarnet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("ExpireDate")
                         .HasColumnType("datetime2");
@@ -70,8 +41,8 @@ namespace GymManagerWebApp.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("OwnerEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -79,14 +50,18 @@ namespace GymManagerWebApp.Migrations
                     b.Property<DateTime>("PurchasedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RemainQty")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UsedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("PurchasedTimeCarnets");
+                    b.ToTable("PurchasedCarnets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -326,20 +301,6 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("User");
-                });
-
-            modelBuilder.Entity("GymManagerWebApp.Models.QuantityCarnet", b =>
-                {
-                    b.HasOne("GymManagerWebApp.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-                });
-
-            modelBuilder.Entity("GymManagerWebApp.Models.TimeCarnet", b =>
-                {
-                    b.HasOne("GymManagerWebApp.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
