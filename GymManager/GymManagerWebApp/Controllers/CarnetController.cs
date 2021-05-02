@@ -13,6 +13,8 @@ namespace GymManagerWebApp.Controllers
     public class CarnetController : Controller
     {
         private  ICarnetService _carnetService;
+        private string TimeCarnetCategoryName = new CarnetsOfferViewModel().TimeCarnetCategory;
+        private string QuantityCarnetCategoryName = new CarnetsOfferViewModel().QuantityCarnetCategory;
 
         public CarnetController(ICarnetService userService)
         {
@@ -30,9 +32,9 @@ namespace GymManagerWebApp.Controllers
         public async Task<IActionResult> BuyCarnet()
         {
             const string CARNET_FIELD = "CarnetType";
-            var carnetTypeNr = HttpContext.Request.Form[CARNET_FIELD]; //returns full ticket object
+            var carnetTypeNr = Int32.Parse(HttpContext.Request.Form[CARNET_FIELD]);
             var currentUserEmail = HttpContext.User.Identity.Name;
-            await _carnetService.AddCarnetAsync(Int32.Parse(carnetTypeNr), currentUserEmail);
+            await _carnetService.AddCarnetAsync(carnetTypeNr, currentUserEmail);
 
             return View("PurchaseConfirmation");
         }
@@ -40,17 +42,49 @@ namespace GymManagerWebApp.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> PurchasedCarnets()
+        public async Task<IActionResult> PurchasedCarnets(PurchasedCarnetsViewModel model)
         {
-            string TimeCarnetCategoryName = new CarnetsOfferViewModel().TimeCarnetCategory;
-            string QuantityCarnetCategoryName = new CarnetsOfferViewModel().QuantityCarnetCategory;
             var currentUserEmail = HttpContext.User.Identity.Name;
-            PurchasedCarnetsViewModel model = new PurchasedCarnetsViewModel();
-
             model.TimeCarnets = await _carnetService.GetPurchasedCarnets(currentUserEmail, TimeCarnetCategoryName);
             model.QuantityCarnets = await  _carnetService.GetPurchasedCarnets(currentUserEmail, QuantityCarnetCategoryName);
 
             return View("PurchasedCarnets", model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> PurchasedCarnets(PurchasedCarnetsViewModel model, int carnetId) //Activates carnet
+        {
+            var userEmail = HttpContext.User.Identity.Name;
+            var isAnyActive = await _carnetService.IsAnyActive(userEmail);
+
+            if(isAnyActive)
+            {
+                ModelState.AddModelError("","Posiadasz już jeden aktywny bilet czasowy, nie można posiadać 2 aktywnych karnetów jednocześnie");
+                model.TimeCarnets = await _carnetService.GetPurchasedCarnets(userEmail, TimeCarnetCategoryName);
+                model.QuantityCarnets = await _carnetService.GetPurchasedCarnets(userEmail, QuantityCarnetCategoryName);
+                return View(model);
+            }
+
+            await _carnetService.ActivateCarnet(carnetId);
+            return View("ActivateCarnetConfirmation");
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ActiveCarnets()
+        {
+
+            string TimeCarnetCategoryName = new CarnetsOfferViewModel().TimeCarnetCategory;
+            string QuantityCarnetCategoryName = new CarnetsOfferViewModel().QuantityCarnetCategory;
+            var currentUserEmail = HttpContext.User.Identity.Name;
+            var model = new PurchasedCarnetsViewModel();
+
+            model.TimeCarnets = await _carnetService.GetActivatedCarnets(currentUserEmail, TimeCarnetCategoryName);
+            model.QuantityCarnets = await _carnetService.GetActivatedCarnets(currentUserEmail, QuantityCarnetCategoryName);
+
+            return View("ActiveCarnets", model);
         }
     }
 }

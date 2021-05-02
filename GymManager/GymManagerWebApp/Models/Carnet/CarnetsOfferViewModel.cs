@@ -8,8 +8,6 @@ namespace GymManagerWebApp
 {
     public class CarnetsOfferViewModel
     {
-        //private int monthDays = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
-
         public string TimeCarnetCategory { get { return "czasowy"; } }
         public string QuantityCarnetCategory { get { return "ilosciowy"; } }
 

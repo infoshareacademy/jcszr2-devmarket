@@ -4,14 +4,16 @@ using GymManagerWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GymManagerWebApp.Migrations
 {
     [DbContext(typeof(GymManagerContext))]
-    partial class GymManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20210502092715_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +34,7 @@ namespace GymManagerWebApp.Migrations
                     b.Property<int>("CarnetTypeNumber")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ExpireDate")
+                    b.Property<DateTime>("ExpireDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
@@ -59,7 +61,7 @@ namespace GymManagerWebApp.Migrations
                     b.Property<int>("RemainQty")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UsedOn")
+                    b.Property<DateTime>("UsedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

@@ -8,7 +8,10 @@ namespace GymManagerWebApp.Services.CarnetService
 {
     public interface ICarnetService
     {
-        Task AddCarnetAsync(int carnetId, string currentUsername);
-        Task<List<Carnet>> GetPurchasedCarnets(string currentUserEmail, string carnetCategoryName);
+        Task ActivateCarnet(int carnetId);
+        Task AddCarnetAsync(int carnetId, string userEmail);
+        Task<List<Carnet>> GetActivatedCarnets(string userEmail, string carnetCategoryName);
+        Task<List<Carnet>> GetPurchasedCarnets(string userEmail, string carnetCategoryName);
+        Task<bool> IsAnyActive(string userEmail);
     }
 }

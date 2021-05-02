@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagerWebApp.Migrations
 {
     [DbContext(typeof(GymManagerContext))]
-    [Migration("20210501153709_init")]
-    partial class init
+    [Migration("20210502142421_AdjusterCarnetTablePart2")]
+    partial class AdjusterCarnetTablePart2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,8 +34,11 @@ namespace GymManagerWebApp.Migrations
                     b.Property<int>("CarnetTypeNumber")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ExpireDate")
+                    b.Property<DateTime?>("ExpireDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsExpired")
                         .HasColumnType("bit");
@@ -58,7 +61,7 @@ namespace GymManagerWebApp.Migrations
                     b.Property<int>("RemainQty")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UsedOn")
+                    b.Property<DateTime?>("UsedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

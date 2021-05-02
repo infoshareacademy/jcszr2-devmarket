@@ -1,0 +1,65 @@
+﻿@model PurchasedCarnetsViewModel
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Kupione karnety</title>
+</head>
+<body>
+    <h1>Twoje karnety:</h1>
+
+    <h2>Karnety czasowe:</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">a</th>
+                    <th scope="col">b</th>
+                    <th scope="col">c</th>
+                    <th scope="col">Zakupiona ilość</th>
+                    <th scope="col">Pozostała ilość</th>
+                    <th scope="col">Aktywacja</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var carnet in Model.TimeCarnets)
+                {
+                    <tr>
+                        <td>@carnet.Name</td>
+                        <td>@carnet.PurchasedAt</td>
+                        <td>@carnet.Price zł</td>
+                        <td>@carnet.Name</td>
+                        <td>@carnet.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <h2>Karnety ilościowe:</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nazwa biletu</th>
+                    <th scope="col">Data zakupu</th>
+                    <th scope="col">Koszt</th>
+                    <th scope="col">Zakupiona ilość</th>
+                    <th scope="col">Pozostała ilość</th>
+                    <th scope="col">Aktywacja</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var carnet in Model.QuantityCarnets)
+                {
+                    <tr>
+                        <td>@carnet.Name</td>
+                        <td>@carnet.PurchasedAt</td>
+                        <td>@carnet.Price zł</td>
+                        <td>@carnet.Name</td>
+                        <td>@carnet.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</body>
+</html>

@@ -17,14 +17,14 @@ namespace GymManagerWebApp
         public DateTime PurchasedAt { get; set; }
         public string OwnerEmail { get; set; }
         public int Quantity { get; set; }
-        public DateTime UsedOn { get; set; }
-        public DateTime ExpireDate { get; set; }
+        public DateTime? UsedOn { get; set; }
+        public DateTime? ExpireDate { get; set; }
+        public bool IsActive { get; set; }
         public bool IsExpired { get; set; }
         public int RemainQty { get; set; }
 
         public Carnet()
-        { 
-        
+        {
         }
 
         public Carnet(int carnetTypeNumber, string carnetCategory, string name, double price, int quantity)
@@ -37,7 +37,7 @@ namespace GymManagerWebApp
         }
 
         public Carnet(int carnetTypeNumber, string carnetCategory, string name, double price, int quantity, string ownerEmail, DateTime purchasedAt,
-            int remainQty)
+            int remainQty, bool isActive)
         {
             CarnetTypeNumber = carnetTypeNumber;
             CarnetCategory = carnetCategory;
@@ -47,6 +47,7 @@ namespace GymManagerWebApp
             OwnerEmail = ownerEmail;
             PurchasedAt = purchasedAt;
             RemainQty = remainQty;
+            IsActive = isActive;
         }
     }
 }

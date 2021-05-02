@@ -69,6 +69,7 @@ namespace GymManagerWebApp.Migrations
                     Quantity = table.Column<int>(nullable: false),
                     UsedOn = table.Column<DateTime>(nullable: false),
                     ExpireDate = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
                     IsExpired = table.Column<bool>(nullable: false),
                     RemainQty = table.Column<int>(nullable: false)
                 },
