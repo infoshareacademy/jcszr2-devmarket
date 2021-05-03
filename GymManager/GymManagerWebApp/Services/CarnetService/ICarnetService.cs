@@ -1,4 +1,5 @@
 ﻿using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace GymManagerWebApp.Services.CarnetService
         Task AddCarnetAsync(int carnetId, string userEmail);
         Task<List<Carnet>> GetActivatedCarnets(string userEmail, string carnetCategoryName);
         Task<List<Carnet>> GetPurchasedCarnets(string userEmail, string carnetCategoryName);
+        [Authorize("Admin")]
+        Task<List<Carnet>> GetPurchasedCarnets(string carnetCategoryName);
         Task<bool> IsAnyActive(string userEmail);
     }
 }

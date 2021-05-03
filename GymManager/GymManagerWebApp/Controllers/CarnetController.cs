@@ -69,5 +69,16 @@ namespace GymManagerWebApp.Controllers
             await _carnetService.ActivateCarnet(carnetId);
             return View("ActivateCarnetConfirmation");
         }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet]
+        public async Task<IActionResult> AllPurchasedCarnets(PurchasedCarnetsViewModel model)
+        {
+            model.TimeCarnets = await _carnetService.GetPurchasedCarnets(_timeCarnetCategoryName);
+            model.QuantityCarnets = await _carnetService.GetPurchasedCarnets(_timeCarnetCategoryName);
+
+            return View("PurchasedCarnets", model);
+        }
+
     }
 }

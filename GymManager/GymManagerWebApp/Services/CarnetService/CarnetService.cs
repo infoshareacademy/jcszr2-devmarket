@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GymManagerWebApp.Data;
 using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,17 @@ namespace GymManagerWebApp.Services.CarnetService
             }
         }
 
+        [Authorize("Admin")]
+        public async Task<List<Carnet>> GetPurchasedCarnets(string carnetCategoryName)
+        {
+            using (var context = new GymManagerContext())
+            {
+                var purchasedCarnets = await context.PurchasedCarnets
+                    .Where(x => x.CarnetCategory == carnetCategoryName).Select(x => x).ToListAsync();
+
+                return purchasedCarnets;
+            }
+        }
 
         public async Task<bool> IsAnyActive(string userEmail)
         {
