@@ -1,5 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Identity.SignInManager<User> user
-
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-red border-bottom box-shadow mb-3">
     <div class="container">
@@ -10,22 +9,37 @@
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
             <ul class="navbar-nav flex-grow-1">
-
-                @if (user.IsSignedIn(User))
+                @if (signInManager.IsSignedIn(User))
                 {
-                    <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="ActiveCarnets">Aktywne karnety</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="PurchasedCarnets">Zakupione karnety</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="BuyCarnet">Kup karnet</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>
-                        <a class="link-menu" asp-area="" asp-controller="User" asp-action="Logout">Wyloguj</a>
-                    </li>
+                    if (this.User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="User" asp-action="ActiveCarnets">Zarządzaj użytkownikami</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="ActiveCarnets">Raport wykupionych karnetów</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>
+                            <a class="link-menu" asp-area="" asp-controller="User" asp-action="Logout">Wyloguj</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="ActiveCarnets">Aktywne karnety</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="PurchasedCarnets">Zakupione karnety</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="BuyCarnet">Kup karnet</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>
+                            <a class="link-menu" asp-area="" asp-controller="User" asp-action="Logout">Wyloguj</a>
+                        </li>
+                    }
                 }
 
                 else
@@ -45,4 +59,8 @@
         </div>
     </div>
 </nav>
+}
+
+@functions  {
+
 }

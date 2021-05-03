@@ -38,8 +38,8 @@ namespace GymManagerWebApp.Services
                 CreatedAt = model.CreatedAt,
             };
 
-            var role = _userManager.AddToRoleAsync(user, "Customer");
             var result = await _userManager.CreateAsync(user, model.Password1);
+            await _userManager.AddToRoleAsync(user, "Customer");
             return result;
         }
 
