@@ -14,13 +14,13 @@
         }
         else
         {
-            <h1>Aktywowane karnety:</h1><p></p>
-            <h2>Karnety czasowe:</h2>
+            <h2>Historia zakupionych karnetów:</h2>
             <form asp-controller="Carnet" asp-action="PurchasedCarnets" method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <table class="table">
                     <thead>
                         <tr>
+                            <th scope="col">Rodzaj biletu</th>
                             <th scope="col">Nazwa biletu</th>
                             <th scope="col">Data zakupu</th>
                             <th scope="col">Kupujący</th>
@@ -32,40 +32,29 @@
                     <tbody>
                         @foreach (var carnet in Model.TimeCarnets)
                         {
-                        <tr>
-                            <td>@carnet.Name</td>
-                            <td>@carnet.PurchasedAt</td>
-                            <td>@carnet.OwnerEmail</td>
-                            <td>@carnet.Price zł</td>
-                            <td>@SetDateFormat(carnet.UsedOn)</td>
-                            <td>@SetDateFormat(carnet.ExpireDate)</td>
-                            <td>
-
-                        </tr>
+                            <tr>
+                                <td>@carnet.CarnetCategory</td>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.OwnerEmail</td>
+                                <td>@carnet.Price zł</td>
+                                <td>@SetDateFormat(carnet.UsedOn)</td>
+                                <td>@SetDateFormat(carnet.ExpireDate)</td>
+                                <td>
+                            </tr>
                         }
-                    </tbody>
-                </table> <p></p><p></p>
-                <h2>Karnety ilościowe:</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nazwa biletu</th>
-                            <th scope="col">Data zakupu</th>
-                            <th scope="col">Kupujący</th>
-                            <th scope="col">Koszt</th>
-                            <th scope="col">Ilość</th>
-                        </tr>
-                    </thead>
-                    <tbody>
                         @foreach (var carnet in Model.QuantityCarnets)
                         {
-                        <tr>
-                            <td>@carnet.Name</td>
-                            <td>@carnet.PurchasedAt</td>
-                            <td>@carnet.OwnerEmail</td>
-                            <td>@carnet.Price zł</td>
-                            <td>@carnet.Quantity</td>
-                        </tr>
+                            <tr>
+                                <td>@carnet.CarnetCategory</td>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.OwnerEmail</td>
+                                <td>@carnet.Price zł</td>
+                                <td>@SetDateFormat(carnet.UsedOn)</td>
+                                <td>@SetDateFormat(carnet.ExpireDate)</td>
+                                <td>
+                            </tr>
                         }
                     </tbody>
                 </table>
