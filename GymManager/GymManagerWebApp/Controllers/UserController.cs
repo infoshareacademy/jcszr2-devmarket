@@ -80,9 +80,8 @@ namespace GymManagerWebApp.Controllers
                 //Data out of the form
                 model.Gender = HttpContext.Request.Form["Gender"].ToString();
                 model.CreatedAt = DateTime.UtcNow;
-                model.Role = "standard";
 
-                //Adjustment format to store in database
+                //Normalize format to store in db
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
 

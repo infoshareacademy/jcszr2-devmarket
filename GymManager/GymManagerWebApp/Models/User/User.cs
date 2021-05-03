@@ -48,8 +48,6 @@ namespace GymManagerWebApp.Models
         public string Gender { get; set; }
        
         public DateTime CreatedAt { get; set; }
-
-        public string Role { get; set; }
         public static object Identity { get; internal set; }
 
         public User()
@@ -66,7 +64,6 @@ namespace GymManagerWebApp.Models
             Password2 = password2;
             PhoneNumber = phoneNr;
             Gender = gender;
-            Role = role;
             CreatedAt = createdAt;
         }
     }

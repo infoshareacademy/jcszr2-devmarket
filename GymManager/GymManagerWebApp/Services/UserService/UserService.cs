@@ -16,11 +16,12 @@ namespace GymManagerWebApp.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> CreateUserAsync(User model)
@@ -35,9 +36,9 @@ namespace GymManagerWebApp.Services
                 Gender = model.Gender,
                 PasswordHash = model.Password1,
                 CreatedAt = model.CreatedAt,
-                Role = model.Role,
             };
 
+            var role = _userManager.AddToRoleAsync(user, "Customer");
             var result = await _userManager.CreateAsync(user, model.Password1);
             return result;
         }
