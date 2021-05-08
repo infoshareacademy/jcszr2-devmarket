@@ -55,7 +55,7 @@ namespace GymManagerWebApp.Models
         }
 
         public User(string firstName, string lastName, string email, string password1,
-            string password2, string phoneNr, string gender, string role, DateTime createdAt)
+            string password2, string phoneNr, string gender, DateTime createdAt)
         {
             FirstName = firstName;
             LastName= lastName;

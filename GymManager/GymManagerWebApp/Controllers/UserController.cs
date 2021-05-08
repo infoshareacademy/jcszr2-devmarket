@@ -12,16 +12,19 @@ using GymManagerWebApp.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
         private IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, UserManager<User> userManager)
         {
             _userService = userService;
+            _userManager = userManager;
         }
 
         [Route("LogIn")]
@@ -77,16 +80,28 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Data out of the form
                 model.Gender = HttpContext.Request.Form["Gender"].ToString();
                 model.CreatedAt = DateTime.UtcNow;
-
-                //Normalize format to store in db
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
 
                 var result = await _userService.CreateUserAsync(model);
-                if (!result.Succeeded)
+
+                if (result.Succeeded)
+                {
+                    if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        var role = HttpContext.Request.Form["Role"].ToString();
+                        await _userManager.AddToRoleAsync(model, role);
+                    }
+
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(model, "Customer");
+                    }
+                }
+
+                else
                 {
                     foreach (var error in result.Errors)
                     {
@@ -95,10 +110,62 @@ namespace GymManagerWebApp.Controllers
                 }
 
                 ModelState.Clear();
-
             }
             return View("SignInConfirmation");
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model)
+        {
+            var currentUserEmail = User.Identity.Name;
+            model.Users = await _userService.GetUsersAsync(currentUserEmail);
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model,string btnCrudUser)
+        {
+            var currentUserEmail = User.Identity.Name;
+
+            if(btnCrudUser == "addUser") {
+                return View("SignIn");
+            }
+            else if(btnCrudUser == "editUser") {
+                return RedirectToAction();
+            }
+            else if(btnCrudUser == "lockUser") {
+                return RedirectToAction();
+            }
+            else if(btnCrudUser == "deleteUser") {
+                return RedirectToAction();
+            }
+
+            model.Users = await _userService.GetUsersAsync(currentUserEmail);
+            return View(model);
+        }
+
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditUser(User user)
+        {
+            return View("AddUserAdmin");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveUser(User user)
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> LockUser(User user)
+        {
+            return View();
+        }
+
     }
 }
 

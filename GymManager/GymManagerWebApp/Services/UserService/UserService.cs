@@ -9,6 +9,9 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using GymManagerWebApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagerWebApp.Services
 {
@@ -39,7 +42,6 @@ namespace GymManagerWebApp.Services
             };
 
             var result = await _userManager.CreateAsync(user, model.Password1);
-            await _userManager.AddToRoleAsync(user, "Customer");
             return result;
         }
 
@@ -54,6 +56,17 @@ namespace GymManagerWebApp.Services
             await _signInManager.SignOutAsync();
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<List<User>> GetUsersAsync(string currentUserEmail)
+        {
+            using(var context = new GymManagerContext())
+            {
+                var users = await context.Users
+                    .Where(x=>x.NormalizedEmail != currentUserEmail)
+                    .Select(x => x).ToListAsync();
 
+                return users;
+            }
+        }
     }
 }

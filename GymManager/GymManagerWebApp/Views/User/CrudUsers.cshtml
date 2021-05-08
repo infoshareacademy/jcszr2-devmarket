@@ -1,0 +1,43 @@
+﻿@model CrudUsersViewModel
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Zarządzanie użytkownikami</title>
+</head>
+
+<body>
+    <h2>Wybierz czynność jaką chcesz wykonać</h2>
+
+    <form asp-controller="User" asp-action="CrudUsers" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nazwa użytkownika</th>
+                    <th scope="col">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <button name="btnCrudUser" value="addUser" role="button" aria-disabled="true" class="btn btn-outline-success btn-sm">Dodaj nowego użytkownika</button>
+                    </td>
+                </tr>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.NormalizedEmail</td>
+                        <td>
+                            <button name="btnCrudUser" value="editUser" role="button" aria-disabled="true" class="btn btn-outline-primary btn-sm">Edytuj</button>
+                            <button name="btnCrudUser" value="lockUser" role="button" aria-disabled="true" class="btn btn-outline-warning btn-sm">Zablokuj</button>
+                            <button name="btnCrudUser" value="deleteUser" role="button" aria-disabled="true" class="btn btn-outline-danger btn-sm">Usuń</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table> <p></p><p></p>
+    </form>
+</body>
+
+</html>
