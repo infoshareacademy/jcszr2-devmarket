@@ -84,7 +84,6 @@ namespace GymManagerWebApp.Controllers
                 model.CreatedAt = DateTime.UtcNow;
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
-
                 var result = await _userService.CreateUserAsync(model);
 
                 if (result.Succeeded)
@@ -94,13 +93,11 @@ namespace GymManagerWebApp.Controllers
                         var role = HttpContext.Request.Form["Role"].ToString();
                         await _userManager.AddToRoleAsync(model, role);
                     }
-
                     else
                     {
                         await _userManager.AddToRoleAsync(model, "Customer");
                     }
                 }
-
                 else
                 {
                     foreach (var error in result.Errors)
@@ -116,6 +113,13 @@ namespace GymManagerWebApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
+        public async Task<IActionResult> EditUser()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
         public async Task<IActionResult> CrudUsers(CrudUsersViewModel model)
         {
             var currentUserEmail = User.Identity.Name;
@@ -125,32 +129,37 @@ namespace GymManagerWebApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model,string btnCrudUser)
+        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model,string btnAddUser, string btnEditUser,
+            string btnLockUser, string btnDeleteUser)
         {
-            var currentUserEmail = User.Identity.Name;
+            //var currentUserEmail = User.Identity.Name;
+            
+            if (!string.IsNullOrEmpty(btnAddUser)) {
+                return RedirectToAction(nameof(SignIn));
+            }
+            else if(!string.IsNullOrEmpty(btnEditUser)) {
+                var x = btnAddUser;
+                return RedirectToAction();
+            }
+            else if (!string.IsNullOrEmpty(btnLockUser))
+            {
+                return RedirectToAction();
+            }
+            else if (!string.IsNullOrEmpty(btnDeleteUser))
+            {
+                return RedirectToAction();
+            }
 
-            if(btnCrudUser == "addUser") {
-                return View("SignIn");
-            }
-            else if(btnCrudUser == "editUser") {
-                return RedirectToAction();
-            }
-            else if(btnCrudUser == "lockUser") {
-                return RedirectToAction();
-            }
-            else if(btnCrudUser == "deleteUser") {
-                return RedirectToAction();
-            }
-
-            model.Users = await _userService.GetUsersAsync(currentUserEmail);
-            return View(model);
+            //model.Users = await _userService.GetUsersAsync(currentUserEmail);
+            return View();
         }
-
 
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUser(User user)
         {
+
+            var x = user.EmailConfirmed;
             return View("AddUserAdmin");
         }
 

@@ -13,7 +13,6 @@ namespace GymManagerWebApp.Data
         public GymManagerContext(DbContextOptions<GymManagerContext> options)
             : base(options)
         {
-
         }
 
         public GymManagerContext()
@@ -21,15 +20,13 @@ namespace GymManagerWebApp.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Carnet> PurchasedCarnets { get; set; }
-        //public DbSet<QuantityCarnet> PurchasedQuantityCarnets { get; set; }
-        //public DbSet<TimeCarnet> PurchasedTimeCarnets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=GymManager;Integrated Security=true;");
-            base.OnConfiguring(optionsBuilder);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    //optionsBuilder.UseSqlServer("Server=localhost;Database=GymManager;Integrated Security=true;");
+        //    base.OnConfiguring(optionsBuilder);
             
            
-        }
+        //}
     }
 }

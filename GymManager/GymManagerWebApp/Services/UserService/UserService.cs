@@ -20,11 +20,13 @@ namespace GymManagerWebApp.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        private readonly GymManagerContext _dbContext;
+        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, GymManagerContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _dbContext = dbContext;
         }
 
         public async Task<IdentityResult> CreateUserAsync(User model)
@@ -59,14 +61,9 @@ namespace GymManagerWebApp.Services
         [Authorize(Roles = "Admin")]
         public async Task<List<User>> GetUsersAsync(string currentUserEmail)
         {
-            using(var context = new GymManagerContext())
-            {
-                var users = await context.Users
+            return await _dbContext.Users
                     .Where(x=>x.NormalizedEmail != currentUserEmail)
                     .Select(x => x).ToListAsync();
-
-                return users;
-            }
         }
     }
 }
