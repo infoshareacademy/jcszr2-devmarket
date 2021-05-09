@@ -18,7 +18,7 @@ namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
 
         public UserController(IUserService userService, UserManager<User> userManager)
@@ -69,14 +69,14 @@ namespace GymManagerWebApp.Controllers
         [HttpGet]
         public IActionResult SignIn()
         {
-            var user = new User();
+            var user = new SignInUserViewModel();
             return View(user);
         }
 
         [Route("SignIn")]
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignInAsync(User model)
+        public async Task<IActionResult> SignInAsync(SignInUserViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -84,39 +84,67 @@ namespace GymManagerWebApp.Controllers
                 model.CreatedAt = DateTime.UtcNow;
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
+                
+
                 var result = await _userService.CreateUserAsync(model);
+                var user = await _userService.GetUserByEmailAsync(model.Email);
 
                 if (result.Succeeded)
                 {
                     if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
                         var role = HttpContext.Request.Form["Role"].ToString();
-                        await _userManager.AddToRoleAsync(model, role);
+                        await _userManager.AddToRoleAsync(user, role);
+                        return View("SignInConfirmation");
                     }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(model, "Customer");
-                    }
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
+                    await _userManager.AddToRoleAsync(user, "Customer");
+                    return View("SignInConfirmation");
                 }
 
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
                 ModelState.Clear();
             }
-            return View("SignInConfirmation");
+            return View();
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> EditUser()
         {
-            return View();
+            var userId = TempData["userId"].ToString();
+            var user = await _userService.GetUserByIdAsync(userId);
+            return View(user);
         }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(User model, string role)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            await _userManager.AddToRoleAsync(user, role);
+
+            var result = await _userManager.UpdateAsync(user);
+            if(result.Succeeded)
+            {
+                return View("EditConfirmation");
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+        }
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -130,47 +158,64 @@ namespace GymManagerWebApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CrudUsers(CrudUsersViewModel model,string btnAddUser, string btnEditUser,
-            string btnLockUser, string btnDeleteUser)
+            string btnLockUser, string btnLockoutUser, string btnDeleteUser)
         {
-            //var currentUserEmail = User.Identity.Name;
             
             if (!string.IsNullOrEmpty(btnAddUser)) {
                 return RedirectToAction(nameof(SignIn));
             }
             else if(!string.IsNullOrEmpty(btnEditUser)) {
-                var x = btnAddUser;
-                return RedirectToAction();
+                TempData["userId"] = btnEditUser;
+                return RedirectToAction(nameof(EditUser));
             }
             else if (!string.IsNullOrEmpty(btnLockUser))
             {
-                return RedirectToAction();
+                TempData["userId"] = btnLockUser;
+                return RedirectToAction(nameof(LockUser));
+            }
+            else if (!string.IsNullOrEmpty(btnLockUser))
+            {
+                TempData["userId"] = btnLockoutUser;
+                return RedirectToAction(nameof(LockOutUser));
             }
             else if (!string.IsNullOrEmpty(btnDeleteUser))
             {
-                return RedirectToAction();
+                TempData["userId"] = btnDeleteUser;
+                return RedirectToAction(nameof(RemoveUser));
             }
 
-            //model.Users = await _userService.GetUsersAsync(currentUserEmail);
             return View();
         }
 
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditUser(User user)
+        [HttpGet]
+        public async Task<IActionResult> RemoveUser()
         {
-
-            var x = user.EmailConfirmed;
-            return View("AddUserAdmin");
+            var userId = TempData["userId"].ToString();
+            var user = await _userManager.FindByIdAsync(userId);
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return View("DeleteConfirmation");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View("CrudUsers");
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RemoveUser(User user)
-        {
-            return View();
-        }
-
-        [Authorize(Roles = "Admin")]
+        [HttpGet]
         public async Task<IActionResult> LockUser(User user)
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> LockOutUser(User user)
         {
             return View();
         }

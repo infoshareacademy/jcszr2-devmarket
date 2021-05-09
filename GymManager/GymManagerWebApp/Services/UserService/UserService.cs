@@ -29,9 +29,9 @@ namespace GymManagerWebApp.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IdentityResult> CreateUserAsync(User model)
+        public async Task<IdentityResult> CreateUserAsync(SignInUserViewModel model)
         {
-            var user = new User()
+            var user = new User
             {
                 Email = model.Email,
                 UserName = model.Email,
@@ -39,10 +39,8 @@ namespace GymManagerWebApp.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
-                PasswordHash = model.Password1,
                 CreatedAt = model.CreatedAt,
             };
-
             var result = await _userManager.CreateAsync(user, model.Password1);
             return result;
         }
@@ -64,6 +62,29 @@ namespace GymManagerWebApp.Services
             return await _dbContext.Users
                     .Where(x=>x.NormalizedEmail != currentUserEmail)
                     .Select(x => x).ToListAsync();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            return await _dbContext.Users
+                    .SingleOrDefaultAsync(x => x.Id == userId);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _dbContext.Users
+                    .SingleOrDefaultAsync(x => x.Email == email);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<User> UpdateUser(User user)
+        {
+
+            await _dbContext.SaveChangesAsync();
+            return user;
         }
     }
 }

@@ -26,8 +26,6 @@ namespace GymManagerWebApp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -40,14 +38,12 @@ namespace GymManagerWebApp.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 20, nullable: true),
-                    LastName = table.Column<string>(maxLength: 20, nullable: true),
-                    Password1 = table.Column<string>(maxLength: 20, nullable: true),
-                    Password2 = table.Column<string>(maxLength: 20, nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     Gender = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: true),
-                    Role = table.Column<string>(nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,8 +63,8 @@ namespace GymManagerWebApp.Migrations
                     PurchasedAt = table.Column<DateTime>(nullable: false),
                     OwnerEmail = table.Column<string>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
-                    UsedOn = table.Column<DateTime>(nullable: false),
-                    ExpireDate = table.Column<DateTime>(nullable: false),
+                    UsedOn = table.Column<DateTime>(nullable: true),
+                    ExpireDate = table.Column<DateTime>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     IsExpired = table.Column<bool>(nullable: false),
                     RemainQty = table.Column<int>(nullable: false)
