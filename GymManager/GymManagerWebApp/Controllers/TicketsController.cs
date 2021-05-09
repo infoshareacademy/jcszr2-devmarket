@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagerWebApp.Controllers
 {
     public class TicketsController : Controller
     {
+        [Authorize]
         public IActionResult BuyCarnet()
         {
             var TicketsModel = new BuyCarnet();
