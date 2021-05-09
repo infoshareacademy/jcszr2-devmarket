@@ -14,7 +14,7 @@
                     if (this.User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
-                            <a class="link-menu" asp-area="" asp-controller="User" asp-action="CrudUsers">Zarządzaj użytkownikami</a>
+                            <a class="link-menu" asp-area="" asp-controller="Admin" asp-action="CrudUsers">Zarządzaj użytkownikami</a>
                         </li>
                         <li class="nav-item">
                             <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="AllPurchasedCarnets">Raport wykupionych karnetów</a>
@@ -26,9 +26,6 @@
                     }
                     else
                     {
-                        <li class="nav-item">
-                            <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="ActiveCarnets">Aktywne karnety</a>
-                        </li>
                         <li class="nav-item">
                             <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="PurchasedCarnets">Zakupione karnety</a>
                         </li>

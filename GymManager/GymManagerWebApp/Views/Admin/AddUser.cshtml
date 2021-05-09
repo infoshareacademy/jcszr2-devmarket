@@ -1,10 +1,10 @@
-﻿@model SignInUserViewModel
-@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
+﻿@model AddUserViewModel
 
-<title>Rejestracja</title>
-<h2>Wypełnij poniższy formularz aby zarejestrować konto!</h2>
 
-<form asp-controller="User" asp-action="SignIn">
+    <title>Dodawanie użytkownika</title>
+    <h2>Dodawanie użytkownika</h2>
+
+<form asp-controller="Admin" asp-action="AddUser">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
@@ -22,7 +22,7 @@
     </div>
 
     <div class="form-group">
-        <input type="email" asp-for="Email" class="form-control" placeholder="Email">
+        <input type="Email" asp-for="Email" class="form-control" placeholder="Email">
         <div>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
@@ -50,7 +50,6 @@
     </div>
 
     <p>Wybierz płeć</p>
-
     <div>
         <div>
             <input id="Men" asp-for="Gender" name="gender" type="radio" value="Mężczyzna">
@@ -63,11 +62,38 @@
         </div>
         <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Zarejestruj</button>
+
+    <br /><br />
+
+    <p>Wybierz rodzaj uprawnień</p>
+    <div>
+        <div>
+            <input id="Admin" name="Role" type="radio" value="Admin" asp-for="Role">
+            <label for="Admin">Administrator</label>
+        </div>
+        <div>
+            <input id="Customer" name="Role" type="radio" value="Customer" asp-for="Role">
+            <label for="Customer">Klient</label>
+        </div>
+        <div>
+            <input id="Trainee" name="Role" type="radio" value="Trainee" asp-for="Role">
+            <label for="Trainee">Trener</label>
+        </div>
+        <div>
+            <input id="Reception" name="Role" type="radio" value="Reception" asp-for="Role">
+            <label for="Reception">Pracownik recepcji</label>
+        </div>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Dodaj użytkownika</button>
 </form>
 
 <br>
 <br>
 <tr>
-    <td> @Html.ActionLink("Strona logowania", "LogIn") <br /><br />
+    <td> @Html.ActionLink("Cofnij", "CrudUsers") <br /><br />
 </tr>
+
+
+

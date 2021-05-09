@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model GymManagerWebApp.Models.Admin.EditUserViewModel
 
 @{
     ViewBag.Title = "Edytowanie użytkownika";
@@ -6,7 +6,7 @@
 
 <h2>Edycja użytkownika</h2>
 
-<form asp-controller="User" asp-action="EditUser" asp-route-id="@Model.Id">
+<form asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id">
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -73,25 +73,25 @@
         <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
 
-    <p></p>
     <p>Wybierz rodzaj uprawnień</p>
     <div>
         <div>
-            <input id="Admin" name="role" type="radio" value="Admin">
+            <input id="Admin" name="Role" type="radio" value="Admin" asp-for="Role">
             <label for="Admin">Administrator</label>
         </div>
         <div>
-            <input  id="Customer" name="role" type="radio" value="Customer">
+            <input id="Customer" name="Role" type="radio" value="Customer" asp-for="Role">
             <label for="Customer">Klient</label>
         </div>
         <div>
-            <input id="Trainee" name="role" type="radio" value="Trainee">
+            <input id="Trainee" name="Role" type="radio" value="Trainee" asp-for="Role">
             <label for="Trainee">Trener</label>
         </div>
         <div>
-            <input  id="Reception" name="role" type="radio" value="Reception">
+            <input id="Reception" name="Role" type="radio" value="Reception" asp-for="Role">
             <label for="Reception">Pracownik recepcji</label>
         </div>
+        <span asp-validation-for="Role" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Zatwierdź</button>
