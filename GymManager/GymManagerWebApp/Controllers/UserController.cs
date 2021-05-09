@@ -12,16 +12,19 @@ using GymManagerWebApp.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, UserManager<User> userManager)
         {
             _userService = userService;
+            _userManager = userManager;
         }
 
         [Route("LogIn")]
@@ -66,44 +69,158 @@ namespace GymManagerWebApp.Controllers
         [HttpGet]
         public IActionResult SignIn()
         {
-            var user = new User();
+            var user = new SignInUserViewModel();
             return View(user);
         }
 
         [Route("SignIn")]
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignInAsync(User model)
+        public async Task<IActionResult> SignInAsync(SignInUserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //Data out of the form
                 model.Gender = HttpContext.Request.Form["Gender"].ToString();
                 model.CreatedAt = DateTime.UtcNow;
-                model.Role = "standard";
-
-                //Adjustment format to store in database
                 model.FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1);
                 model.LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1);
+                
 
                 var result = await _userService.CreateUserAsync(model);
-                if (!result.Succeeded)
+                var user = await _userService.GetUserByEmailAsync(model.Email);
+
+                if (result.Succeeded)
                 {
-                    foreach (var error in result.Errors)
+                    if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
-                        ModelState.AddModelError("", error.Description);
+                        var role = HttpContext.Request.Form["Role"].ToString();
+                        await _userManager.AddToRoleAsync(user, role);
+                        return View("SignInConfirmation");
                     }
+                    await _userManager.AddToRoleAsync(user, "Customer");
+                    return View("SignInConfirmation");
                 }
 
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
                 ModelState.Clear();
-
             }
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> EditUser()
+        {
+            var userId = TempData["userId"].ToString();
+            var user = await _userService.GetUserByIdAsync(userId);
+            return View(user);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(User model, string role)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            await _userManager.AddToRoleAsync(user, role);
+
+            var result = await _userManager.UpdateAsync(user);
+            if(result.Succeeded)
+            {
+                return View("EditConfirmation");
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model)
+        {
+            var currentUserEmail = User.Identity.Name;
+            model.Users = await _userService.GetUsersAsync(currentUserEmail);
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model,string btnAddUser, string btnEditUser,
+            string btnLockUser, string btnLockoutUser, string btnDeleteUser)
+        {
+            
+            if (!string.IsNullOrEmpty(btnAddUser)) {
+                return RedirectToAction(nameof(SignIn));
+            }
+            else if(!string.IsNullOrEmpty(btnEditUser)) {
+                TempData["userId"] = btnEditUser;
+                return RedirectToAction(nameof(EditUser));
+            }
+            else if (!string.IsNullOrEmpty(btnLockUser))
+            {
+                TempData["userId"] = btnLockUser;
+                return RedirectToAction(nameof(LockUser));
+            }
+            else if (!string.IsNullOrEmpty(btnLockUser))
+            {
+                TempData["userId"] = btnLockoutUser;
+                return RedirectToAction(nameof(LockOutUser));
+            }
+            else if (!string.IsNullOrEmpty(btnDeleteUser))
+            {
+                TempData["userId"] = btnDeleteUser;
+                return RedirectToAction(nameof(RemoveUser));
+            }
+
+            return View();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> RemoveUser()
+        {
+            var userId = TempData["userId"].ToString();
+            var user = await _userManager.FindByIdAsync(userId);
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return View("DeleteConfirmation");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View("CrudUsers");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> LockUser(User user)
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> LockOutUser(User user)
+        {
+            return View();
+        }
+
     }
-
-
-
 }
 
 

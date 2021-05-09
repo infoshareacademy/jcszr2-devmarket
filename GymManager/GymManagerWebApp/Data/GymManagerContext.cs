@@ -1,4 +1,5 @@
 ﻿using GymManagerWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,15 +9,18 @@ using System.Threading.Tasks;
 
 namespace GymManagerWebApp.Data
 {
-    public class GymManagerContext : IdentityDbContext
+    public class GymManagerContext : IdentityDbContext<User>
     {
         public GymManagerContext(DbContextOptions<GymManagerContext> options)
             : base(options)
         {
-
         }
 
+        public GymManagerContext()
+        { }
+
         public DbSet<User> Users { get; set; }
+        public DbSet<Carnet> PurchasedCarnets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

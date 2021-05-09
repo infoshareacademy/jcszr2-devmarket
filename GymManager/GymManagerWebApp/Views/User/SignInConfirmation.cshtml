@@ -1,0 +1,43 @@
+﻿@model User
+
+
+@if (this.User.IsInRole("Admin"))
+{
+    <html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Rejestracja pomyślna!</title>
+    </head>
+
+    <body>
+        <h2>Rejestracja przebiegła pomyślnie! </h2>
+
+        @Html.ActionLink("Powrót do tabeli użytkowników", "CrudUsers","User") <br /><br />
+
+    </body>
+</html>
+}
+
+
+else
+{
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Rejestracja pomyślna!</title>
+</head>
+
+<body>
+    <h2>Rejestracja przebiegła pomyślnie! </h2>
+    <p>Kliknij poniższy link, jeśli chcesz się zalogować</p>
+
+    @Html.ActionLink("Strona logowania", "LogIn") <br /><br />
+
+</body>
+
+</html>
+}
+
+
+
+
