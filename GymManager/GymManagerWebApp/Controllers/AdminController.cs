@@ -3,34 +3,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GymManagerWebApp.Data;
 using GymManagerWebApp.Models;
 using GymManagerWebApp.Models.Admin;
 using GymManagerWebApp.Services;
+using GymManagerWebApp.Services.RolesService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagerWebApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<User> _roleManager;
+        
 
-        public AdminController(IUserService userService, UserManager<User> userManager, RoleManager<User> roleManager)
+        public AdminController(IUserService userService, IRoleService roleService, UserManager<User> userManager)
         {
             _userService = userService;
             _userManager = userManager;
-            _roleManager = roleManager;
+            _roleService = roleService;
         }
 
-        #region CRUD redirect to operation manager
+        #region CRUD routing
         [HttpGet]
         public async Task<IActionResult> CrudUsers(CrudUsersViewModel model)
         {
             var currentUserEmail = User.Identity.Name;
             model.Users = await _userService.GetUsersAsync(currentUserEmail);
+            model.Users = model.Users.OrderBy(x => x.Email).ToList();
             return View(model);
         }
 
@@ -70,11 +75,15 @@ namespace GymManagerWebApp.Controllers
             return View();
         }
         #endregion
-        #region CRUD operations
+        #region Add
         [HttpGet]
-        public IActionResult AddUser()
+        public async Task<IActionResult> AddUser()
         {
-            var model = new AddUserViewModel();
+            var model = new AddUserViewModel()
+            {
+                AllRoles = await _roleService.GetAllRoleNames()
+            };
+            
             return View(model);
         }
 
@@ -84,7 +93,17 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid) 
             {
-                var user = _userService.InstantiateUser(model);
+                var user = new User()
+                {
+                    FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1),
+                    LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1),
+                    UserName = model.Email,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Gender = model.Gender,
+                    CreatedAt = DateTime.UtcNow,
+                };
+            
                 var result = await _userManager.CreateAsync(user, model.Password1); //adding user to db
                 await _userManager.AddToRoleAsync(user, model.Role); //adding user role to db
 
@@ -101,7 +120,8 @@ namespace GymManagerWebApp.Controllers
             ModelState.Clear();
             return View();
         }
-
+        #endregion
+        #region Remove
         [HttpGet]
         public async Task<IActionResult> RemoveUser()
         {
@@ -118,12 +138,14 @@ namespace GymManagerWebApp.Controllers
             }
             return View("CrudUsers");
         }
-
+        #endregion
+        #region Edit
         [HttpGet]
         public async Task<IActionResult> EditUser()
         {
             var userId = TempData["userId"].ToString();
             var user = await _userManager.FindByIdAsync(userId);
+            var userRoles = (List<string>)await _userManager.GetRolesAsync(user);
 
             var editUserViewModel = new EditUserViewModel()
             {
@@ -135,14 +157,15 @@ namespace GymManagerWebApp.Controllers
                 Email = user.Email,
                 Gender = user.Gender,
                 PhoneNumber = user.PhoneNumber,
-                Role = await _roleManager.GetRoleNameAsync(user)
-            };
+                AllRoles = await _roleService.GetAllRoleNames(),
+                CurrentUserRole = userRoles.First(),
+        };
 
             return View(editUserViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(EditUserViewModel model, string role)
+        public async Task<IActionResult> EditUser(EditUserViewModel model, string Role)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
 
@@ -153,7 +176,9 @@ namespace GymManagerWebApp.Controllers
             user.PhoneNumber = model.PhoneNumber;
             user.Gender = model.Gender;
 
-            await _userManager.AddToRoleAsync(user, role);
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles);
+            await _userManager.AddToRoleAsync(user, Role);
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
@@ -166,7 +191,8 @@ namespace GymManagerWebApp.Controllers
             }
             return View(model);
         }
-
+        #endregion
+        #region Lock
         [HttpGet]
         public async Task<IActionResult> LockUser(User user)
         {

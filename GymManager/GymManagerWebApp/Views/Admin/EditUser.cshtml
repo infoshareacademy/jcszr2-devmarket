@@ -1,4 +1,9 @@
-﻿@model GymManagerWebApp.Models.Admin.EditUserViewModel
+﻿@using Microsoft.CodeAnalysis
+@using Microsoft.AspNetCore.Http
+@using GymManagerWebApp.Models.Admin
+@model GymManagerWebApp.Models.Admin.EditUserViewModel
+
+
 
 @{
     ViewBag.Title = "Edytowanie użytkownika";
@@ -6,7 +11,7 @@
 
 <h2>Edycja użytkownika</h2>
 
-<form asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id">
+<form name="EditUser" asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id">
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -75,24 +80,26 @@
 
     <p>Wybierz rodzaj uprawnień</p>
     <div>
-        <div>
-            <input id="Admin" name="Role" type="radio" value="Admin" asp-for="Role">
-            <label for="Admin">Administrator</label>
-        </div>
-        <div>
-            <input id="Customer" name="Role" type="radio" value="Customer" asp-for="Role">
-            <label for="Customer">Klient</label>
-        </div>
-        <div>
-            <input id="Trainee" name="Role" type="radio" value="Trainee" asp-for="Role">
-            <label for="Trainee">Trener</label>
-        </div>
-        <div>
-            <input id="Reception" name="Role" type="radio" value="Reception" asp-for="Role">
-            <label for="Reception">Pracownik recepcji</label>
-        </div>
-        <span asp-validation-for="Role" class="text-danger"></span>
+        @foreach (var role in Model.AllRoles)
+        {
+            if (role == Model.CurrentUserRole)
+            {
+                <div>
+                    <input id="@role" name="Role" type="radio" value="@role" asp-for="CurrentUserRole" checked>
+                    <label for="@role">@role</label>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <input id="@role" name="Role" type="radio" value="@role" asp-for="CurrentUserRole">
+                    <label for="@role">@role</label>
+                </div>
+            }
+        }
+        <span asp-validation-for="CurrentUserRole" class="text-danger"></span>
     </div>
+    
 
     <button type="submit" class="btn btn-primary">Zatwierdź</button>
 </form>
@@ -102,8 +109,4 @@
 <tr>
     <td> @Html.ActionLink("Strona z użytkownikami", "CrudUsers") <br /><br />
 </tr>
-
-
-
-
 

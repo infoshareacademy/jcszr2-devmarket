@@ -28,36 +28,6 @@ namespace GymManagerWebApp.Services
             _roleManager = roleManager;
             _dbContext = dbContext;
         }
-        public User InstantiateUser(AddUserViewModel model)
-        {
-            var user = new User()
-            {
-                FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1),
-                LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1),
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                Gender = model.Gender,
-                CreatedAt = DateTime.UtcNow,
-            };
-            return user;
-        }
-
-        //public async Task<IdentityResult> CreateUserAsync(User model)
-        //{
-        //    var user = new User
-        //    {
-        //        Email = model.Email,
-        //        UserName = model.Email,
-        //        FirstName = model.FirstName,
-        //        LastName = model.LastName,
-        //        PhoneNumber = model.PhoneNumber,
-        //        Gender = model.Gender,
-        //        CreatedAt = model.CreatedAt,
-        //    };
-        //    var result = await _userManager.CreateAsync(user, model.Password1);
-        //    return result;
-        //}
 
         public async Task<SignInResult> LoginAsync(Login login)
         {

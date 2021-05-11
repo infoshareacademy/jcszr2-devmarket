@@ -11,7 +11,7 @@
             <ul class="navbar-nav flex-grow-1">
                 @if (signInManager.IsSignedIn(User))
                 {
-                    if (this.User.IsInRole("Admin"))
+                    if (this.User.IsInRole("Administrator"))
                     {
                         <li class="nav-item">
                             <a class="link-menu" asp-area="" asp-controller="Admin" asp-action="CrudUsers">Zarządzaj użytkownikami</a>

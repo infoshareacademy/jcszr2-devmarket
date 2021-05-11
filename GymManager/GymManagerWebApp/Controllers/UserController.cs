@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
 using GymManagerWebApp.Services;
+using GymManagerWebApp.Services.RolesService;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
@@ -20,11 +21,13 @@ namespace GymManagerWebApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
+        private readonly IRoleService _roleService;
 
-        public UserController(IUserService userService, UserManager<User> userManager)
+        public UserController(IUserService userService, UserManager<User> userManager, IRoleService roleService)
         {
             _userService = userService;
             _userManager = userManager;
+            _roleService = roleService;
         }
 
         #region Register
@@ -58,7 +61,7 @@ namespace GymManagerWebApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Customer");
+                    await _userManager.AddToRoleAsync(user,"Klient");
                     return View("SignInConfirmation");
                 }
 
@@ -66,9 +69,9 @@ namespace GymManagerWebApp.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
+                ModelState.Clear();
+                ModelState.AddModelError("", "Użytkownik o tej nazwie jest już zarejestrowany, spróbuj jeszcze raz!");
             }
-
-            ModelState.Clear();
             return View();
         }
         #endregion
