@@ -71,7 +71,7 @@ namespace GymManagerWebApp.Controllers
         }
 
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Administrator")]
         [HttpGet]
         public async Task<IActionResult> AllPurchasedCarnets(PurchasedCarnetsViewModel model)
         {
