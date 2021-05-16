@@ -1,13 +1,14 @@
-﻿@model SignInUserViewModel
-@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
+﻿@model AddUserViewModel
 
-<title>Rejestracja</title>
-<h2>Wypełnij poniższy formularz aby zarejestrować konto!</h2>
 
-<form asp-controller="User" asp-action="SignIn">
+    <title>Dodawanie użytkownika</title>
+    <h2>Dodawanie użytkownika</h2>
+
+<form asp-controller="Admin" asp-action="AddUser" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
+        <label asp-for="FirstName">Imię</label>
         <input asp-for="FirstName" class="form-control" placeholder="Imię">
         <div>
             <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -15,6 +16,7 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="LastName">Nazwisko</label>
         <input asp-for="LastName" class="form-control" placeholder="Nazwisko">
         <div>
             <span asp-validation-for="LastName" class="text-danger"></span>
@@ -22,13 +24,15 @@
     </div>
 
     <div class="form-group">
-        <input type="email" asp-for="Email" class="form-control" placeholder="Email">
+        <label asp-for="Email">Adres email</label>
+        <input type="Email" asp-for="Email" class="form-control" placeholder="Email">
         <div>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
     </div>
 
     <div class="form-group">
+        <label asp-for="Password1">Hasło</label>
         <input type="password" id="password1" asp-for="Password1" class="form-control" placeholder="Hasło">
         <div>
             <span asp-validation-for="Password1" class="text-danger"></span>
@@ -36,6 +40,7 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Password2">Powtórz hasło</label>
         <input type="password" id="password2" asp-for="Password2" class="form-control" placeholder="Powtórz hasło">
         <div>
             <span asp-validation-for="Password2" class="text-danger"></span>
@@ -43,6 +48,7 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="PhoneNumber">Numer telefonu</label>
         <input asp-for="PhoneNumber" class="form-control" placeholder="Telefon">
         <div>
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
@@ -50,7 +56,6 @@
     </div>
 
     <p>Wybierz płeć</p>
-
     <div>
         <div>
             <input id="Men" asp-for="Gender" name="gender" type="radio" value="Mężczyzna">
@@ -63,11 +68,29 @@
         </div>
         <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Zarejestruj</button>
+
+    <br /><br />
+
+    <p>Wybierz rodzaj uprawnień</p>
+    <div>
+        @foreach (var role in Model.AllRoles)
+        {
+            <div>
+                <input id="@role" name="Role" type="radio" value="@role" asp-for="Role">
+                <label for="@role">@role</label>
+            </div>
+        }
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Dodaj użytkownika</button>
 </form>
 
 <br>
 <br>
 <tr>
-    <td> @Html.ActionLink("Strona logowania", "LogIn") <br /><br />
+    <td> @Html.ActionLink("Cofnij", "CrudUsers") <br /><br />
 </tr>
+
+
+

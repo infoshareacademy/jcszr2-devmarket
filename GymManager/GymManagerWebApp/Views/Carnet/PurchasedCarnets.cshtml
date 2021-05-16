@@ -6,7 +6,7 @@
     <title>Kupione karnety</title>
 </head>
 <body>
-    @if (this.User.IsInRole("Admin"))
+    @if (this.User.IsInRole("Administrator"))
     {
         @if (Model.QuantityCarnets.Count == 0 && Model.TimeCarnets.Count == 0)
         {
@@ -61,7 +61,7 @@
             </form>
         }
     }
-    else if (this.User.IsInRole("Customer"))
+    else if (this.User.IsInRole("Klient"))
     {
         @if (Model.QuantityCarnets.Count == 0 && Model.TimeCarnets.Count == 0)
         {

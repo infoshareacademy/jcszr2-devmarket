@@ -1,4 +1,9 @@
-﻿@model User
+﻿@using Microsoft.CodeAnalysis
+@using Microsoft.AspNetCore.Http
+@using GymManagerWebApp.Models.Admin
+@model GymManagerWebApp.Models.Admin.EditUserViewModel
+
+
 
 @{
     ViewBag.Title = "Edytowanie użytkownika";
@@ -6,7 +11,7 @@
 
 <h2>Edycja użytkownika</h2>
 
-<form asp-controller="User" asp-action="EditUser" asp-route-id="@Model.Id">
+<form name="EditUser" asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id">
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -73,26 +78,28 @@
         <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
 
-    <p></p>
     <p>Wybierz rodzaj uprawnień</p>
     <div>
-        <div>
-            <input id="Admin" name="role" type="radio" value="Admin">
-            <label for="Admin">Administrator</label>
-        </div>
-        <div>
-            <input  id="Customer" name="role" type="radio" value="Customer">
-            <label for="Customer">Klient</label>
-        </div>
-        <div>
-            <input id="Trainee" name="role" type="radio" value="Trainee">
-            <label for="Trainee">Trener</label>
-        </div>
-        <div>
-            <input  id="Reception" name="role" type="radio" value="Reception">
-            <label for="Reception">Pracownik recepcji</label>
-        </div>
+        @foreach (var role in Model.AllRoles)
+        {
+            if (role == Model.CurrentUserRole)
+            {
+                <div>
+                    <input id="@role" name="Role" type="radio" value="@role" asp-for="CurrentUserRole" checked>
+                    <label for="@role">@role</label>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <input id="@role" name="Role" type="radio" value="@role" asp-for="CurrentUserRole">
+                    <label for="@role">@role</label>
+                </div>
+            }
+        }
+        <span asp-validation-for="CurrentUserRole" class="text-danger"></span>
     </div>
+    
 
     <button type="submit" class="btn btn-primary">Zatwierdź</button>
 </form>
@@ -102,8 +109,4 @@
 <tr>
     <td> @Html.ActionLink("Strona z użytkownikami", "CrudUsers") <br /><br />
 </tr>
-
-
-
-
 

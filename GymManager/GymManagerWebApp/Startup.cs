@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GymManagerWebApp.Models;
 using GymManagerWebApp.Services.CarnetService;
+using GymManagerWebApp.Services.RolesService;
 
 namespace GymManagerWebApp
 {
@@ -28,14 +29,11 @@ namespace GymManagerWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<GymManagerContext>(options => options.
+                UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddIdentity<User, IdentityRole>(options => { options.Password.RequireNonAlphanumeric = false; }).AddEntityFrameworkStores<GymManagerContext>();
 
-            services.AddDbContext<GymManagerContext>(
-                options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<User, IdentityRole>(options=>
-            {
-                options.Password.RequireNonAlphanumeric = false;
-            })
-                .AddEntityFrameworkStores<GymManagerContext>();
             services.AddControllersWithViews();
 
             services.ConfigureApplicationCookie(config => 
@@ -43,7 +41,7 @@ namespace GymManagerWebApp
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarnetService, CarnetService>();
-
+            services.AddScoped<IRoleService, RoleService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

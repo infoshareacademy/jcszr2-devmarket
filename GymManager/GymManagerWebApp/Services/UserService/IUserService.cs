@@ -10,7 +10,6 @@ namespace GymManagerWebApp.Services
 {
     public interface IUserService
     {
-        Task<IdentityResult> CreateUserAsync(SignInUserViewModel model);
         [Authorize(Roles = "Admin")]
         Task<User> GetUserByEmailAsync(string email);
         [Authorize(Roles = "Admin")]
