@@ -116,5 +116,15 @@ namespace GymManagerWebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> AccountDetails()
+        {
+            var currentUserEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(currentUserEmail);
+
+            return View("AccountDetails",user);
+        }
+
     }
 }
