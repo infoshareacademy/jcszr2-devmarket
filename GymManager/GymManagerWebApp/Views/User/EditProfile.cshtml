@@ -1,0 +1,64 @@
+﻿@using Microsoft.CodeAnalysis
+@using Microsoft.AspNetCore.Http
+@model GymManagerWebApp.Models.User
+
+
+@{
+    ViewBag.Title = "Edytowanie profilu";
+}
+
+<h2>Edycja użytkownika</h2>
+
+<form name="EditProfile" asp-controller="User" asp-action="EditProfile" asp-route-id="@Model.Id">
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="FirstName">Imię</label>
+        <input asp-for="FirstName" class="form-control" placeholder="Imię">
+        <div>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName">Nazwisko</label>
+        <input asp-for="LastName" class="form-control" placeholder="Nazwisko">
+        <div>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber">Numer telefonu</label>
+        <input asp-for="PhoneNumber" class="form-control" placeholder="Telefon">
+        <div>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <p></p>
+    <p>Płeć</p>
+    <div>
+        <div>
+            <input id="Men" asp-for="Gender" name="gender" type="radio" value="Mężczyzna">
+            <label for="Men">Mężczyzna</label>
+        </div>
+
+        <div>
+            <input id="Woman" asp-for="Gender" name="gender" type="radio" value="Kobieta">
+            <label for="Woman">Kobieta</label>
+        </div>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Zatwierdź</button>
+</form>
+
+<br>
+<br>
+<tr>
+    <td> @Html.ActionLink("Powrót do profilu", "AccountDetails") <br /><br />
+</tr>
+

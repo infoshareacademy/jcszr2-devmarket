@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GymManagerWebApp.Models;
 using GymManagerWebApp.Services.CarnetService;
+using GymManagerWebApp.Services.FileService;
 using GymManagerWebApp.Services.RolesService;
 
 namespace GymManagerWebApp
@@ -35,13 +36,14 @@ namespace GymManagerWebApp
             services.AddIdentity<User, IdentityRole>(options => { options.Password.RequireNonAlphanumeric = false; }).AddEntityFrameworkStores<GymManagerContext>();
 
             services.AddControllersWithViews();
-
+            services.AddHttpContextAccessor();
             services.ConfigureApplicationCookie(config => 
             config.LoginPath = _configuration["Application:LoginPath"]);
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarnetService, CarnetService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

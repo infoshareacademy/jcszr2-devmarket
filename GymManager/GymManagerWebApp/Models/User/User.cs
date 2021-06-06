@@ -14,17 +14,18 @@ namespace GymManagerWebApp.Models
         public override string Email { get; set; }
         public string Gender { get; set; }
         public DateTime CreatedAt { get; set; }
-
+        public string ProfilePicture { get; set; }
         public User()
         {
         }
 
-        public User(string firstName, string lastName, string gender, DateTime createdAt)
+        public User(string firstName, string lastName, string gender, DateTime createdAt, string profilePicture)
         {
             FirstName = firstName;
             LastName= lastName;
             Gender = gender;
             CreatedAt = createdAt;
+            ProfilePicture = profilePicture;
         }
     }
 }

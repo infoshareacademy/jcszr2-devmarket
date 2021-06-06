@@ -7,10 +7,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
-                            <div class="mt-3">
-                                <h4>@Model.FirstName @Model.LastName</h4>
-                            </div>
+                            @if (@Model.ProfilePicture == null)
+                            {
+                                <div data-initials="@($"{Model.FirstName[0]} {Model.LastName[0]}")"></div>
+                            }
+                            else
+                            {
+                                <td>
+                                    <img src="~/images/@Model.ProfilePicture"
+                                         class="rounded-circle"
+                                         height="100" width="100"
+                                         asp-append-version="true" />
+                                </td>
+                            }
                         </div>
                     </div>
                 </div>
@@ -71,7 +80,9 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-12">
-                                <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edytuj</a>
+                                <form asp-controller="User" asp-action="AccountDetails">
+                                    <button type="submit" class="btn btn-primary">Edytuj</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -80,3 +91,4 @@
         </div>
     </div>
 </div>
+
