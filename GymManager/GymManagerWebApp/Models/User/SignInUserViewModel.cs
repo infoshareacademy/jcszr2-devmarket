@@ -51,22 +51,6 @@ namespace GymManagerWebApp.Models
         public IFormFile ProfilePicture { get; set; }
         public static object Identity { get; internal set; }
 
-        public SignInUserViewModel()
-        {
-        }
 
-        public SignInUserViewModel(string firstName, string lastName, string email, string password1,
-            string password2, string phoneNr, string gender, DateTime createdAt,  IFormFile profilePicture )
-        {
-            FirstName = firstName;
-            LastName= lastName;
-            Email = email;
-            Password1 = password1;
-            Password2 = password2;
-            PhoneNumber = phoneNr;
-            Gender = gender;
-            CreatedAt = createdAt;
-            ProfilePicture = profilePicture;
-        }
     }
 }

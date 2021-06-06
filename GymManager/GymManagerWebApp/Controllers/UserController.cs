@@ -1,23 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using GymManagerWebApp.Migrations;
-using GymManagerWebApp.Models;
+﻿using GymManagerWebApp.Models;
 using GymManagerWebApp.Services;
 using GymManagerWebApp.Services.FileService;
-using GymManagerWebApp.Services.RolesService;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace GymManagerWebApp.Controllers
 {
@@ -126,32 +113,79 @@ namespace GymManagerWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> AccountDetails()
         {
-            var currentUserEmail = User.Identity.Name;
-            var user = await _userService.GetUserByEmailAsync(currentUserEmail);
-
+            string userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
             return View("AccountDetails",user);
         }
 
         [HttpPost]
         public IActionResult AccountDetails(User model)
         {
-            TempData["User"] = model;
             return RedirectToAction(nameof(EditProfile));
         }
 
         [HttpGet]
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfile()
         {
-            var model = (User) TempData["user"];
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            var model = new EditProfileViewModel()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                PhoneNumber = user.PhoneNumber,
+                ProfilePicturePath = user.ProfilePicture,
+            };
+
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> EditProfile(User model)
-        {
 
-            return View();
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+
+            if (model.ProfilePicture != null)
+            {
+                user.ProfilePicture = _fileService.UploadFile(model);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return View("EditProfileConfirmation");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RemoveProfilePicture(EditProfileViewModel model)
+        {
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            user.ProfilePicture = null;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(EditProfile));
+        }
     }
 }

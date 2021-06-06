@@ -85,34 +85,12 @@ button.accept-policy {
     content: attr(data-initials);
     display: inline-block;
     font-weight: bold;
+    font-size: 200%;
     border-radius: 50%;
     vertical-align: middle;
     margin-right: 0.5em;
-    width: 200px;
-    height: 200px;
-    line-height: 50px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
     text-align: center;
-}
-
-.avatar {
-    /* Center the content */
-    display: inline-block;
-    vertical-align: middle;
-    /* Used to position the content */
-    position: relative;
-    /* Colors */
-    background-color: rgba(0, 0, 0, .3);
-    color: #FFF;
-    /* Rounded border */
-    border-radius: 50%;
-    height: 48px;
-    width: 48px;
-}
-
-.avatar__letters {
-    /* Center the content */
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
 }

@@ -17,7 +17,7 @@ namespace GymManagerWebApp.Services.FileService
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public string UploadFile(SignInUserViewModel model)
+        public string UploadFile(dynamic model)
         {
             string uniqueFileName = null;
 
