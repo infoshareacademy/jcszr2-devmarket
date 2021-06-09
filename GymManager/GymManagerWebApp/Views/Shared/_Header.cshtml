@@ -36,6 +36,9 @@
                             <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>
                             <a class="link-menu" asp-area="" asp-controller="User" asp-action="Logout">Wyloguj</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="ExercisesList" asp-action="Exercises">Lista zajęć</a>
+                        </li>
                     }
                 }
 
