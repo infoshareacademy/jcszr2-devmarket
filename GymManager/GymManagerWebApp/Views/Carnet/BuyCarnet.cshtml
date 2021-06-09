@@ -1,27 +1,25 @@
-﻿@model BuyCarnet
+﻿@model CarnetsOfferViewModel
 
 @{
     ViewData["Title"] = "Kup karnet";
-
 }
 <div>
     <div class="text-center">
         <h2>Tutaj możesz kupić karnet:</h2>
     </div>
     <div class="text-left">
-        <form asp-for="Tickets" asp-action="BuyCarnet" method="post">
-            @{ foreach (var value in Model.getCarnets())
+        <form asp-controller="Carnet" asp-action="BuyCarnet" method="post">
+            @foreach (var carnet in Model.CarnetList)
                 {
                     <div class="row-flex-space">
                         <div>
-                            @value.CarnetTypeName
+                            @carnet.Name, @carnet.Price
                         </div>
-                        <button asp-for="TicketType" name="CarnetType" type="submit" value="@value.Id">
+                        <button asp-for="CarnetType" name="CarnetType" type="submit" value="@carnet.CarnetTypeNumber">
                             Kup!
                         </button>
                     </div>
                 }
-            }
         </form>
     </div>
 

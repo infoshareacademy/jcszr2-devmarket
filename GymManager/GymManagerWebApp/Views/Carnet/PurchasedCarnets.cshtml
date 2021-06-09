@@ -1,0 +1,222 @@
+﻿@model PurchasedCarnetsViewModel
+@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Kupione karnety</title>
+</head>
+<body>
+    @if (this.User.IsInRole("Administrator"))
+    {
+        @if (Model.QuantityCarnets.Count == 0 && Model.TimeCarnets.Count == 0)
+        {
+            <h3>Obecnie nikt nie kupił biletu</h3>
+        }
+        else
+        {
+            <h2>Historia zakupionych karnetów:</h2>
+            <form asp-controller="Carnet" asp-action="PurchasedCarnets" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Rodzaj biletu</th>
+                            <th scope="col">Nazwa biletu</th>
+                            <th scope="col">Data zakupu</th>
+                            <th scope="col">Kupujący</th>
+                            <th scope="col">Koszt</th>
+                            <th scope="col">Data aktywacji</th>
+                            <th scope="col">Ważny do</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var carnet in Model.TimeCarnets)
+                        {
+                            <tr>
+                                <td>@carnet.CarnetCategory</td>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.OwnerEmail</td>
+                                <td>@carnet.Price zł</td>
+                                <td>@SetDateFormat(carnet.UsedOn)</td>
+                                <td>@SetDateFormat(carnet.ExpireDate)</td>
+                                <td>
+                            </tr>
+                        }
+                        @foreach (var carnet in Model.QuantityCarnets)
+                        {
+                            <tr>
+                                <td>@carnet.CarnetCategory</td>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.OwnerEmail</td>
+                                <td>@carnet.Price zł</td>
+                                <td>@SetDateFormat(carnet.UsedOn)</td>
+                                <td>@SetDateFormat(carnet.ExpireDate)</td>
+                                <td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        }
+    }
+    else if (this.User.IsInRole("Klient"))
+    {
+        @if (Model.QuantityCarnets.Count == 0 && Model.TimeCarnets.Count == 0)
+        {
+            <h3>Obecnie nie posiadasz żadnych zakupionych biletów</h3>
+            <h3>Jeśli chcesz dokonać zakupu, kliknij w poniższy link</h3>
+            @Html.ActionLink("Zakup karnetów", "BuyCarnet") <br /><br />
+        }
+        else
+        {
+            <h1>Aktywowane karnety:</h1><p></p>
+            <h2>Karnety czasowe:</h2>
+
+            <form asp-controller="Carnet" asp-action="PurchasedCarnets" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nazwa biletu</th>
+                            <th scope="col">Data zakupu</th>
+                            <th scope="col">Koszt</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Data aktywacji</th>
+                            <th scope="col">Ważny do</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var carnet in Model.TimeCarnets)
+                        {
+                            <tr>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.Price zł</td>
+                                @if (IsAllowedToClick(carnet))
+                                {
+                                    <td>
+                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)">@SetButtonName(carnet)</button>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)" disabled>@SetButtonName(carnet) </button>
+                                    </td>
+                                }
+                                <td>@SetDateFormat(carnet.UsedOn)</td>
+                                <td>@SetDateFormat(carnet.ExpireDate)</td>
+                                <td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table> <p></p><p></p>
+                <h2>Karnety ilościowe:</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nazwa biletu</th>
+                            <th scope="col">Data zakupu</th>
+                            <th scope="col">Koszt</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Pozostała ilość</th>
+                            <th scope="col">Rezerwacje</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var carnet in Model.QuantityCarnets)
+                        {
+                            <tr>
+                                <td>@carnet.Name</td>
+                                <td>@carnet.PurchasedAt</td>
+                                <td>@carnet.Price zł</td>
+                                @if (IsAllowedToClick(carnet))
+                                {
+                                    <td>
+                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)">@SetButtonName(carnet)</button>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)" disabled>@SetButtonName(carnet) </button>
+                                    </td>
+                                }
+                                <td>@carnet.RemainQty</td>
+                                <td>Do zaimplementowania</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        }
+    }
+</body>
+</html>
+
+
+@functions{
+    public string SetButtonClass(Carnet carnet)
+    {
+        if (!carnet.IsActive && !carnet.IsExpired)
+        {
+            return "btn btn-outline-success btn-sm";
+        }
+        else if (carnet.IsActive && !carnet.IsExpired)
+        {
+            return "btn btn-success btn-sm disabled";
+        }
+
+        else if (!carnet.IsActive && carnet.IsExpired && DateTime.UtcNow > carnet.ExpireDate)
+        {
+            return "btn btn-secondary btn-sm disabled";
+        }
+        return "";
+    }
+    public string SetButtonName(Carnet carnet)
+    {
+
+        if (!carnet.IsActive && !carnet.IsExpired)
+        {
+            return "Aktywuj";
+        }
+        else if (carnet.IsActive && !carnet.IsExpired)
+        {
+            return "Aktywny";
+        }
+        else if (!carnet.IsActive && carnet.IsExpired)
+        {
+            return "Wykorzystany";
+        }
+        return "";
+    }
+    public bool IsAllowedToClick(Carnet carnet)
+    {
+
+        if (!carnet.IsActive && !carnet.IsExpired)
+        {
+            return true;
+        }
+        else if (carnet.IsActive && !carnet.IsExpired)
+        {
+            return false;
+        }
+        else if (!carnet.IsActive && carnet.IsExpired)
+        {
+            return false;
+        }
+        return false;
+    }
+    public string SetDateFormat(DateTime? date)
+    {
+        if (!date.HasValue)
+        {
+            return "";
+        }
+        else return date.Value.ToString("dd.MM.yyyy");
+    }
+}

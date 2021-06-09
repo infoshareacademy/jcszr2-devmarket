@@ -7,7 +7,6 @@ using GymManagerWebApp.Models;
 using GymManagerWebApp.Services;
 using GymManagerWebApp.Services.Exercises;
 
-
 using Newtonsoft.Json;
 
 namespace GymManagerWebApp.FileReaders
@@ -56,5 +55,4 @@ namespace GymManagerWebApp.FileReaders
         }
 
     }
-
 }
