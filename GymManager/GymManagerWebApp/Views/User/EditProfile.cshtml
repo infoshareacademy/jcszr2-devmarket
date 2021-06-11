@@ -1,0 +1,92 @@
+﻿@using Microsoft.CodeAnalysis
+@using Microsoft.AspNetCore.Http
+@model GymManagerWebApp.Models.EditProfileViewModel
+
+
+@{
+    ViewBag.Title = "Edytycja profiu";
+}
+
+<h2>Edycja profilu</h2>
+
+<form name="EditProfile" asp-controller="User" asp-route-id="@Model.Id" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="d-flex flex-column align-items-center text-center">
+        @if (@Model.ProfilePicturePath == null)
+        {
+            <div data-initials="@($"{Model.FirstName[0]} {Model.LastName[0]}")"></div>
+        }
+        else
+        {
+            <td>
+                <img src="~/images/@Model.ProfilePicturePath"
+                     class="rounded-circle"
+                     height="100" width="100"
+                     asp-append-version="true" />
+            </td>
+        }
+    </div>
+
+        <label>Edycja zdjęcia</label>
+        <div class="form-group">
+            <input asp-for="ProfilePicture" type="file" id="ProfilePicture" class="btn btn-primary" accept=".png,.jpg,.jpeg,.gif,.tif"></input>
+            <div>
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" asp-action="RemoveProfilePicture" formmethod="post" class="btn btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć zdjęcie?')">Usuń zdjęcie profilowe</button>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FirstName">Imię</label>
+            <input asp-for="FirstName" class="form-control" placeholder="Imię">
+            <div>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName">Nazwisko</label>
+            <input asp-for="LastName" class="form-control" placeholder="Nazwisko">
+            <div>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber">Numer telefonu</label>
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Telefon">
+            <div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <p></p>
+        <p>Płeć</p>
+        <div>
+            <div>
+                <input id="Men" asp-for="Gender" name="gender" type="radio" value="Mężczyzna">
+                <label for="Men">Mężczyzna</label>
+            </div>
+
+            <div>
+                <input id="Woman" asp-for="Gender" name="gender" type="radio" value="Kobieta">
+                <label for="Woman">Kobieta</label>
+            </div>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+    
+    <div class="form-group">
+    <button type="submit" asp-action="EditProfile" formmethod="post" class="btn btn-primary">Zatwierdź</button>
+    </div>
+</form>
+
+<br>
+<br>
+<tr>
+    <td> @Html.ActionLink("Powrót do profilu", "AccountDetails") <br /><br />
+</tr>
+

@@ -9,8 +9,10 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using GymManagerWebApp.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagerWebApp.Services
@@ -70,5 +72,8 @@ namespace GymManagerWebApp.Services
             await _dbContext.SaveChangesAsync();
             return user;
         }
+
+
+
     }
 }

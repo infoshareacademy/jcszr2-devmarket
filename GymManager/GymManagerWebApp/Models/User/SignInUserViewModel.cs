@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace GymManagerWebApp.Models
 {
@@ -47,23 +48,9 @@ namespace GymManagerWebApp.Models
         [Required(ErrorMessage ="Wymagane zaznaczenie płci")]
         public string Gender { get; set; }
         public DateTime CreatedAt { get; set; }
+        public IFormFile ProfilePicture { get; set; }
         public static object Identity { get; internal set; }
 
-        public SignInUserViewModel()
-        {
-        }
 
-        public SignInUserViewModel(string firstName, string lastName, string email, string password1,
-            string password2, string phoneNr, string gender, DateTime createdAt)
-        {
-            FirstName = firstName;
-            LastName= lastName;
-            Email = email;
-            Password1 = password1;
-            Password2 = password2;
-            PhoneNumber = phoneNr;
-            Gender = gender;
-            CreatedAt = createdAt;
-        }
     }
 }

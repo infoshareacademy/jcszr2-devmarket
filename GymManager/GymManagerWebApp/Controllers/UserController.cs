@@ -1,33 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using GymManagerWebApp.Models;
+﻿using GymManagerWebApp.Models;
 using GymManagerWebApp.Services;
-using GymManagerWebApp.Services.RolesService;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+using GymManagerWebApp.Services.FileService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace GymManagerWebApp.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IFileService _fileService;
         private readonly UserManager<User> _userManager;
-        private readonly IRoleService _roleService;
 
-        public UserController(IUserService userService, UserManager<User> userManager, IRoleService roleService)
+        public UserController(IUserService userService, UserManager<User> userManager, IFileService fileService)
         {
             _userService = userService;
             _userManager = userManager;
-            _roleService = roleService;
+            _fileService = fileService;
         }
 
         #region Register
@@ -55,6 +46,7 @@ namespace GymManagerWebApp.Controllers
                     PhoneNumber = model.PhoneNumber,
                     Gender = model.Gender,
                     CreatedAt = DateTime.UtcNow,
+                    ProfilePicture = _fileService.UploadFile(model),
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password1);
@@ -74,6 +66,7 @@ namespace GymManagerWebApp.Controllers
             }
             return View();
         }
+
         #endregion
         #region Login
         [Route("LogIn")]
@@ -116,5 +109,83 @@ namespace GymManagerWebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> AccountDetails()
+        {
+            string userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+            return View("AccountDetails",user);
+        }
+
+        [HttpPost]
+        public IActionResult AccountDetails(User model)
+        {
+            return RedirectToAction(nameof(EditProfile));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            var model = new EditProfileViewModel()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                PhoneNumber = user.PhoneNumber,
+                ProfilePicturePath = user.ProfilePicture,
+            };
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+
+            if (model.ProfilePicture != null)
+            {
+                user.ProfilePicture = _fileService.UploadFile(model);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return View("EditProfileConfirmation");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveProfilePicture(EditProfileViewModel model)
+        {
+            var userEmail = User.Identity.Name;
+            var user = await _userService.GetUserByEmailAsync(userEmail);
+
+            user.ProfilePicture = null;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(EditProfile));
+        }
     }
 }
