@@ -3,6 +3,7 @@ using GymManagerWebApp.Services;
 using GymManagerWebApp.Services.FileService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -13,12 +14,14 @@ namespace GymManagerWebApp.Controllers
         private readonly IUserService _userService;
         private readonly IFileService _fileService;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, UserManager<User> userManager, IFileService fileService)
+        public UserController(IUserService userService, UserManager<User> userManager, IFileService fileService, ILogger<UserController> logger)
         {
             _userService = userService;
             _userManager = userManager;
             _fileService = fileService;
+            _logger = logger;
         }
 
         #region Register
@@ -53,12 +56,14 @@ namespace GymManagerWebApp.Controllers
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation($"User register succeed, id: {user.Id} ");
                     await _userManager.AddToRoleAsync(user,"Klient");
                     return View("SignInConfirmation");
                 }
 
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug($"Failed to register new user, details: {error.Description}");
                     ModelState.AddModelError("", error.Description);
                 }
                 ModelState.Clear();
@@ -85,6 +90,8 @@ namespace GymManagerWebApp.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _userService.LoginAsync(login);
+                var user = await _userService.GetUserByEmailAsync(login.Email);
+
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnUrl))
@@ -92,9 +99,11 @@ namespace GymManagerWebApp.Controllers
                         return LocalRedirect(returnUrl);
                     }
 
+                    _logger.LogInformation($"User with id: {user.Id} logged in");
                     return RedirectToAction("Index", "Home");
                 }
 
+                _logger.LogDebug($"Failed login attempt. User id: {user.Id}");
                 ModelState.AddModelError("", "Nieprawidłowe dane logowania. Spróbój ponownie");
             }
 
@@ -106,6 +115,9 @@ namespace GymManagerWebApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await _userService.LogoutAsync();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userId = user.Id;
+            _logger.LogInformation($"User with id: {userId} logged out");
             return RedirectToAction("Index", "Home");
         }
         #endregion
@@ -165,11 +177,13 @@ namespace GymManagerWebApp.Controllers
 
             if (result.Succeeded)
             {
+                _logger.LogInformation($"User of id: {user.Id} | Profle edited by his own");
                 return View("EditProfileConfirmation");
             }
 
             foreach (var error in result.Errors)
             {
+                _logger.LogDebug($"User of id: {user.Id} | Failed to edit profile by his own | Details: {error.Description}");
                 ModelState.AddModelError("", error.Description);
             }
             return View(model);

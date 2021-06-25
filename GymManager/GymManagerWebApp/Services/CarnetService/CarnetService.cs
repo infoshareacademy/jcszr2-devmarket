@@ -19,11 +19,21 @@ namespace GymManagerWebApp.Services.CarnetService
             _dbContext = dbContext;
         }
 
+        public List<Carnet> GetCarnetTypes()
+        {
+            return  new CarnetsOfferViewModel().CarnetList;
+        }
+
+        public Carnet GetCarnetByNr(int carnetNumber)
+        {
+            var allCarnetTypes = GetCarnetTypes();
+            var selectedCarnet = allCarnetTypes.Single(x => x.CarnetTypeNumber == carnetNumber);
+            return selectedCarnet;
+        }
+
         public async Task AddCarnetAsync(int carnetTypeNumber, string userEmail)
         {
-
-            var allCarnetTypes = new CarnetsOfferViewModel().CarnetList;
-            var selectedCarnet = allCarnetTypes.Single(x => x.CarnetTypeNumber == carnetTypeNumber); //getting right carnet type object from carnet list modelview
+            var selectedCarnet = GetCarnetByNr(carnetTypeNumber);
             var carnet = new Carnet()
             {
                 CarnetTypeNumber = carnetTypeNumber,
