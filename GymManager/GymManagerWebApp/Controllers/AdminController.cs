@@ -11,6 +11,7 @@ using GymManagerWebApp.Services.RolesService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GymManagerWebApp.Controllers
 {
@@ -20,13 +21,14 @@ namespace GymManagerWebApp.Controllers
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly UserManager<User> _userManager;
-        
+        private readonly ILogger<CarnetController> _logger;
 
-        public AdminController(IUserService userService, IRoleService roleService, UserManager<User> userManager)
+        public AdminController(IUserService userService, IRoleService roleService, UserManager<User> userManager, ILogger<CarnetController> logger)
         {
             _userService = userService;
             _userManager = userManager;
             _roleService = roleService;
+            _logger = logger;
         }
 
         #region CRUD routing
@@ -93,6 +95,7 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid) 
             {
+                var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
                 var user = new User()
                 {
                     FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1),
@@ -109,11 +112,13 @@ namespace GymManagerWebApp.Controllers
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Added new user{user.Id}");
                     return View("Confirmations/AddUserConfirmation");
                 }
 
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to add new user | Details: {error.Description}");
                     ModelState.AddModelError("", error.Description);
                 }
             }
@@ -127,13 +132,16 @@ namespace GymManagerWebApp.Controllers
         {
             var userId = TempData["userId"].ToString();
             var user = await _userManager.FindByIdAsync(userId);
+            var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Deleted user{user.Id}");
                 return View("Confirmations/DeleteUserConfirmation");
             }
             foreach (var error in result.Errors)
             {
+                _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to delete user with id: {user.Id} | d=Details: {error.Description}");
                 ModelState.AddModelError("", error.Description);
             }
             return View("CrudUsers");
@@ -168,6 +176,7 @@ namespace GymManagerWebApp.Controllers
         public async Task<IActionResult> EditUser(EditUserViewModel model, string Role)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
+            var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
 
             user.Email = model.Email;
             user.FirstName = model.FirstName;
@@ -183,10 +192,12 @@ namespace GymManagerWebApp.Controllers
 
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Edited user{user.Id}");
                 return View("Confirmations/EditUserConfirmation");
             }
             foreach (var error in result.Errors)
             {
+                _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to edit user with id: {user.Id} | Details: {error.Description}");
                 ModelState.AddModelError("", error.Description);
             }
             return View(model);
