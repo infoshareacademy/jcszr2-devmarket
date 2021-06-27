@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity;
 using GymManagerWebApp.Models;
 using GymManagerWebApp.Services.CarnetService;
 using GymManagerWebApp.Services.RolesService;
+using GymManagerWebApp.Services.Exercises;
+using GymManagerWebApp.Services.CoachService;
 
 namespace GymManagerWebApp
 {
@@ -42,6 +44,9 @@ namespace GymManagerWebApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarnetService, CarnetService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IExercisesService, ExercisesService>();
+            services.AddScoped<ICoachService, CoachService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

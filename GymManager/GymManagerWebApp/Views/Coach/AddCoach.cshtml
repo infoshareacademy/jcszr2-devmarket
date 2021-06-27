@@ -1,0 +1,29 @@
+﻿@model AddCoachViewModel
+ 
+@{
+    ViewData["Title"] = "AddCoach";
+}
+
+<h1>Dodaj trenera</h1>
+
+<form asp-controller="Coach" asp-action="ConfirmAddingNewCoach" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="CoachName">Imię trenera</label>
+        <input asp-for="CoachName" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="CoachName" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="CoachSurName">Nazwisko Trenera</label>
+        <input asp-for="CoachSurName" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="CoachSurName" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj Trenera</button>
+</form>

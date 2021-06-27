@@ -1,0 +1,46 @@
+﻿@model AddExerciseViewModel
+
+@{
+    ViewData["Title"] = "AddExercise";
+}
+
+<h1>AddExercise</h1>
+
+<form asp-controller="Admin" asp-action="AddUser" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="ExerciseName">Nazwa zajęć</label>
+        <input asp-for="ExerciseName" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="ExerciseName" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="ExerciseDate">Data zajęcia</label>
+        <input type="date" asp-for="ExerciseDate" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="ExerciseDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExerciseDurationTimeInMinutes">Czas trawania w minutach</label>
+        <input type="number" asp-for="ExerciseDurationTimeInMinutes" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="ExerciseDurationTimeInMinutes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CoachId">Numer id prowadzącego</label>
+        <input type="number" asp-for="CoachId" class="form-control" placeholder="Wpisz...">
+        <div>
+            <span asp-validation-for="CoachId" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj Zajęcie</button>
+</form>
+
