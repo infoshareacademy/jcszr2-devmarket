@@ -10,6 +10,6 @@ namespace GymManagerWebApp.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public virtual IList<Coach> Coaches { get; set; } = new List<Coach>();
-        
+        public virtual IList<Room> Rooms { get; set; } = new List<Room>();
     }
 }

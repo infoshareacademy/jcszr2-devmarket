@@ -15,9 +15,39 @@ namespace GymManagerWebApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("CoachExercise", b =>
+                {
+                    b.Property<string>("CoachesId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ExercisesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoachesId", "ExercisesId");
+
+                    b.HasIndex("ExercisesId");
+
+                    b.ToTable("CoachExercise");
+                });
+
+            modelBuilder.Entity("ExerciseRoom", b =>
+                {
+                    b.Property<int>("ExercisesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExercisesId", "RoomsId");
+
+                    b.HasIndex("RoomsId");
+
+                    b.ToTable("ExerciseRoom");
+                });
 
             modelBuilder.Entity("GymManagerWebApp.Carnet", b =>
                 {
@@ -67,7 +97,7 @@ namespace GymManagerWebApp.Migrations
                     b.ToTable("PurchasedCarnets");
                 });
 
-            modelBuilder.Entity("GymManagerWebApp.Models.Appointment", b =>
+            modelBuilder.Entity("GymManagerWebApp.Models.CalendarEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +133,7 @@ namespace GymManagerWebApp.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("CalendarEvents");
                 });
 
             modelBuilder.Entity("GymManagerWebApp.Models.Exercise", b =>
@@ -113,20 +143,10 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CoachId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CoachId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Exercises");
                 });
@@ -141,7 +161,7 @@ namespace GymManagerWebApp.Migrations
                     b.Property<DateTime>("ActivationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("AppointmentId")
+                    b.Property<int?>("CalendarEventId")
                         .HasColumnType("int");
 
                     b.Property<bool>("CanBeCanceled")
@@ -155,7 +175,7 @@ namespace GymManagerWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId");
+                    b.HasIndex("CalendarEventId");
 
                     b.HasIndex("UserId");
 
@@ -188,9 +208,6 @@ namespace GymManagerWebApp.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -203,8 +220,8 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -225,12 +242,12 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -251,19 +268,17 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId");
-
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
+                        .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
@@ -281,18 +296,18 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
+                        .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
@@ -409,10 +424,40 @@ namespace GymManagerWebApp.Migrations
                     b.HasDiscriminator().HasValue("Coach");
                 });
 
-            modelBuilder.Entity("GymManagerWebApp.Models.Appointment", b =>
+            modelBuilder.Entity("CoachExercise", b =>
+                {
+                    b.HasOne("GymManagerWebApp.Models.Coach", null)
+                        .WithMany()
+                        .HasForeignKey("CoachesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GymManagerWebApp.Models.Exercise", null)
+                        .WithMany()
+                        .HasForeignKey("ExercisesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExerciseRoom", b =>
+                {
+                    b.HasOne("GymManagerWebApp.Models.Exercise", null)
+                        .WithMany()
+                        .HasForeignKey("ExercisesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GymManagerWebApp.Models.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GymManagerWebApp.Models.CalendarEvent", b =>
                 {
                     b.HasOne("GymManagerWebApp.Models.Coach", "Coach")
-                        .WithMany("Appointments")
+                        .WithMany("CalendarEvents")
                         .HasForeignKey("CoachId");
 
                     b.HasOne("GymManagerWebApp.Models.Exercise", "Exercise")
@@ -422,35 +467,27 @@ namespace GymManagerWebApp.Migrations
                     b.HasOne("GymManagerWebApp.Models.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId");
-                });
 
-            modelBuilder.Entity("GymManagerWebApp.Models.Exercise", b =>
-                {
-                    b.HasOne("GymManagerWebApp.Models.Coach", null)
-                        .WithMany("Exercises")
-                        .HasForeignKey("CoachId");
+                    b.Navigation("Coach");
 
-                    b.HasOne("GymManagerWebApp.Models.Room", null)
-                        .WithMany("AllowedExercises")
-                        .HasForeignKey("RoomId");
+                    b.Navigation("Exercise");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("GymManagerWebApp.Models.Reservation", b =>
                 {
-                    b.HasOne("GymManagerWebApp.Models.Appointment", "Appointment")
+                    b.HasOne("GymManagerWebApp.Models.CalendarEvent", "CalendarEvent")
                         .WithMany()
-                        .HasForeignKey("AppointmentId");
+                        .HasForeignKey("CalendarEventId");
 
                     b.HasOne("GymManagerWebApp.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
 
-            modelBuilder.Entity("GymManagerWebApp.Models.User", b =>
-                {
-                    b.HasOne("GymManagerWebApp.Models.Appointment", null)
-                        .WithMany("RegisteredCustomers")
-                        .HasForeignKey("AppointmentId");
+                    b.Navigation("CalendarEvent");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -502,6 +539,11 @@ namespace GymManagerWebApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GymManagerWebApp.Models.Coach", b =>
+                {
+                    b.Navigation("CalendarEvents");
                 });
 #pragma warning restore 612, 618
         }

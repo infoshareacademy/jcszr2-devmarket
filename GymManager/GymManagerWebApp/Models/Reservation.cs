@@ -12,6 +12,6 @@ namespace GymManagerWebApp.Models
         public bool CanBeCanceled { get; set; }
         public bool IsActive { get; set; }
         public virtual User User { get; set; }
-        public virtual CalendarEvent Appointment { get; set; }
+        public virtual CalendarEvent CalendarEvent { get; set; }
     }
 }

@@ -11,31 +11,9 @@ namespace GymManagerWebApp.Data
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Coach> builder)
         {
-            
+            builder.HasMany(x => x.Exercises).WithMany(x => x.Coaches);
+            builder.HasMany(x => x.CalendarEvents).WithOne(x => x.Coach);
         }
     }
 
-    public class CalendarEventConfiguration : IEntityTypeConfiguration<CalendarEvent>
-    {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<CalendarEvent> builder)
-        {
-
-        }
-    }
-
-    public class RoomConfiguration : IEntityTypeConfiguration<Room>
-    {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Room> builder)
-        {
-
-        }
-    }
-
-    public class ExerciseConfiguration : IEntityTypeConfiguration<Exercise>
-    {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Exercise> builder)
-        {
-            
-        }
-    }
 }

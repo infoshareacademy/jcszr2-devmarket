@@ -21,7 +21,7 @@ namespace GymManagerWebApp.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Carnet> PurchasedCarnets { get; set; }
-        public DbSet<CalendarEvent> Appointments { get; set; }
+        public DbSet<CalendarEvent> CalendarEvents { get; set; }
         public DbSet<Coach> Coaches { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Reservation> Reservations { get; set; }

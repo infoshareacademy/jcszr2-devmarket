@@ -42,7 +42,7 @@ namespace GymManagerWebApp.Services
             await _signInManager.SignOutAsync();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<List<User>> GetUsersAsync(string currentUserEmail)
         {
             return await _dbContext.Users
@@ -51,21 +51,21 @@ namespace GymManagerWebApp.Services
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _dbContext.Users
                     .SingleOrDefaultAsync(x => x.Id == userId);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _dbContext.Users
                     .SingleOrDefaultAsync(x => x.Email == email);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<User> UpdateUser(User user)
         {
 
