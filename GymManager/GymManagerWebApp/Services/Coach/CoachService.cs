@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagerWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagerWebApp.Services.CoachService
 {
@@ -23,6 +24,11 @@ namespace GymManagerWebApp.Services.CoachService
             var coachToAdd = new Coach(coachName, coachSurName);
             await _dbContext.Coaches.AddAsync(coachToAdd);
             await _dbContext.SaveChangesAsync();
+        }
+        public async Task<List<Coach>> GetAllCoaches()
+        {
+           var list = await _dbContext.Coaches.Select(x => x).ToListAsync();
+           return list;
         }
 
     }

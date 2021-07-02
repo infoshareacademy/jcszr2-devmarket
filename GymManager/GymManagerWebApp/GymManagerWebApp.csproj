@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210627185519_CoachExercise.cs" />
+    <Compile Remove="Migrations\20210627185519_CoachExercise.Designer.cs" />
+    <Compile Remove="Migrations\20210702122053_Coach.cs" />
+    <Compile Remove="Migrations\20210702122053_Coach.Designer.cs" />
+    <Compile Remove="Migrations\20210702125352_coach.cs" />
+    <Compile Remove="Migrations\20210702125352_coach.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.14" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.11" />

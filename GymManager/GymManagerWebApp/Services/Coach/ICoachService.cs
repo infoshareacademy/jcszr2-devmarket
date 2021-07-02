@@ -8,5 +8,7 @@ namespace GymManagerWebApp.Services.CoachService
     public interface ICoachService
     {
         Task AddCoachAsync(string coachName, string coachSurName);
+        Task<List<Coach>> GetAllCoaches();
+        Task AddExerciseAsync();
     }
 }

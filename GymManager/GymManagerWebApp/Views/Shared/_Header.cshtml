@@ -20,6 +20,9 @@
                             <a class="link-menu" asp-area="" asp-controller="Coach" asp-action="AddNewCoach">Dodaj Trenera</a>
                         </li>
                         <li class="nav-item">
+                            <a class="link-menu" asp-area="" asp-controller="Exercises" asp-action="AddNewExercise">Dodaj Zajęcie</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="AllPurchasedCarnets">Raport wykupionych karnetów</a>
                         </li>
                         <li class="nav-item">
@@ -36,7 +39,7 @@
                             <a class="link-menu" asp-area="" asp-controller="Carnet" asp-action="BuyCarnet">Kup karnet</a>
                         </li>
                         <li class="nav-item">
-                            <a class="link-menu" asp-area="" asp-controller="ExercisesList" asp-action="Exercises">Lista zajęć</a>
+                            <a class="link-menu" asp-area="" asp-controller="Exercises" asp-action="Exercises">Lista zajęć</a>
                         </li>
                         <li class="nav-item">
                             <a class="link-menu disabled" href="#">Zalogowany jako: @User.Identity.Name</a>

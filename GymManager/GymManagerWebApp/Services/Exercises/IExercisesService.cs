@@ -7,5 +7,6 @@ namespace GymManagerWebApp.Services.Exercises
 {
     public interface IExercisesService
     {
+        Task<List<Exercise>> GetAllExercises();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GymManagerWebApp.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace GymManagerWebApp.Services.Exercises
             _dbContext = dbContext;
         }
 
-     /*   public async Task<List<Exercise>> GetAllExercises ()
+       public async Task<List<Exercise>> GetAllExercises ()
         {
-            var exercises = await _dbContext.ListOfExercises.Select(x => x);
+            var exercises = await _dbContext.ListOfExercises.Select(x => x).ToListAsync();
             return exercises;
-        }*/
+        }
     }
 }

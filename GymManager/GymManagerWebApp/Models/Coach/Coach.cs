@@ -7,7 +7,7 @@ namespace GymManagerWebApp
 {
     public class Coach
     {
-        public int Id { get; set; }
+        public int CoachId { get; set; }
         public string CoachName { get; set; }
         public string CoachSurname { get; set; }
 

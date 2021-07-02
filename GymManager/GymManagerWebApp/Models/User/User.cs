@@ -15,6 +15,8 @@ namespace GymManagerWebApp.Models
         public string Gender { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        //public string ProfilePicture { get; set; }
+
         public User()
         {
         }

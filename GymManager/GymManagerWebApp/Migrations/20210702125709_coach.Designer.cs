@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagerWebApp.Migrations
 {
     [DbContext(typeof(GymManagerContext))]
-    [Migration("20210620145920_CoachMigration")]
-    partial class CoachMigration
+    [Migration("20210702125709_coach")]
+    partial class coach
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,7 +71,7 @@ namespace GymManagerWebApp.Migrations
 
             modelBuilder.Entity("GymManagerWebApp.Coach", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CoachId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -82,7 +82,7 @@ namespace GymManagerWebApp.Migrations
                     b.Property<string>("CoachSurname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CoachId");
 
                     b.ToTable("Coaches");
                 });
@@ -94,7 +94,7 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CoachId")
+                    b.Property<int>("CoachId")
                         .HasColumnType("int");
 
                     b.Property<string>("ExerciseDate")
@@ -107,8 +107,6 @@ namespace GymManagerWebApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CoachId");
 
                     b.ToTable("ListOfExercises");
                 });
@@ -319,13 +317,6 @@ namespace GymManagerWebApp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("GymManagerWebApp.Exercise", b =>
-                {
-                    b.HasOne("GymManagerWebApp.Coach", "Coach")
-                        .WithMany()
-                        .HasForeignKey("CoachId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
