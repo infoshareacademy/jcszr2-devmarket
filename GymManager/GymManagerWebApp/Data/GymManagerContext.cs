@@ -19,7 +19,7 @@ namespace GymManagerWebApp.Data
         public GymManagerContext()
         { }
 
-        public DbSet<User> Users { get; set; }
+        public override DbSet<User> Users { get; set; }
         public DbSet<Carnet> PurchasedCarnets { get; set; }
         public DbSet<CalendarEvent> CalendarEvents { get; set; }
         public DbSet<Coach> Coaches { get; set; }

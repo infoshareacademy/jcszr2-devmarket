@@ -107,8 +107,8 @@ namespace GymManagerWebApp.Controllers
                     CreatedAt = DateTime.UtcNow,
                 };
             
-                var result = await _userManager.CreateAsync(user, model.Password1); //adding user to db
-                await _userManager.AddToRoleAsync(user, model.Role); //adding user role to db
+                var result = await _userManager.CreateAsync(user, model.Password1);
+                await _userManager.AddToRoleAsync(user, model.Role); 
 
                 if (result.Succeeded)
                 {
