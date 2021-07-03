@@ -11,7 +11,7 @@ namespace GymManagerWebApp.Models
         public DateTime ActivationDate{ get; set; }
         public bool CanBeCanceled { get; set; }
         public bool IsActive { get; set; }
-        public virtual User User { get; set; }
+        public virtual Coach Coach { get; set; }
         public virtual CalendarEvent CalendarEvent { get; set; }
     }
 }

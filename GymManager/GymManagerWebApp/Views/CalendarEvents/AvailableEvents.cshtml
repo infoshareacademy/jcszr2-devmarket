@@ -1,0 +1,47 @@
+﻿@model CalendarEventViewModel
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Dostępnę zajęcia</title>
+</head>
+
+<body>
+    <h2>Wybierz czynność jaką chcesz wykonać</h2>
+
+    <form asp-controller="CalendarEvents" asp-action="AvailableEvents">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nazwa zajęć</th>
+                    <th scope="col">Nr sali</th>
+                    <th scope="col">Ilość dostępnych miejsc</th>
+                    <th scope="col">Data zajęć</th>
+                    <th scope="col">Czas trwania</th>
+                    <th scope="col">Trener prowadzący</th>
+                    <th scope="col">Rezerwacja</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var calendarEvent in Model.CalendarEvents)
+                {
+                <tr>
+                    <td>@Html.DisplayFor(m=> calendarEvent.Exercise.Name)</td>
+                    <td>@Html.DisplayFor(m => calendarEvent.Room.Number)</td>
+                    <td>@Html.DisplayFor(m => calendarEvent.VacanciesLeft) / @Html.DisplayFor(m => calendarEvent.Room.MaxCustomersCapacity) </td>
+                    <td>@Html.DisplayFor(m => calendarEvent.Date)
+                    <td>@Html.DisplayFor(m => calendarEvent.Duration)
+                    <td>@Html.DisplayFor(m => calendarEvent.Coach.FirstName) @Html.DisplayFor(m => calendarEvent.Coach.LastName)</td>
+                    <td>
+                        <button type="submit" name="btnReserve" value="@calendarEvent.Id" role="button" aria-disabled="true" class="btn btn-outline-primary btn-sm">Zarezerwuj</button>
+                        <button type="submit" name="btnBuyTicket" value="@calendarEvent.Id" role="button" aria-disabled="true" class="btn btn-outline-warning btn-sm">Aktywuj</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</body>
+
+</html>

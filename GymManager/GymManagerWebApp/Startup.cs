@@ -44,6 +44,7 @@ namespace GymManagerWebApp
             services.AddScoped<ICarnetService, CarnetService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ICalendarEventService, CalendarEventService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
