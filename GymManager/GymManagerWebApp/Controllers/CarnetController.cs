@@ -67,7 +67,7 @@ namespace GymManagerWebApp.Controllers
         {
             var userEmail = HttpContext.User.Identity.Name;
             var user = _userService.GetUserByEmailAsync(userEmail);
-            var carnet = _carnetService.GetCarnetByNr(carnetId);
+            var carnetName = _carnetService.GetPurchasedCarnetNameById(carnetId);
             var isAnyActive = await _carnetService.IsAnyActive(userEmail);
 
             if(isAnyActive)
@@ -80,7 +80,7 @@ namespace GymManagerWebApp.Controllers
             }
 
             await _carnetService.ActivateCarnet(carnetId);
-            _logger.LogInformation($"User of id: {user.Id} | activated carnet: {carnet.Name}");
+            _logger.LogInformation($"User of id: {user.Id} | activated carnet: {carnetName}");
             return View("ActivateCarnetConfirmation");
         }
 

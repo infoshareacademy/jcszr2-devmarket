@@ -14,6 +14,7 @@ namespace GymManagerWebApp.Services.CarnetService
         Task<List<Carnet>> GetActivatedCarnets(string userEmail, string carnetCategoryName);
         Carnet GetCarnetByNr(int carnetNumber);
         List<Carnet> GetCarnetTypes();
+        Task<string> GetPurchasedCarnetNameById(int carnetId);
         Task<List<Carnet>> GetPurchasedCarnets(string userEmail, string carnetCategoryName);
         [Authorize("Admin")]
         Task<List<Carnet>> GetPurchasedCarnets(string carnetCategoryName);

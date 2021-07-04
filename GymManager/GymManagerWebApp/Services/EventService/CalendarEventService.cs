@@ -27,9 +27,35 @@ namespace GymManagerWebApp.Services
             return events;
         }
 
-        public async Task<CalendarEvent> GetEventById(int eventId)
+        public async Task<CalendarEvent> GetEventByIdAsync(int eventId)
         {
             return await _dbContext.CalendarEvents.SingleAsync(x=>x.Id == eventId);
+        }
+
+        public async Task IncreaseAvailableVacanciesAsync(int eventId)
+        {
+            var selectedEvent = await _dbContext.CalendarEvents.FindAsync(eventId);
+            selectedEvent.VacanciesLeft += 1;
+            await _dbContext.SaveChangesAsync();
+        }
+    
+        public async Task ReduceAvailableVacanciesAsync(int eventId)
+        {
+            var selectedEvent = await _dbContext.CalendarEvents.FindAsync(eventId);
+            selectedEvent.VacanciesLeft -= 1;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetEventIdByReservationIdAsync(int reservationId)
+        {
+            var reservation = await _dbContext.Reservations
+                .Where(m => m.Id == reservationId)
+                .Include(m => m.CalendarEvent)
+                .SingleAsync();
+
+            var eventId = reservation.CalendarEvent.Id;
+
+            return eventId;
         }
     }
 }

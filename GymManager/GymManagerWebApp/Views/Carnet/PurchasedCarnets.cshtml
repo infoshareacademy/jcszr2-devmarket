@@ -130,25 +130,25 @@
                     <tbody>
                         @foreach (var carnet in Model.QuantityCarnets)
                         {
-                            <tr>
-                                <td>@carnet.Name</td>
-                                <td>@carnet.PurchasedAt</td>
-                                <td>@carnet.Price zł</td>
-                                @if (IsAllowedToClick(carnet))
-                                {
-                                    <td>
-                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)">@SetButtonName(carnet)</button>
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)" disabled>@SetButtonName(carnet) </button>
-                                    </td>
-                                }
-                                <td>@carnet.RemainQty</td>
-                                <td>Do zaimplementowania</td>
-                            </tr>
+                        <tr>
+                            <td>@carnet.Name</td>
+                            <td>@carnet.PurchasedAt</td>
+                            <td>@carnet.Price zł</td>
+                            @if (IsAllowedToClick(carnet))
+                            {
+                                <td>
+                                    <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)">@SetButtonName(carnet)</button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <button name="carnetId" value="@carnet.Id" role="button" aria-disabled="true" class="@SetButtonClass(carnet)" disabled>@SetButtonName(carnet) </button>
+                                </td>
+                            }
+                            <td>@carnet.RemainQty</td>
+                            <td>Do zaimplementowania</td>
+                        </tr>
                         }
                     </tbody>
                 </table>

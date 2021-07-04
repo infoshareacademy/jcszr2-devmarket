@@ -9,6 +9,7 @@ namespace GymManagerWebApp.Models
     public class CalendarEventViewModel
     {
         public List<CalendarEvent> CalendarEvents {get;set;}
+        public List<Reservation> Reservations { get; set; }
 
     }
 }

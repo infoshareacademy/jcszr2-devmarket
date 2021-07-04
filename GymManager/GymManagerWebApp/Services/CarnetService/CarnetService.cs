@@ -31,6 +31,12 @@ namespace GymManagerWebApp.Services.CarnetService
             return selectedCarnet;
         }
 
+        public async Task<string> GetPurchasedCarnetNameById(int carnetId)
+        {
+            var carnet = await _dbContext.PurchasedCarnets.FindAsync(carnetId);
+            return carnet.Name;
+        }
+
         public async Task AddCarnetAsync(int carnetTypeNumber, string userEmail)
         {
             var selectedCarnet = GetCarnetByNr(carnetTypeNumber);
