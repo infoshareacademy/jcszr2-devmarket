@@ -7,5 +7,6 @@ namespace GymManagerWebApp.Services
     public interface ICalendarEventService
     {
         Task<List<CalendarEvent>> GetAllEvents();
+        Task<CalendarEvent> GetEventById(int eventId);
     }
 }

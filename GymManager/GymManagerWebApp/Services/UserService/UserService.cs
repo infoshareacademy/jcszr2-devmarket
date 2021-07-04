@@ -68,12 +68,9 @@ namespace GymManagerWebApp.Services
         [Authorize(Roles = "Administrator")]
         public async Task<User> UpdateUser(User user)
         {
-
             await _dbContext.SaveChangesAsync();
             return user;
         }
-
-
 
     }
 }

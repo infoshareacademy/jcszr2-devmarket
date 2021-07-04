@@ -16,6 +16,7 @@ using GymManagerWebApp.Models;
 using GymManagerWebApp.Services.CarnetService;
 using GymManagerWebApp.Services.FileService;
 using GymManagerWebApp.Services.RolesService;
+using GymManagerWebApp.Services.ReservationService;
 
 namespace GymManagerWebApp
 {
@@ -45,6 +46,7 @@ namespace GymManagerWebApp
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICalendarEventService, CalendarEventService>();
+            services.AddScoped<IReservationService, ReservationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

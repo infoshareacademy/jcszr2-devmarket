@@ -26,5 +26,10 @@ namespace GymManagerWebApp.Services
                .ToListAsync();
             return events;
         }
+
+        public async Task<CalendarEvent> GetEventById(int eventId)
+        {
+            return await _dbContext.CalendarEvents.SingleAsync(x=>x.Id == eventId);
+        }
     }
 }

@@ -9,7 +9,7 @@
 <body>
     <h2>Wybierz czynność jaką chcesz wykonać</h2>
 
-    <form asp-controller="CalendarEvents" asp-action="AvailableEvents">
+    <form asp-controller="CalendarEvents" asp-action="BookEvent">
         <div asp-validation-summary="All" class="text-danger"></div>
         <table class="table">
             <thead>
@@ -26,18 +26,17 @@
             <tbody>
                 @foreach (var calendarEvent in Model.CalendarEvents)
                 {
-                <tr>
-                    <td>@Html.DisplayFor(m=> calendarEvent.Exercise.Name)</td>
-                    <td>@Html.DisplayFor(m => calendarEvent.Room.Number)</td>
-                    <td>@Html.DisplayFor(m => calendarEvent.VacanciesLeft) / @Html.DisplayFor(m => calendarEvent.Room.MaxCustomersCapacity) </td>
-                    <td>@Html.DisplayFor(m => calendarEvent.Date)
-                    <td>@Html.DisplayFor(m => calendarEvent.Duration)
-                    <td>@Html.DisplayFor(m => calendarEvent.Coach.FirstName) @Html.DisplayFor(m => calendarEvent.Coach.LastName)</td>
-                    <td>
-                        <button type="submit" name="btnReserve" value="@calendarEvent.Id" role="button" aria-disabled="true" class="btn btn-outline-primary btn-sm">Zarezerwuj</button>
-                        <button type="submit" name="btnBuyTicket" value="@calendarEvent.Id" role="button" aria-disabled="true" class="btn btn-outline-warning btn-sm">Aktywuj</button>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(m => calendarEvent.Exercise.Name)</td>
+                        <td>@Html.DisplayFor(m => calendarEvent.Room.Number)</td>
+                        <td>@Html.DisplayFor(m => calendarEvent.VacanciesLeft) / @Html.DisplayFor(m => calendarEvent.Room.MaxCustomersCapacity) </td>
+                        <td>@Html.DisplayFor(m => calendarEvent.Date)
+                        <td>@Html.DisplayFor(m => calendarEvent.Duration)
+                        <td>@Html.DisplayFor(m => calendarEvent.Coach.FirstName) @Html.DisplayFor(m => calendarEvent.Coach.LastName)</td>
+                        <td>
+                            <button type="submit" name="eventId" value="@calendarEvent.Id" role="button" aria-disabled="true" class="btn btn-outline-primary btn-sm">Zarezerwuj</button>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
