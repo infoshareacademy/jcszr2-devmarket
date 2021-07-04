@@ -15,7 +15,7 @@ namespace GymManagerWebApp.Services.RolesService
             _dbContext = dbContext;
         }
 
-        public async Task<List<string>> GetAllRoleNames()
+        public async Task<List<string>> GetAllRoleNamesAsync()
         {
             return await _dbContext.Roles.Select(x => x.Name).ToListAsync();
         }

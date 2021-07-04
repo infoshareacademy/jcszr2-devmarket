@@ -14,7 +14,7 @@ namespace GymManagerWebApp.Controllers
         private readonly IUserService _userService;
         private readonly IFileService _fileService;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<UserController> _logger;        
 
         public UserController(IUserService userService, UserManager<User> userManager, IFileService fileService, ILogger<UserController> logger)
         {

@@ -50,7 +50,7 @@ namespace GymManagerWebApp.Models
 
         [Required(ErrorMessage = "Wymagane zaznaczenie uprawnień użytkownika")]
         public string Role { get; set; }
-        public List<string> AllRoles { get; set; }
+        public List<string> AllRoleNames { get; set; }
         public DateTime CreatedAt { get; set; }
 
     }

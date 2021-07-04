@@ -5,6 +5,6 @@ namespace GymManagerWebApp.Services.RolesService
 {
     public interface IRoleService
     {
-        Task<List<string>> GetAllRoleNames();
+        Task<List<string>> GetAllRoleNamesAsync();
     }
 }

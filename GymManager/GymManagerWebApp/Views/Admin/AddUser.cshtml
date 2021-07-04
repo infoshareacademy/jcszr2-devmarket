@@ -73,7 +73,7 @@
 
     <p>Wybierz rodzaj uprawnień</p>
     <div>
-        @foreach (var role in Model.AllRoles)
+        @foreach (var role in Model.AllRoleNames)
         {
             <div>
                 <input id="@role" name="Role" type="radio" value="@role" asp-for="Role">

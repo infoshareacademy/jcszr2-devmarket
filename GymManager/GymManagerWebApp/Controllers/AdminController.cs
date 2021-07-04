@@ -31,61 +31,24 @@ namespace GymManagerWebApp.Controllers
             _logger = logger;
         }
 
-        #region CRUD routing
         [HttpGet]
-        public async Task<IActionResult> CrudUsers(CrudUsersViewModel model)
+        public async Task<IActionResult> UsersList(CrudUsersViewModel model)
         {
             var currentUserEmail = User.Identity.Name;
+
             model.Users = await _userService.GetUsersAsync(currentUserEmail);
-            model.Users = model.Users.OrderBy(x => x.Email).ToList();
+            model.Users = _userService.SortUsersByEmails(model.Users);
+            
             return View(model);
         }
 
-        [HttpPost]
-        public IActionResult CrudUsers(CrudUsersViewModel model, string btnAddUser, string btnEditUser,
-            string btnLockUser, string btnLockoutUser, string btnDeleteUser)
-        {
-
-            if (!string.IsNullOrEmpty(btnAddUser))
-            {
-                return RedirectToAction(nameof(AddUser));
-            }
-
-            if (!string.IsNullOrEmpty(btnEditUser))
-            {
-                TempData["userId"] = btnEditUser;
-                return RedirectToAction(nameof(EditUser));
-            }
-
-            if (!string.IsNullOrEmpty(btnLockUser))
-            {
-                TempData["userId"] = btnLockUser;
-                return RedirectToAction(nameof(LockUser));
-            }
-
-            if (!string.IsNullOrEmpty(btnLockUser))
-            {
-                TempData["userId"] = btnLockoutUser;
-                return RedirectToAction(nameof(LockOutUser));
-            }
-
-            if (!string.IsNullOrEmpty(btnDeleteUser))
-            {
-                TempData["userId"] = btnDeleteUser;
-                return RedirectToAction(nameof(RemoveUser));
-            }
-            return View();
-        }
-        #endregion
-        #region Add
         [HttpGet]
-        public async Task<IActionResult> AddUser()
+        public async Task<IActionResult> AddUserAsync()
         {
-            var model = new AddUserViewModel()
-            {
-                AllRoles = await _roleService.GetAllRoleNames()
-            };
-            
+            var model = new AddUserViewModel();
+
+            model.AllRoleNames = await _roleService.GetAllRoleNamesAsync();
+
             return View(model);
         }
 
@@ -95,126 +58,81 @@ namespace GymManagerWebApp.Controllers
         {
             if (ModelState.IsValid) 
             {
-                var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
-                var user = new User()
-                {
-                    FirstName = char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1),
-                    LastName = char.ToUpper(model.LastName[0]) + model.LastName.Substring(1),
-                    UserName = model.Email,
-                    Email = model.Email,
-                    PhoneNumber = model.PhoneNumber,
-                    Gender = model.Gender,
-                    CreatedAt = DateTime.UtcNow,
-                };
-            
-                var result = await _userManager.CreateAsync(user, model.Password1);
-                await _userManager.AddToRoleAsync(user, model.Role); 
+                var result = await _userService.CreateUser(model);
+
+                var newUserId = await _userService.GetUserIdByEmailAsync(model.NormalizedEmail);
+                var currentAdminId = await _userService.GetUserIdByEmailAsync(User.Identity.Name);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Added new user{user.Id}");
+                    _logger.LogInformation($"Administrator with id: {currentAdminId} | Added new user{newUserId}");
                     return View("Confirmations/AddUserConfirmation");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to add new user | Details: {error.Description}");
+                    _logger.LogError($"Administrator with id: {currentAdminId} | Failed to add new user | Details: {error.Description}");
                     ModelState.AddModelError("", error.Description);
                 }
             }
+
             ModelState.Clear();
+
             return View();
         }
-        #endregion
-        #region Remove
+
         [HttpGet]
-        public async Task<IActionResult> RemoveUser()
+        public async Task<IActionResult> RemoveUser(string userId)
         {
-            var userId = TempData["userId"].ToString();
-            var user = await _userManager.FindByIdAsync(userId);
-            var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
-            var result = await _userManager.DeleteAsync(user);
+            var currentAdminEmail = _userService.GetUserByEmailAsync(User.Identity.Name);
+            var result = await _userService.RemoveUser(userId);
+
             if (result.Succeeded)
             {
-                _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Deleted user{user.Id}");
+                _logger.LogInformation($"Administrator with id: {currentAdminEmail.Id} | Deleted user {userId}");
                 return View("Confirmations/DeleteUserConfirmation");
             }
+
             foreach (var error in result.Errors)
             {
-                _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to delete user with id: {user.Id} | d=Details: {error.Description}");
+                _logger.LogDebug($"Administrator with id: {currentAdminEmail.Id} | Failed to delete user with id: {userId} | d=Details: {error.Description}");
                 ModelState.AddModelError("", error.Description);
             }
-            return View("CrudUsers");
+
+            return View("UsersList");
         }
-        #endregion
-        #region Edit
+
         [HttpGet]
-        public async Task<IActionResult> EditUser()
+        public async Task<IActionResult> EditUser(string userId)
         {
-            var userId = TempData["userId"].ToString();
-            var user = await _userManager.FindByIdAsync(userId);
-            var userRoles = (List<string>)await _userManager.GetRolesAsync(user);
+            var userToEdit = await _userManager.FindByIdAsync(userId);
 
-            var editUserViewModel = new EditUserViewModel()
-            {
-                Id = user.Id,
-                CreatedAt = user.CreatedAt,
-                UserName = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Gender = user.Gender,
-                PhoneNumber = user.PhoneNumber,
-                AllRoles = await _roleService.GetAllRoleNames(),
-                CurrentUserRole = userRoles.First(),
-        };
+            var userRoleName = await _userService.GetRoleName(userToEdit);
 
-            return View(editUserViewModel);
+            var allRoleNames = await _roleService.GetAllRoleNamesAsync();
+
+            var userViewModel = _userService.CreateEditUserViewModel(userToEdit, userRoleName, allRoleNames);
+
+            return View(userViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(EditUserViewModel model, string Role)
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            var currentAdmin = _userService.GetUserByEmailAsync(User.Identity.Name);
-
-            user.Email = model.Email;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.Email = model.Email;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Gender = model.Gender;
-
-            var roles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, roles);
-            await _userManager.AddToRoleAsync(user, Role);
-            var result = await _userManager.UpdateAsync(user);
+            var currentAdminEmail = _userService.GetUserByEmailAsync(User.Identity.Name);
+            var result = await _userService.UpdateUser(model);
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"Administrator with id: {currentAdmin.Id} | Edited user{user.Id}");
+                _logger.LogInformation($"Administrator with id: {currentAdminEmail.Id} | Edited user{model.Id}");
                 return View("Confirmations/EditUserConfirmation");
             }
             foreach (var error in result.Errors)
             {
-                _logger.LogDebug($"Administrator with id: {currentAdmin.Id} | Failed to edit user with id: {user.Id} | Details: {error.Description}");
+                _logger.LogDebug($"Administrator with id: {currentAdminEmail.Id} | Failed to edit user with id: {model.Id} | Details: {error.Description}");
                 ModelState.AddModelError("", error.Description);
             }
             return View(model);
         }
-        #endregion
-        #region Lock
-        [HttpGet]
-        public async Task<IActionResult> LockUser(User user)
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> LockOutUser(User user)
-        {
-            return View();
-        }
-        #endregion
     }
 }
